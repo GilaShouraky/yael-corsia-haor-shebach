@@ -455,6 +455,8 @@ export default function HaOrShebachWebsite() {
         <p className="hero-subtitle">עם יעל כורסיה</p>
         <div className="hero-divider"></div>
         <p className="hero-tagline">מסע של התבוננות, השראה וצמיחה אישית</p>
+        <br />
+        <br />
       </section>
 
       {/* Products */}
