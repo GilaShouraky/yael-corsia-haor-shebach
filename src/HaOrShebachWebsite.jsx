@@ -1,0 +1,690 @@
+import React, { useState } from 'react';
+import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp } from 'lucide-react';
+import './YaelCorsiaWebsite.css';
+
+export default function HaOrShebachWebsite() {
+  const [cart, setCart] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [expandedPickup, setExpandedPickup] = useState(false);
+
+  const products = [
+    {
+      id: 1,
+      name: 'קלפי מסע החיים',
+      shortDescription: 'קלפים מעוררי השראה שנכתבו מתוך 30 שנות טיפול והנחיה',
+      fullDescription: `קלפים מעוררי השראה שנכתבו מתוך השיעורים והטיפולים שאני מעבירה מעל ל-30 שנה. כל קלף מלווה בתובנה ובתפילה אישית שתחזק אותך. הקלפים פותחים צוהר להתבוננות פנימית - כלי מדהים לתהליכי עומק והתפתחות.`,
+      whatsInside: [
+        '42 קלפים מעוררי השראה - כל קלף יפתח לך צוהר להתבוננות פנימית עמוקה ולצמיחה אישית',
+        'מסרים מתוך מקורות יהודיים - מילים שיחברו אותך אל הנשמה, אל האמונה ואל הדרך שלך',
+        'שילוב מיוחד של מודעות ותפילה - כל קלף מלווה בתובנה ובכיוון תפילה אישי',
+        'דרך יצירתית לעבוד על עצמך - לבד, עם חברות או בקבוצה'
+      ],
+      forWho: [
+        'לנשים שמבקשות להכניס יותר משמעות לחיי היומיום',
+        'למנחות ומאמנות שרוצות כלי טיפולי ייחודי לקבוצות ולמפגשים',
+        'לכל מי שמחפשת חיבור עמוק יותר לעצמה ולבורא'
+      ],
+      howToUse: 'בחרי קלף בהכוונה או באינטואיציה, קראי את המסר שבו. התחברי אליו דרך שאלה פנימית או תפילה אישית - ותני לו להאיר לך את הדרך.',
+      testimonials: [
+        'הקלפים האלה פשוט מדהימים! כל בוקר אני שולפת קלף והוא תמיד מדויק',
+        'כלי עבודה נפלא לסדנאות שלי, התלמידות מתחברות מיד',
+        'המתנה המושלמת לכל אישה - משמעותי ומרגש'
+      ],
+      price: 180,
+      image: 'https://i.imgur.com/EvOv2HL.jpeg',
+      icon: Sparkles,
+      link: 'https://lp.vp4.me/17y3'
+    },
+    {
+      id: 2,
+      name: 'מחברת פשוט להודות',
+      shortDescription: 'מחברת מעוצבת לכתיבת תודות - נמכרה באלפי עותקים בארץ ובעולם',
+      fullDescription: `מחברת מעוצבת לכתיבת תודות עם משפטים מעוררי השראה. המחברת עוזרת בעיסוק בראיית הטוב, באימון אישי ובמשיכת אור ושפע לחיים!`,
+      forWho: [
+        'לכל אחד, בכל גיל ובכל שלב - גילאי 9-99!',
+        'לכתיבה אישית, זוגית, משפחתית או צוותית',
+        'לכל מי שרוצה להתמקד בטוב ולהכניס יותר שמחה לחיים'
+      ],
+      testimonials: [
+        'המחברת הזו שינתה לי את החיים! אני כותבת כל יום ומרגישה את השינוי',
+        'קניתי לכל המשפחה - אנחנו כותבים ביחד בשולחן שבת',
+        'מתנה מושלמת שכולם אוהבים לקבל'
+      ],
+      price: 35,
+      bulkPrice: 30,
+      bulkMinimum: 10,
+      image: 'https://i.imgur.com/ielPgE4.jpeg',
+      icon: Heart,
+      link: 'https://lp.vp4.me/qqkm'
+    },
+    {
+      id: 3,
+      name: 'בובי ואני',
+      shortDescription: 'ספר ילדים מרגש על התמודדות עם פחדים ופיתוח שפה רגשית',
+      fullDescription: `את הספר "בובי ואני" כתבתי מתוך חוויה אישית כאימא וכסבתא, שפוגשת לא מעט לבבות קטנים שפוחדים, במיוחד בלילות.
+
+יש רגעים שבהם העולם משתתק ודווקא אז עולים הפחדים. אבל ברגעים אלו מסתתרת הזדמנות: לעצור, לנשום, להקשיב, להיות עם הילד ולא למהר 'להעלים את הפחד', אלא ללמד את הילד לעבד את רגשותיו.`,
+      aboutBook: 'סיפור מחבק על דָּוִד והפחד, ועל הדרך למצוא בתוכנו אומץ, אמון ואהבה. כי כל ילד פוגש פחד, וכל הורה רוצה לדעת איך לעזור לו. ספר שמדבר לילדים - ונוגע בלב של כולנו. מזמין שיח רגשי, זמן איכות וריפוי עדין יחד.',
+      forWho: [
+        'לילדים בגילאי 3-8',
+        'להורים שרוצים לעזור לילדיהם להתמודד עם פחדים',
+        'למטפלים, גננות ואנשי חינוך לגיל הרך'
+      ],
+      price: 68,
+      salePrice: 50,
+      image: 'https://i.imgur.com/OXNGHx2.png',
+      icon: BookOpen,
+      link: 'https://yaelcorsiabook1.netlify.app/'
+    },
+    {
+      id: 4,
+      name: 'מנוי למסע החיים',
+      shortDescription: 'מועדון נשים - מרחב של התבוננות, השראה וצמיחה אישית',
+      fullDescription: 'מועדון נשים ייחודי המתכנס מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.',
+      price: null,
+      image: '✨',
+      icon: Sparkles,
+      comingSoon: true
+    }
+  ];
+
+  const bundles = [
+    {
+      id: 'bundle1',
+      name: 'חבילת קלפים + מחברת',
+      description: 'קלפי מסע החיים + מחברת פשוט להודות',
+      items: ['קלפי מסע החיים', 'מחברת פשוט להודות'],
+      originalPrice: 215,
+      price: 200,
+      savings: 15,
+      image: '🎁'
+    },
+    {
+      id: 'bundle2',
+      name: 'ערכה מלאה',
+      description: 'קלפי מסע החיים + מחברת פשוט להודות + ספר בובי ואני',
+      items: ['קלפי מסע החיים', 'מחברת פשוט להודות', 'ספר בובי ואני'],
+      originalPrice: 283,
+      price: 250,
+      savings: 33,
+      image: '🌟',
+      recommended: true
+    }
+  ];
+
+  const pickupPoints = [
+    { area: 'מרכז', locations: [
+      { city: 'פתח תקוה', address: 'רח׳ דגל ראובן 27', contact: 'חגית גרינברג', phone: '058-6253893' },
+      { city: 'רמת גן', address: 'מבצע עין 9', contact: 'אורטל', phone: '054-6588503' },
+      { city: 'תל אביב', address: 'רח׳ נתן ילין מור', contact: 'יהודה', phone: '055-6631648' },
+      { city: 'ראשון לציון / בת ים', address: 'רח׳ שושנה דמרי', contact: 'הודיה', phone: '054-6588573' },
+      { city: 'רחובות', address: 'מלצר 1', contact: 'מיכל עוקשי', phone: '052-6661033' },
+      { city: 'רעננה', address: 'הפנינה 6 (ימי ב׳ ו-ד׳)', contact: 'מוריה', phone: '054-6979143' },
+      { city: 'נתניה', address: 'רח׳ שבח 3', contact: 'פרלה', phone: '053-5269028' },
+      { city: 'חדרה', address: '', contact: 'צליל שבת', phone: '054-5315136' },
+      { city: 'חריש', address: '', contact: 'הילה לנגה', phone: '050-3199460' },
+    ]},
+    { area: 'ירושלים והסביבה', locations: [
+      { city: 'ירושלים - קרית משה', address: '', contact: 'בריינה', phone: '054-7984328' },
+      { city: 'בית אל', address: '', contact: 'גיתית כורסיה', phone: '054-3370180' },
+      { city: 'נוף אילון', address: '', contact: 'משפחת כורסיה', phone: '054-5971840' },
+      { city: 'נריה', address: '', contact: 'אורטל', phone: '054-6588503' },
+      { city: 'בית שמש (מרכז ביג, מושב זכריה)', address: '', contact: 'דלית', phone: '054-4535140' },
+      { city: 'מודיעין', address: 'אולפנת אורות', contact: 'הרב אשר', phone: '052-8308305' },
+      { city: 'יד בנימין', address: '', contact: 'רינה זוזוט', phone: '050-9348825' },
+      { city: 'תפוח', address: '', contact: 'טל שחר', phone: '058-4771085' },
+      { city: 'יישוב הדעת', address: '', contact: 'תפארת', phone: '058-4770975' },
+    ]},
+    { area: 'דרום', locations: [
+      { city: 'אשקלון - שכונת אגמים', address: '', contact: 'אורטל', phone: '054-6588503' },
+      { city: 'אשקלון', address: 'מעלה הגת 6', contact: 'סיגלית כרמי', phone: '054-3001580' },
+      { city: 'באר שבע', address: 'נחל לבן 10, שכונת הפארק', contact: 'לינוי זולדן', phone: '053-2330623' },
+      { city: 'אופקים', address: '', contact: 'הדר קוסובסקי כהן', phone: '054-5214048' },
+      { city: 'ירוחם', address: '', contact: 'ענבל אלמקייס', phone: '058-5828745' },
+      { city: 'אילת', address: 'סתונית 9 גנים א', contact: 'פדות בקנרוט', phone: '050-2527121' },
+      { city: 'ניצן', address: 'רח׳ השקמה 12א', contact: 'סמדר', phone: '052-2654733' },
+    ]},
+    { area: 'צפון', locations: [
+      { city: 'טבריה', address: '', contact: 'ענבל', phone: '054-6748611' },
+      { city: 'צפת', address: '', contact: 'אתי מורדיאן', phone: '050-6851140' },
+      { city: 'כרמיאל', address: '', contact: 'מרים', phone: '054-6517260' },
+      { city: 'נהריה', address: '', contact: 'דניאל אזולאי', phone: '054-6116657' },
+      { city: 'עכו / קריות', address: 'שלום הגליל 22', contact: 'גלית אלקחיל', phone: '052-8401889' },
+      { city: 'חספין (גולן)', address: '', contact: 'מיה סבג', phone: '058-4599886' },
+      { city: 'שדמות דבורה', address: '', contact: 'רחלי מרום', phone: '050-7791000' },
+    ]},
+    { area: 'שומרון ובנימין', locations: [
+      { city: 'אלעד', address: 'אבטליון 26', contact: 'יעל עזר', phone: '052-7062852' },
+      { city: 'שומריה', address: '', contact: 'מוריה יאול', phone: '052-8119131' },
+    ]}
+  ];
+
+  const addToCart = (product) => {
+    const existingItem = cart.find(item => item.id === product.id);
+    if (existingItem) {
+      setCart(cart.map(item => 
+        item.id === product.id 
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      ));
+    } else {
+      setCart([...cart, { ...product, quantity: 1 }]);
+    }
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 2000);
+  };
+
+  const removeFromCart = (productId) => {
+    setCart(cart.filter(item => item.id !== productId));
+  };
+
+  const updateQuantity = (productId, newQuantity) => {
+    if (newQuantity === 0) {
+      removeFromCart(productId);
+    } else {
+      setCart(cart.map(item => 
+        item.id === productId 
+          ? { ...item, quantity: newQuantity }
+          : item
+      ));
+    }
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((sum, item) => {
+      const price = item.salePrice || item.price;
+      return sum + (price * item.quantity);
+    }, 0);
+  };
+
+  const getTotalItems = () => {
+    return cart.reduce((sum, item) => sum + item.quantity, 0);
+  };
+
+  const handleCheckout = () => {
+    const message = cart.map(item => 
+      `${item.name} x${item.quantity}`
+    ).join('\n');
+    const total = getTotalPrice();
+    const whatsappMessage = encodeURIComponent(
+      `שלום יעל! אשמח להזמין:\n${message}\n\nסה"כ: ₪${total}`
+    );
+    window.open(`https://wa.me/972546588503?text=${whatsappMessage}`, '_blank');
+  };
+
+  return (
+    <div className="website-container" dir="rtl">
+      {/* Header */}
+      <header className="header">
+        <div className="header-content">
+          <div className="logo">
+            <div className="logo-title">האור שבך</div>
+          </div>
+          <nav className="nav-links">
+            <a href="#products">המוצרים</a>
+            <a href="#bundles">מבצעים</a>
+            <a href="#purchase">רכישה</a>
+            <a href="#about">אודות</a>
+          </nav>
+          <button 
+            onClick={() => setIsCartOpen(!isCartOpen)}
+            className="cart-button"
+          >
+            <ShoppingCart className="cart-icon" />
+            {getTotalItems() > 0 && (
+              <span className="cart-badge">
+                {getTotalItems()}
+              </span>
+            )}
+          </button>
+        </div>
+      </header>
+
+      {/* Product Modal */}
+      {selectedProduct && (
+        <>
+          <div 
+            className="modal-overlay"
+            onClick={() => setSelectedProduct(null)}
+          />
+          <div className="modal product-modal">
+            <div className="modal-content">
+              <button 
+                onClick={() => setSelectedProduct(null)}
+                className="modal-close"
+              >
+                <X className="close-icon" />
+              </button>
+              
+              <div className="modal-grid">
+                <div className="modal-image-section">
+                  {typeof selectedProduct.image === 'string' && selectedProduct.image.startsWith('http') ? (
+                    <img 
+                      src={selectedProduct.image} 
+                      alt={selectedProduct.name}
+                      className="modal-image"
+                    />
+                  ) : (
+                    <div className="modal-emoji">{selectedProduct.image}</div>
+                  )}
+                </div>
+                
+                <div className="modal-info-section">
+                  <h2 className="modal-title">{selectedProduct.name}</h2>
+                  
+                  <div className="modal-pricing">
+                    {selectedProduct.salePrice ? (
+                      <>
+                        <span className="original-price">₪{selectedProduct.price}</span>
+                        <span className="sale-price">₪{selectedProduct.salePrice}</span>
+                        <span className="sale-badge">מחיר השקה!</span>
+                      </>
+                    ) : selectedProduct.price ? (
+                      <span className="current-price">₪{selectedProduct.price}</span>
+                    ) : null}
+                  </div>
+
+                  <div className="modal-description">
+                    <p>{selectedProduct.fullDescription}</p>
+                    {selectedProduct.aboutBook && (
+                      <p className="about-book">{selectedProduct.aboutBook}</p>
+                    )}
+                  </div>
+
+                  {selectedProduct.whatsInside && (
+                    <div className="modal-section">
+                      <h3>מה בערכה?</h3>
+                      <ul>
+                        {selectedProduct.whatsInside.map((item, idx) => (
+                          <li key={idx}>✔ {item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {selectedProduct.forWho && (
+                    <div className="modal-section">
+                      <h3>למי מתאים?</h3>
+                      <ul>
+                        {selectedProduct.forWho.map((item, idx) => (
+                          <li key={idx}>❤ {item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {selectedProduct.howToUse && (
+                    <div className="modal-section">
+                      <h3>איך זה עובד?</h3>
+                      <p>{selectedProduct.howToUse}</p>
+                    </div>
+                  )}
+
+                  {selectedProduct.testimonials && (
+                    <div className="modal-section testimonials-section">
+                      <h3>מה אומרים עלינו</h3>
+                      <div className="testimonials-grid">
+                        {selectedProduct.testimonials.map((testimonial, idx) => (
+                          <div key={idx} className="testimonial-card">
+                            <p>"{testimonial}"</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedProduct.bulkPrice && (
+                    <div className="bulk-notice">
+                      💡 מעל {selectedProduct.bulkMinimum} יחידות - רק ₪{selectedProduct.bulkPrice} ליחידה!
+                    </div>
+                  )}
+                  
+                  {selectedProduct.comingSoon ? (
+                    <div className="coming-soon-container">
+                      <span className="coming-soon-badge">בקרוב</span>
+                    </div>
+                  ) : (
+                    <div className="modal-actions">
+                      <button
+                        onClick={() => {
+                          addToCart(selectedProduct);
+                          setSelectedProduct(null);
+                        }}
+                        className="add-to-cart-button"
+                      >
+                        הוסף לסל
+                      </button>
+                      {selectedProduct.link && (
+                        <a 
+                          href={selectedProduct.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="view-original-link"
+                        >
+                          לעמוד המוצר המלא
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Cart Sidebar */}
+      {isCartOpen && (
+        <>
+          <div 
+            className="modal-overlay"
+            onClick={() => setIsCartOpen(false)}
+          />
+          <div className="cart-sidebar">
+            <div className="cart-header">
+              <h2 className="cart-title">סל הקניות</h2>
+              <button 
+                onClick={() => setIsCartOpen(false)}
+                className="cart-close"
+              >
+                <X className="close-icon" />
+              </button>
+            </div>
+            
+            {cart.length === 0 ? (
+              <p className="cart-empty">הסל ריק</p>
+            ) : (
+              <>
+                <div className="cart-items">
+                  {cart.map((item) => (
+                    <div key={item.id} className="cart-item">
+                      <div className="cart-item-info">
+                        <h3 className="cart-item-name">{item.name}</h3>
+                        <p className="cart-item-price">₪{item.salePrice || item.price}</p>
+                      </div>
+                      <div className="cart-item-quantity">
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="quantity-button"
+                        >
+                          -
+                        </button>
+                        <span className="quantity-value">{item.quantity}</span>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="quantity-button"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="cart-summary">
+                  <div className="cart-divider"></div>
+                  <div className="cart-total">
+                    <span>סה"כ לתשלום:</span>
+                    <span className="total-price">₪{getTotalPrice()}</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleCheckout}
+                  className="checkout-button"
+                >
+                  <Phone className="button-icon" />
+                  המשך להזמנה בוואטסאפ
+                </button>
+              </>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Hero */}
+      <section className="hero">
+        <div className="hero-decoration">
+          <span className="sparkle">✦</span>
+          <span className="sparkle">✦</span>
+          <span className="sparkle">✦</span>
+        </div>
+        <h1 className="hero-title">האור שבך</h1>
+        <p className="hero-subtitle">עם יעל כורסיה</p>
+        <div className="hero-divider"></div>
+        <p className="hero-tagline">מסע של התבוננות, השראה וצמיחה אישית</p>
+      </section>
+
+      {/* Products */}
+      <section id="products" className="products-section">
+        <h2 className="section-title">המוצרים שלי</h2>
+        <div className="products-grid">
+          {products.map((product) => {
+            const IconComponent = product.icon;
+            return (
+              <div key={product.id} className="product-card">
+                <div className="product-image-container">
+                  {typeof product.image === 'string' && product.image.startsWith('http') ? (
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="product-image"
+                    />
+                  ) : (
+                    <div className="product-emoji">{product.image}</div>
+                  )}
+                </div>
+                <div className="product-info">
+                  <div className="product-header">
+                    <IconComponent className="product-icon" />
+                    <h3 className="product-name">{product.name}</h3>
+                  </div>
+                  <p className="product-description">{product.shortDescription}</p>
+                  {product.comingSoon ? (
+                    <div className="coming-soon-container">
+                      <span className="coming-soon-badge">בקרוב</span>
+                    </div>
+                  ) : (
+                    <div className="product-footer">
+                      <div className="product-pricing">
+                        {product.salePrice ? (
+                          <>
+                            <span className="product-original-price">₪{product.price}</span>
+                            <span className="product-sale-price">₪{product.salePrice}</span>
+                          </>
+                        ) : (
+                          <span className="product-price">₪{product.price}</span>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => setSelectedProduct(product)}
+                        className="details-button"
+                      >
+                        לפרטים נוספים
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Bundles / Special Offers */}
+      <section id="bundles" className="bundles-section">
+        <h2 className="section-title">מבצעים מיוחדים</h2>
+        <div className="bundles-grid">
+          {bundles.map((bundle) => (
+            <div key={bundle.id} className={`bundle-card ${bundle.recommended ? 'recommended' : ''}`}>
+              {bundle.recommended && (
+                <div className="recommended-badge">הכי משתלם!</div>
+              )}
+              <div className="bundle-emoji">{bundle.image}</div>
+              <h3 className="bundle-title">{bundle.name}</h3>
+              <p className="bundle-description">{bundle.description}</p>
+              
+              <div className="bundle-items">
+                <strong>הערכה כוללת:</strong>
+                <ul>
+                  {bundle.items.map((item, idx) => (
+                    <li key={idx}>✓ {item}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="bundle-pricing">
+                <span className="bundle-original">₪{bundle.originalPrice}</span>
+                <span className="bundle-price">₪{bundle.price}</span>
+                <span className="bundle-savings">חיסכון של ₪{bundle.savings}!</span>
+              </div>
+              
+              <button
+                onClick={() => addToCart(bundle)}
+                className="bundle-button"
+              >
+                הוסף לסל
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Purchase Info */}
+      <section id="purchase" className="purchase-section">
+        <h2 className="section-title">אופן הרכישה</h2>
+        
+        <div className="purchase-options">
+          <div className="purchase-card">
+            <div className="purchase-icon">
+              <CreditCard />
+            </div>
+            <h3>תשלום מאובטח</h3>
+            <p>תשלום בכרטיס אשראי דרך מערכת Grow המאובטחת</p>
+          </div>
+          
+          <div className="purchase-card">
+            <div className="purchase-icon">
+              <Truck />
+            </div>
+            <h3>משלוח עד הבית</h3>
+            <p>משלוח בשליח תוך 3-5 ימי עסקים בתשלום נוסף</p>
+          </div>
+          
+          <div className="purchase-card">
+            <div className="purchase-icon">
+              <MapPin />
+            </div>
+            <h3>איסוף עצמי</h3>
+            <p>נקודות איסוף ברחבי הארץ - ללא תשלום נוסף!</p>
+          </div>
+        </div>
+
+        {/* Pickup Points */}
+        <div className="pickup-section">
+          <button 
+            className="pickup-toggle"
+            onClick={() => setExpandedPickup(!expandedPickup)}
+          >
+            <MapPin className="toggle-icon" />
+            <span>נקודות איסוף עצמי ברחבי הארץ</span>
+            {expandedPickup ? <ChevronUp /> : <ChevronDown />}
+          </button>
+          
+          {expandedPickup && (
+            <div className="pickup-points">
+              {pickupPoints.map((region, idx) => (
+                <div key={idx} className="pickup-region">
+                  <h4 className="region-title">{region.area}</h4>
+                  <div className="locations-grid">
+                    {region.locations.map((loc, locIdx) => (
+                      <div key={locIdx} className="location-card">
+                        <strong>{loc.city}</strong>
+                        {loc.address && <span className="location-address">{loc.address}</span>}
+                        <span className="location-contact">{loc.contact}</span>
+                        <a href={`tel:${loc.phone}`} className="location-phone">{loc.phone}</a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* About */}
+      <section id="about" className="about-section">
+        <div className="about-image-wrapper">
+          <img 
+            src="https://i.imgur.com/01HMEOs.jpeg" 
+            alt="יעל כורסיה"
+            className="about-image"
+          />
+        </div>
+        <div className="about-card">
+          <h2 className="about-title">קצת עליי</h2>
+          <div className="about-content">
+            <p><strong>נעים מאוד! שמי יעל כורסיה</strong> - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.</p>
+            <p>אני מייסדת מועדון הנשים <strong>"מסע החיים"</strong> - מרחב של התבוננות, השראה וצמיחה אישית, שבו אנו נפגשות מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.</p>
+            <p>לאורך השנים ליוויתי נשים רבות בתהליכי מודעות, שינוי וצמיחה - ומתוך הדרך הזו נולד גם הרצון להעניק לילדים כלים רגשיים שיסייעו להם להכיר את עצמם, להתמודד עם פחדים וקשיים ולגלות את הכוחות שבתוכם.</p>
+            <p>הספר <strong>"בּוּבִּי וַאֲנִי"</strong> הוא הספר הראשון בסדרת ספרים חדשה, שמטרתה לעזור לילדים לפתח שפה רגשית, ביטחון עצמי ויכולת ביטוי בריאה - בדרך עדינה, מקרבת ומלאת לב.</p>
+            <p>בנוסף זכיתי להוציא לאור את <strong>מחברת "פשוט להודות"</strong> - מחברת מעוצבת לכתיבת תודות, שנמכרה באלפי עותקים בארץ ובעולם, ואת <strong>ערכת הקלפים "מודעות, תפילה והעצמה"</strong> - ערכה ייחודית ומרגשת המשלבת השראה, תפילה וכלים לעבודה פנימית.</p>
+            <p className="about-highlight">אני מאמינה שככל שנעניק לילדים (ולנו עצמנו) שפה רגשית, חיבור לעצמם ואמונה בטוב - נוכל ליצור עולם חומל, יצירתי ושמח יותר.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact */}
+      <section className="contact-section">
+        <div className="contact-content">
+          <h2 className="contact-title">יצירת קשר</h2>
+          <p className="contact-subtitle">אשמח לענות על כל שאלה ולהיות איתך בקשר</p>
+          <div className="contact-links">
+            <a 
+              href="https://wa.me/972546588503" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-link whatsapp"
+            >
+              <Phone className="contact-icon" />
+              <span>054-6588503</span>
+            </a>
+            <a 
+              href="mailto:orshebach@gmail.com"
+              className="contact-link"
+            >
+              <Mail className="contact-icon" />
+              <span>orshebach@gmail.com</span>
+            </a>
+            <a 
+              href="https://instagram.com/yael_corsia"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-link"
+            >
+              <Instagram className="contact-icon" />
+              <span>yael_corsia</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-content">
+          <p>© 2025 האור שבך - יעל כורסיה | כל הזכויות שמורות</p>
+        </div>
+      </footer>
+
+      {/* Notification */}
+      {showNotification && (
+        <div className="notification">
+          ✓ נוסף לסל בהצלחה!
+        </div>
+      )}
+    </div>
+  );
+}
