@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp } from 'lucide-react';
+import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Crown, MessageCircle, Calendar, Users } from 'lucide-react';
 import './YaelCorsiaWebsite.css';
 
 export default function HaOrShebachWebsite() {
@@ -8,6 +8,7 @@ export default function HaOrShebachWebsite() {
   const [showNotification, setShowNotification] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [expandedPickup, setExpandedPickup] = useState(false);
+  const [showBulkPopup, setShowBulkPopup] = useState(false);
 
   const products = [
     {
@@ -49,7 +50,7 @@ export default function HaOrShebachWebsite() {
       ],
       testimonials: [
         'המחברת הזו שינתה לי את החיים! אני כותבת כל יום ומרגישה את השינוי',
-        'קניתי לכל המשפחה - אנחנו כותבים ביחד בשולחן שבת',
+        'קניתי לכל המשפחה - אנחנו כותבים ביחד כל ערב',
         'מתנה מושלמת שכולם אוהבים לקבל'
       ],
       price: 35,
@@ -61,9 +62,9 @@ export default function HaOrShebachWebsite() {
     },
     {
       id: 3,
-      name: 'בובי ואני',
+      name: 'בֻּבִּי ואני',
       shortDescription: 'ספר ילדים מרגש על התמודדות עם פחדים ופיתוח שפה רגשית',
-      fullDescription: `את הספר "בובי ואני" כתבתי מתוך חוויה אישית כאימא וכסבתא, שפוגשת לא מעט לבבות קטנים שפוחדים, במיוחד בלילות.
+      fullDescription: `את הספר "בֻּבִּי ואני" כתבתי מתוך חוויה אישית כאימא וכסבתא, שפוגשת לא מעט לבבות קטנים שפוחדים, במיוחד בלילות.
 
 יש רגעים שבהם העולם משתתק ודווקא אז עולים הפחדים. אבל ברגעים אלו מסתתרת הזדמנות: לעצור, לנשום, להקשיב, להיות עם הילד ולא למהר 'להעלים את הפחד', אלא ללמד את הילד לעבד את רגשותיו.`,
       aboutBook: 'סיפור מחבק על דָּוִד והפחד, ועל הדרך למצוא בתוכנו אומץ, אמון ואהבה. כי כל ילד פוגש פחד, וכל הורה רוצה לדעת איך לעזור לו. ספר שמדבר לילדים - ונוגע בלב של כולנו. מזמין שיח רגשי, זמן איכות וריפוי עדין יחד.',
@@ -104,8 +105,8 @@ export default function HaOrShebachWebsite() {
     {
       id: 'bundle2',
       name: 'ערכה מלאה',
-      description: 'קלפי מסע החיים + מחברת פשוט להודות + ספר בובי ואני',
-      items: ['קלפי מסע החיים', 'מחברת פשוט להודות', 'ספר בובי ואני'],
+      description: 'קלפי מסע החיים + מחברת פשוט להודות + ספר בֻּבִּי ואני',
+      items: ['קלפי מסע החיים', 'מחברת פשוט להודות', 'ספר בֻּבִּי ואני'],
       originalPrice: 283,
       price: 250,
       savings: 33,
@@ -162,6 +163,15 @@ export default function HaOrShebachWebsite() {
   ];
 
   const addToCart = (product) => {
+    // Check for bulk order (notebook over 50)
+    if (product.id === 2) {
+      const existing = cart.find(i => i.id === 2);
+      if (existing && existing.quantity >= 49) {
+        setShowBulkPopup(true);
+        return;
+      }
+    }
+    
     const existingItem = cart.find(item => item.id === product.id);
     if (existingItem) {
       setCart(cart.map(item => 
@@ -184,6 +194,11 @@ export default function HaOrShebachWebsite() {
     if (newQuantity === 0) {
       removeFromCart(productId);
     } else {
+      // Check for bulk order
+      if (productId === 2 && newQuantity >= 50) {
+        setShowBulkPopup(true);
+        return;
+      }
       setCart(cart.map(item => 
         item.id === productId 
           ? { ...item, quantity: newQuantity }
@@ -192,9 +207,17 @@ export default function HaOrShebachWebsite() {
     }
   };
 
+  const getItemPrice = (item) => {
+    // Special pricing for notebook bulk orders (10+)
+    if (item.id === 2 && item.quantity >= 10) {
+      return item.bulkPrice;
+    }
+    return item.salePrice || item.price;
+  };
+
   const getTotalPrice = () => {
     return cart.reduce((sum, item) => {
-      const price = item.salePrice || item.price;
+      const price = getItemPrice(item);
       return sum + (price * item.quantity);
     }, 0);
   };
@@ -220,27 +243,64 @@ export default function HaOrShebachWebsite() {
       <header className="header">
         <div className="header-content">
           <div className="logo">
+            <Crown className="logo-crown" />
             <div className="logo-title">האור שבך</div>
           </div>
           <nav className="nav-links">
-            <a href="#products">המוצרים</a>
+            <a href="#products">חנות</a>
             <a href="#bundles">מבצעים</a>
             <a href="#purchase">רכישה</a>
+            <a href="#subscribers">מועמדות מנויות</a>
+            <a href="#events">אירועים</a>
             <a href="#about">אודות</a>
           </nav>
-          <button 
-            onClick={() => setIsCartOpen(!isCartOpen)}
-            className="cart-button"
-          >
-            <ShoppingCart className="cart-icon" />
-            {getTotalItems() > 0 && (
-              <span className="cart-badge">
-                {getTotalItems()}
-              </span>
-            )}
-          </button>
+          <div className="header-actions">
+            <a 
+              href="https://did.li/D3hx5"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="whatsapp-group-btn"
+            >
+              <MessageCircle className="whatsapp-icon" />
+              <span className="whatsapp-btn-text">להצטרפות לקבוצת העצמה לחצי כאן</span>
+            </a>
+            <button 
+              onClick={() => setIsCartOpen(!isCartOpen)}
+              className="cart-button"
+            >
+              <ShoppingCart className="cart-icon" />
+              {getTotalItems() > 0 && (
+                <span className="cart-badge">
+                  {getTotalItems()}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </header>
+
+      {/* Bulk Order Popup */}
+      {showBulkPopup && (
+        <>
+          <div className="modal-overlay" onClick={() => setShowBulkPopup(false)} />
+          <div className="bulk-popup">
+            <button onClick={() => setShowBulkPopup(false)} className="modal-close">
+              <X className="close-icon" />
+            </button>
+            <h3>הזמנה מרוכזת</h3>
+            <p>להזמנה מרוכזת מעל 50 יחידות אנא פנו אלינו בוואטסאפ</p>
+            <a 
+              href="https://wa.me/972546588503?text=שלום, אשמח לברר לגבי הזמנה מרוכזת של מחברות פשוט להודות"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bulk-whatsapp-btn"
+            >
+              <MessageCircle className="whatsapp-icon" />
+              <span>פנו אלינו בוואטסאפ</span>
+            </a>
+          </div>
+        </>
+      )}
 
       {/* Product Modal */}
       {selectedProduct && (
@@ -402,7 +462,12 @@ export default function HaOrShebachWebsite() {
                     <div key={item.id} className="cart-item">
                       <div className="cart-item-info">
                         <h3 className="cart-item-name">{item.name}</h3>
-                        <p className="cart-item-price">₪{item.salePrice || item.price}</p>
+                        <p className="cart-item-price">
+                          ₪{getItemPrice(item)}
+                          {item.id === 2 && item.quantity >= 10 && (
+                            <span className="bulk-discount-note"> (מחיר מיוחד!)</span>
+                          )}
+                        </p>
                       </div>
                       <div className="cart-item-quantity">
                         <button
@@ -446,22 +511,30 @@ export default function HaOrShebachWebsite() {
 
       {/* Hero */}
       <section className="hero">
-        <div className="hero-decoration">
-          <span className="sparkle">✦</span>
-          <span className="sparkle">✦</span>
-          <span className="sparkle">✦</span>
+        <div className="hero-background"></div>
+        <div className="hero-content">
+          <div className="hero-decoration">
+            <Crown className="hero-crown" />
+          </div>
+          <h1 className="hero-title">האור שבך</h1>
+          <p className="hero-subtitle">עם יעל כורסיה</p>
+          <div className="hero-divider"></div>
+          <p className="hero-tagline">מסע של התבוננות, השראה וצמיחה אישית</p>
+          
+          <div className="hero-cta">
+            <p className="hero-question">רוצה לגדול ולצמוח? להתמלא בביטחון ולהרגיש מדויקת?</p>
+            <h2 className="hero-invite">בואי לגדול איתנו!</h2>
+            <p className="hero-description">
+              האור שבך הוקם מתוך חזון להעביר נשים תהליך התפתחותי של התבוננות, חיזוק האמונה בעצמי, בבורא ובמציאות כולה.
+            </p>
+            <p className="hero-source">עבודה פנימית ומדויקת מתוך המקורות היהודיים</p>
+          </div>
         </div>
-        <h1 className="hero-title">האור שבך</h1>
-        <p className="hero-subtitle">עם יעל כורסיה</p>
-        <div className="hero-divider"></div>
-        <p className="hero-tagline">מסע של התבוננות, השראה וצמיחה אישית</p>
-        <br />
-        <br />
       </section>
 
       {/* Products */}
       <section id="products" className="products-section">
-        <h2 className="section-title">המוצרים שלי</h2>
+        <h2 className="section-title">חנות</h2>
         <div className="products-grid">
           {products.map((product) => {
             const IconComponent = product.icon;
@@ -617,6 +690,33 @@ export default function HaOrShebachWebsite() {
         </div>
       </section>
 
+      {/* Subscribers Section */}
+      <section id="subscribers" className="subscribers-section">
+        <h2 className="section-title">מועמדות מנויות</h2>
+        <div className="subscribers-content">
+          <Users className="subscribers-icon" />
+          <p>הצטרפי למועדון הנשים שלנו וקבלי גישה לתכנים בלעדיים, סדנאות והנחות מיוחדות</p>
+          <a 
+            href="https://wa.me/972546588503?text=שלום, אשמח לשמוע פרטים על מועדון המנויות"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="subscribers-btn"
+          >
+            לפרטים נוספים
+          </a>
+        </div>
+      </section>
+
+      {/* Events Section */}
+      <section id="events" className="events-section">
+        <h2 className="section-title">אירועים</h2>
+        <div className="events-content">
+          <Calendar className="events-icon" />
+          <p>סדנאות, הרצאות ומפגשים קרובים</p>
+          <p className="events-coming">בקרוב יפורסמו אירועים חדשים!</p>
+        </div>
+      </section>
+
       {/* About */}
       <section id="about" className="about-section">
         <div className="about-image-wrapper">
@@ -632,7 +732,7 @@ export default function HaOrShebachWebsite() {
             <p><strong>נעים מאוד! שמי יעל כורסיה</strong> - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.</p>
             <p>אני מייסדת מועדון הנשים <strong>"מסע החיים"</strong> - מרחב של התבוננות, השראה וצמיחה אישית, שבו אנו נפגשות מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.</p>
             <p>לאורך השנים ליוויתי נשים רבות בתהליכי מודעות, שינוי וצמיחה - ומתוך הדרך הזו נולד גם הרצון להעניק לילדים כלים רגשיים שיסייעו להם להכיר את עצמם, להתמודד עם פחדים וקשיים ולגלות את הכוחות שבתוכם.</p>
-            <p>הספר <strong>"בּוּבִּי וַאֲנִי"</strong> הוא הספר הראשון בסדרת ספרים חדשה, שמטרתה לעזור לילדים לפתח שפה רגשית, ביטחון עצמי ויכולת ביטוי בריאה - בדרך עדינה, מקרבת ומלאת לב.</p>
+            <p>הספר <strong>"בֻּבִּי וַאֲנִי"</strong> הוא הספר הראשון בסדרת ספרים חדשה, שמטרתה לעזור לילדים לפתח שפה רגשית, ביטחון עצמי ויכולת ביטוי בריאה - בדרך עדינה, מקרבת ומלאת לב.</p>
             <p>בנוסף זכיתי להוציא לאור את <strong>מחברת "פשוט להודות"</strong> - מחברת מעוצבת לכתיבת תודות, שנמכרה באלפי עותקים בארץ ובעולם, ואת <strong>ערכת הקלפים "מודעות, תפילה והעצמה"</strong> - ערכה ייחודית ומרגשת המשלבת השראה, תפילה וכלים לעבודה פנימית.</p>
             <p className="about-highlight">אני מאמינה שככל שנעניק לילדים (ולנו עצמנו) שפה רגשית, חיבור לעצמם ואמונה בטוב - נוכל ליצור עולם חומל, יצירתי ושמח יותר.</p>
           </div>
