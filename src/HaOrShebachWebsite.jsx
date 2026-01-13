@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp } from 'lucide-react';
+import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Send, Play, Calendar, Users } from 'lucide-react';
 import './YaelCorsiaWebsite.css';
+
+// Background image URL
+const BACKGROUND_IMAGE = 'https://i.imgur.com/PLACEHOLDER.jpg'; // יוחלף בתמונה שהעלית
 
 // Shared data and state management
 const useSharedState = () => {
@@ -161,6 +164,20 @@ const useSharedState = () => {
     ]}
   ];
 
+  // YouTube lessons - להחליף בקישורים אמיתיים
+  const lessons = [
+    { id: 1, title: 'שיעור ראשון', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
+    { id: 2, title: 'שיעור שני', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
+    { id: 3, title: 'שיעור שלישי', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
+    { id: 4, title: 'שיעור רביעי', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
+  ];
+
+  // Events - להוסיף אירועים
+  const events = [
+    { id: 1, title: 'ערב העצמה לנשים', date: '2025-02-15', location: 'תל אביב', description: 'ערב מיוחד של חיבור והעצמה' },
+    { id: 2, title: 'סדנת קלפים', date: '2025-02-22', location: 'ירושלים', description: 'למדי להשתמש בקלפי מסע החיים' },
+  ];
+
   const addToCart = (product) => {
     const existingItem = cart.find(item => item.id === product.id);
     if (existingItem) {
@@ -220,7 +237,7 @@ const useSharedState = () => {
     showNotification, setShowNotification,
     selectedProduct, setSelectedProduct,
     expandedPickup, setExpandedPickup,
-    products, bundles, pickupPoints,
+    products, bundles, pickupPoints, lessons, events,
     addToCart, removeFromCart, updateQuantity,
     getTotalPrice, getTotalItems, handleCheckout
   };
@@ -237,9 +254,10 @@ const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
           <div className="logo-title">האור שבך</div>
         </Link>
         <nav className="nav-links">
-          <Link to="/products" className={location.pathname === '/products' ? 'active' : ''}>המוצרים</Link>
-          <Link to="/bundles" className={location.pathname === '/bundles' ? 'active' : ''}>מבצעים</Link>
-          <Link to="/purchase" className={location.pathname === '/purchase' ? 'active' : ''}>רכישה</Link>
+          <Link to="/shop" className={location.pathname === '/shop' ? 'active' : ''}>חנות</Link>
+          <Link to="/subscribe" className={location.pathname === '/subscribe' ? 'active' : ''}>מנויות</Link>
+          <Link to="/lessons" className={location.pathname === '/lessons' ? 'active' : ''}>שיעורים</Link>
+          <Link to="/events" className={location.pathname === '/events' ? 'active' : ''}>אירועים</Link>
           <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>אודות</Link>
         </nav>
         <button 
@@ -468,7 +486,7 @@ const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotal
   );
 };
 
-// Hero Section Component
+// Hero Section Component - Only for Home Page
 const HeroSection = () => (
   <section className="hero">
     <div className="hero-decoration">
@@ -602,13 +620,41 @@ const PickupPointsSection = ({ pickupPoints, expandedPickup, setExpandedPickup }
   </div>
 );
 
-// Home Page Component
-const HomePage = ({ products, bundles, pickupPoints, addToCart, setSelectedProduct, expandedPickup, setExpandedPickup }) => (
+// Home Page Component - with Hero
+const HomePage = () => (
   <>
     <HeroSection />
+    <div className="home-welcome">
+      <p>ברוכים הבאים לעולם של השראה, צמיחה והתפתחות אישית</p>
+      <div className="home-links">
+        <Link to="/shop" className="home-link-card">
+          <ShoppingCart className="home-link-icon" />
+          <span>לחנות</span>
+        </Link>
+        <Link to="/subscribe" className="home-link-card">
+          <Users className="home-link-icon" />
+          <span>הצטרפי אלינו</span>
+        </Link>
+        <Link to="/lessons" className="home-link-card">
+          <Play className="home-link-icon" />
+          <span>שיעורים</span>
+        </Link>
+        <Link to="/events" className="home-link-card">
+          <Calendar className="home-link-icon" />
+          <span>אירועים</span>
+        </Link>
+      </div>
+    </div>
+  </>
+);
+
+// Shop Page Component
+const ShopPage = ({ products, bundles, pickupPoints, addToCart, setSelectedProduct, expandedPickup, setExpandedPickup }) => (
+  <div className="page-content">
+    <h1 className="page-title">החנות</h1>
     
     {/* Products Section */}
-    <section id="products" className="products-section">
+    <section className="products-section">
       <h2 className="section-title">המוצרים שלי</h2>
       <div className="products-grid">
         {products.map((product) => (
@@ -618,9 +664,9 @@ const HomePage = ({ products, bundles, pickupPoints, addToCart, setSelectedProdu
     </section>
 
     {/* Bundles Section */}
-    <section id="bundles" className="bundles-section">
-      <h2 className="section-title">מבצעים מיוחדים</h2>
-      <div className="bundles-grid">
+    <section className="bundles-section-small">
+      <h2 className="section-title-small">מבצעים מיוחדים</h2>
+      <div className="bundles-grid-small">
         {bundles.map((bundle) => (
           <BundleCard key={bundle.id} bundle={bundle} addToCart={addToCart} />
         ))}
@@ -628,102 +674,8 @@ const HomePage = ({ products, bundles, pickupPoints, addToCart, setSelectedProdu
     </section>
 
     {/* Purchase Section */}
-    <section id="purchase" className="purchase-section">
-      <h2 className="section-title">אופן הרכישה</h2>
-      
-      <div className="purchase-options">
-        <div className="purchase-card">
-          <div className="purchase-icon">
-            <CreditCard />
-          </div>
-          <h3>תשלום מאובטח</h3>
-          <p>תשלום בכרטיס אשראי דרך מערכת Grow המאובטחת</p>
-        </div>
-        
-        <div className="purchase-card">
-          <div className="purchase-icon">
-            <Truck />
-          </div>
-          <h3>משלוח עד הבית</h3>
-          <p>משלוח בשליח תוך 3-5 ימי עסקים בתשלום נוסף</p>
-        </div>
-        
-        <div className="purchase-card">
-          <div className="purchase-icon">
-            <MapPin />
-          </div>
-          <h3>איסוף עצמי</h3>
-          <p>נקודות איסוף ברחבי הארץ - ללא תשלום נוסף!</p>
-        </div>
-      </div>
-
-      <PickupPointsSection 
-        pickupPoints={pickupPoints}
-        expandedPickup={expandedPickup}
-        setExpandedPickup={setExpandedPickup}
-      />
-    </section>
-
-    {/* About Section */}
-    <section id="about" className="about-section">
-      <div className="about-image-wrapper">
-        <img 
-          src="https://i.imgur.com/01HMEOs.jpeg" 
-          alt="יעל כורסיה"
-          className="about-image"
-        />
-      </div>
-      <div className="about-card">
-        <h2 className="about-title">קצת עליי</h2>
-        <div className="about-content">
-          <p><strong>נעים מאוד! שמי יעל כורסיה</strong> - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.</p>
-          <p>אני מייסדת מועדון הנשים <strong>"מסע החיים"</strong> - מרחב של התבוננות, השראה וצמיחה אישית, שבו אנו נפגשות מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.</p>
-          <p>לאורך השנים ליוויתי נשים רבות בתהליכי מודעות, שינוי וצמיחה - ומתוך הדרך הזו נולד גם הרצון להעניק לילדים כלים רגשיים שיסייעו להם להכיר את עצמם, להתמודד עם פחדים וקשיים ולגלות את הכוחות שבתוכם.</p>
-          <p>הספר <strong>"בּוּבִּי וַאֲנִי"</strong> הוא הספר הראשון בסדרת ספרים חדשה, שמטרתה לעזור לילדים לפתח שפה רגשית, ביטחון עצמי ויכולת ביטוי בריאה - בדרך עדינה, מקרבת ומלאת לב.</p>
-          <p>בנוסף זכיתי להוציא לאור את <strong>מחברת "פשוט להודות"</strong> - מחברת מעוצבת לכתיבת תודות, שנמכרה באלפי עותקים בארץ ובעולם, ואת <strong>ערכת הקלפים "מודעות, תפילה והעצמה"</strong> - ערכה ייחודית ומרגשת המשלבת השראה, תפילה וכלים לעבודה פנימית.</p>
-          <p className="about-highlight">אני מאמינה שככל שנעניק לילדים (ולנו עצמנו) שפה רגשית, חיבור לעצמם ואמונה בטוב - נוכל ליצור עולם חומל, יצירתי ושמח יותר.</p>
-        </div>
-      </div>
-    </section>
-  </>
-);
-
-// Products Page Component
-const ProductsPage = ({ products, setSelectedProduct }) => (
-  <>
-    <HeroSection />
-    <section className="products-section">
-      <h2 className="section-title">המוצרים שלי</h2>
-      <div className="products-grid">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} setSelectedProduct={setSelectedProduct} />
-        ))}
-      </div>
-    </section>
-  </>
-);
-
-// Bundles Page Component
-const BundlesPage = ({ bundles, addToCart }) => (
-  <>
-    <HeroSection />
-    <section className="bundles-section">
-      <h2 className="section-title">מבצעים מיוחדים</h2>
-      <div className="bundles-grid">
-        {bundles.map((bundle) => (
-          <BundleCard key={bundle.id} bundle={bundle} addToCart={addToCart} />
-        ))}
-      </div>
-    </section>
-  </>
-);
-
-// Purchase Page Component
-const PurchasePage = ({ pickupPoints, expandedPickup, setExpandedPickup }) => (
-  <>
-    <HeroSection />
     <section className="purchase-section">
-      <h2 className="section-title">אופן הרכישה</h2>
+      <h2 className="section-title-small">אופן הרכישה</h2>
       
       <div className="purchase-options">
         <div className="purchase-card">
@@ -757,13 +709,196 @@ const PurchasePage = ({ pickupPoints, expandedPickup, setExpandedPickup }) => (
         setExpandedPickup={setExpandedPickup}
       />
     </section>
-  </>
+  </div>
+);
+
+// Subscribe Page Component
+const SubscribePage = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    area: '',
+    whatsappGroup: false,
+    fullSubscription: false
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    const selections = [];
+    if (formData.whatsappGroup) selections.push('קבוצת ווצאפ העצמה');
+    if (formData.fullSubscription) selections.push('מנוי שלם במסע החיים');
+    
+    const message = `שלום יעל! אשמח להירשם
+שם: ${formData.firstName} ${formData.lastName}
+אזור מגורים: ${formData.area}
+אני רוצה להצטרף ל: ${selections.join(', ')}`;
+    
+    const whatsappMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/972546588503?text=${whatsappMessage}`, '_blank');
+    setSubmitted(true);
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  return (
+    <div className="page-content">
+      <h1 className="page-title">הצטרפי אלינו</h1>
+      
+      <div className="subscribe-container">
+        {submitted ? (
+          <div className="subscribe-success">
+            <Sparkles className="success-icon" />
+            <h2>תודה על ההרשמה!</h2>
+            <p>נחזור אלייך בהקדם</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="subscribe-form">
+            <div className="form-group">
+              <label htmlFor="firstName">שם פרטי</label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+                placeholder="הכניסי את שמך"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="lastName">שם משפחה</label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+                placeholder="הכניסי את שם המשפחה"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="area">אזור מגורים</label>
+              <input
+                type="text"
+                id="area"
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                required
+                placeholder="לדוגמה: תל אביב, ירושלים..."
+              />
+            </div>
+
+            <div className="form-group checkbox-group">
+              <label>אני רוצה להצטרף ל:</label>
+              
+              <div className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id="whatsappGroup"
+                  name="whatsappGroup"
+                  checked={formData.whatsappGroup}
+                  onChange={handleChange}
+                />
+                <label htmlFor="whatsappGroup">קבוצת ווצאפ העצמה</label>
+              </div>
+
+              <div className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id="fullSubscription"
+                  name="fullSubscription"
+                  checked={formData.fullSubscription}
+                  onChange={handleChange}
+                />
+                <label htmlFor="fullSubscription">מנוי שלם במסע החיים</label>
+              </div>
+            </div>
+
+            <button type="submit" className="submit-button">
+              <Send className="button-icon" />
+              שליחה
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Lessons Page Component
+const LessonsPage = ({ lessons }) => (
+  <div className="page-content">
+    <h1 className="page-title">שיעורים</h1>
+    <p className="page-subtitle">שיעורי וידאו להעצמה והשראה</p>
+    
+    <div className="lessons-grid">
+      {lessons.map((lesson) => (
+        <a 
+          key={lesson.id}
+          href={lesson.youtubeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="lesson-card"
+        >
+          <div className="lesson-thumbnail">
+            <Play className="play-icon" />
+          </div>
+          <h3 className="lesson-title">{lesson.title}</h3>
+        </a>
+      ))}
+    </div>
+  </div>
+);
+
+// Events Page Component
+const EventsPage = ({ events }) => (
+  <div className="page-content">
+    <h1 className="page-title">אירועים</h1>
+    <p className="page-subtitle">האירועים הקרובים שלנו</p>
+    
+    {events.length === 0 ? (
+      <div className="no-events">
+        <Calendar className="no-events-icon" />
+        <p>אין אירועים מתוכננים כרגע</p>
+        <p>עקבי אחרינו לעדכונים!</p>
+      </div>
+    ) : (
+      <div className="events-grid">
+        {events.map((event) => (
+          <div key={event.id} className="event-card">
+            <div className="event-date">
+              <Calendar className="event-icon" />
+              <span>{new Date(event.date).toLocaleDateString('he-IL', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })}</span>
+            </div>
+            <h3 className="event-title">{event.title}</h3>
+            <p className="event-location">📍 {event.location}</p>
+            <p className="event-description">{event.description}</p>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
 );
 
 // About Page Component
 const AboutPage = () => (
-  <>
-    <HeroSection />
+  <div className="page-content">
     <section className="about-section">
       <div className="about-image-wrapper">
         <img 
@@ -784,7 +919,7 @@ const AboutPage = () => (
         </div>
       </div>
     </section>
-  </>
+  </div>
 );
 
 // Contact Section Component
@@ -887,7 +1022,7 @@ const Layout = ({ children, state }) => {
 const AppContent = () => {
   const state = useSharedState();
   const {
-    products, bundles, pickupPoints,
+    products, bundles, pickupPoints, lessons, events,
     addToCart, setSelectedProduct,
     expandedPickup, setExpandedPickup
   } = state;
@@ -895,8 +1030,9 @@ const AppContent = () => {
   return (
     <Layout state={state}>
       <Routes>
-        <Route path="/" element={
-          <HomePage 
+        <Route path="/" element={<HomePage />} />
+        <Route path="/shop" element={
+          <ShopPage 
             products={products}
             bundles={bundles}
             pickupPoints={pickupPoints}
@@ -906,25 +1042,9 @@ const AppContent = () => {
             setExpandedPickup={setExpandedPickup}
           />
         } />
-        <Route path="/products" element={
-          <ProductsPage 
-            products={products}
-            setSelectedProduct={setSelectedProduct}
-          />
-        } />
-        <Route path="/bundles" element={
-          <BundlesPage 
-            bundles={bundles}
-            addToCart={addToCart}
-          />
-        } />
-        <Route path="/purchase" element={
-          <PurchasePage 
-            pickupPoints={pickupPoints}
-            expandedPickup={expandedPickup}
-            setExpandedPickup={setExpandedPickup}
-          />
-        } />
+        <Route path="/subscribe" element={<SubscribePage />} />
+        <Route path="/lessons" element={<LessonsPage lessons={lessons} />} />
+        <Route path="/events" element={<EventsPage events={events} />} />
         <Route path="/about" element={<AboutPage />} />
       </Routes>
     </Layout>
