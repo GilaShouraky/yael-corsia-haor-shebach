@@ -6,48 +6,48 @@
 /* Balerina Font */
 @font-face {
   font-family: 'Balerina';
-  src: url('./fonts/HKBalerina-Regular.otf') format('opentype');
+  src: url('/HKBalerina-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
-/* CSS Variables - Pink, Orange & Turquoise Theme */
+/* CSS Variables - Colors from Image (Flowers & Sunset) */
 :root {
-  /* Primary - Pink/Rose */
-  --primary-50: #fef2f4;
-  --primary-100: #fde6ea;
-  --primary-200: #facdd6;
-  --primary-300: #f5a3b5;
-  --primary-400: #e8728a;
-  --primary-500: #d85a7b;
-  --primary-600: #c44a6a;
-  --primary-700: #a53d58;
-  --primary-800: #89354b;
-  --primary-900: #753143;
+  /* Primary - Soft Rose Pink (from flowers) */
+  --primary-50: #fef5f6;
+  --primary-100: #fdeaed;
+  --primary-200: #fbd5dc;
+  --primary-300: #f2b3bf;
+  --primary-400: #e8899a;
+  --primary-500: #d4707e;
+  --primary-600: #bf5a68;
+  --primary-700: #a04856;
+  --primary-800: #863d48;
+  --primary-900: #723640;
   
-  /* Secondary - Orange/Peach */
-  --secondary-50: #fff8f3;
-  --secondary-100: #feefdf;
-  --secondary-200: #fddfc0;
-  --secondary-300: #f5bb7a;
-  --secondary-400: #f0a968;
-  --secondary-500: #e9a268;
-  --secondary-600: #d48a4a;
-  --secondary-700: #b06f3a;
-  --secondary-800: #8f5a32;
-  --secondary-900: #764c2c;
+  /* Secondary - Warm Peach/Sunset (from sky) */
+  --secondary-50: #fef9f4;
+  --secondary-100: #fdf0e0;
+  --secondary-200: #fadfc0;
+  --secondary-300: #f5c794;
+  --secondary-400: #e8a86d;
+  --secondary-500: #daa06d;
+  --secondary-600: #c48a55;
+  --secondary-700: #a47145;
+  --secondary-800: #875c3a;
+  --secondary-900: #704d32;
   
-  /* Accent - Turquoise/Teal */
-  --accent-50: #f0fdfb;
-  --accent-100: #ccfbf1;
-  --accent-200: #99f6e4;
-  --accent-300: #6bcaba;
-  --accent-400: #5bbcad;
-  --accent-500: #5fb8aa;
-  --accent-600: #4a9e92;
-  --accent-700: #3d7f76;
-  --accent-800: #356560;
-  --accent-900: #2f534f;
+  /* Accent - Soft Blue/Sky (from sky) */
+  --accent-50: #f5f9fc;
+  --accent-100: #e8f2f8;
+  --accent-200: #d1e5f0;
+  --accent-300: #a8cce0;
+  --accent-400: #7bb0cc;
+  --accent-500: #6a9fb8;
+  --accent-600: #5789a0;
+  --accent-700: #4a7185;
+  --accent-800: #3f5c6c;
+  --accent-900: #364d5a;
   
   /* Neutral - Cream & Warm Grays */
   --cream-50: #fefdfb;
@@ -230,7 +230,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('/public/hero-background.png');
+  background-image: url('/hero-background.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -253,58 +253,63 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.sparkle {
+.crown {
   color: var(--secondary-500);
-  font-size: 1.5rem;
-  animation: sparkle 2s ease-in-out infinite;
+  font-size: 2rem;
+  animation: crownFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
-.sparkle:nth-child(2) { animation-delay: 0.3s; }
-.sparkle:nth-child(3) { animation-delay: 0.6s; }
+.crown:nth-child(2) { animation-delay: 0.5s; }
+.crown:nth-child(3) { animation-delay: 1s; }
 
-@keyframes sparkle {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.2); }
+@keyframes crownFloat {
+  0%, 100% { opacity: 0.7; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-5px); }
 }
 
 .hero-title {
   font-family: 'Balerina', serif;
-  font-size: 5rem;
-  color: var(--primary-500);
+  font-size: 7rem;
+  font-weight: 300;
+  color: var(--primary-600);
+  margin-bottom: 1rem;
+  letter-spacing: 4px;
+  line-height: 1.1;
+  text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+}
+
+.hero-subtitle {
+  font-family: 'Balerina', serif;
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--secondary-600);
   margin-bottom: 1rem;
   letter-spacing: 2px;
-  line-height: 1.2;
 }
 
 .hero-divider {
-  width: 120px;
+  width: 150px;
   height: 3px;
   background: var(--secondary-500);
   margin: 1.5rem auto;
   border-radius: 2px;
 }
 
-.hero-subtitle {
+.hero-tagline {
   font-family: 'Balerina', serif;
   font-size: 2rem;
-  color: var(--accent-500);
-  margin-bottom: 1rem;
-  font-weight: 500;
+  font-weight: 300;
+  color: var(--accent-600);
+  max-width: 600px;
+  margin: 0 auto;
   letter-spacing: 1px;
 }
 
-.hero-tagline {
-  font-size: 1.25rem;
-  color: var(--warm-gray-500);
-  font-weight: 400;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
 @media (max-width: 640px) {
-  .hero-title { font-size: 3rem; }
-  .hero-subtitle { font-size: 1.5rem; }
-  .hero-tagline { font-size: 1rem; }
+  .hero-title { font-size: 4rem; }
+  .hero-subtitle { font-size: 1.8rem; }
+  .hero-tagline { font-size: 1.3rem; }
   .hero-content { padding: 3rem 1rem 2rem; }
 }
 

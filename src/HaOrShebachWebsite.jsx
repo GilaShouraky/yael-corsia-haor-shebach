@@ -490,9 +490,9 @@ const HeroSection = () => (
   <section className="hero">
     <div className="hero-content">
       <div className="hero-decoration">
-        <span className="sparkle">✦</span>
-        <span className="sparkle">✦</span>
-        <span className="sparkle">✦</span>
+        <span className="crown">👑</span>
+        <span className="crown">👑</span>
+        <span className="crown">👑</span>
       </div>
       <h1 className="hero-title">האור שבך</h1>
       <p className="hero-subtitle">עם יעל כורסיה</p>
