@@ -6,7 +6,7 @@
 /* Balerina Font */
 @font-face {
   font-family: 'Balerina';
-  src: url('./fonts/HKBalerina-Regular.otf') format('opentype');
+  src: url('/HKBalerina-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
@@ -101,35 +101,6 @@ body {
 .website-container {
   min-height: 100vh;
   background: var(--cream-100);
-  position: relative;
-}
-
-/* Background Image Overlay - שימי לב לנתיב! */
-.website-container::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('./מסע_החיים.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  opacity: 0.12;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* Make sure content is above the background */
-.header,
-.hero,
-.home-welcome,
-.page-content,
-.contact-section,
-.footer {
-  position: relative;
-  z-index: 1;
 }
 
 /* Header */
@@ -242,13 +213,37 @@ body {
   right: -0.25rem;
 }
 
-/* Hero */
+/* Hero - עם תמונת רקע */
 .hero {
+  position: relative;
+  max-width: 100%;
+  padding: 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* תמונת הרקע ב-Hero בלבד */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/hero-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
   max-width: 72rem;
   margin: 0 auto;
   padding: 5rem 1rem 4rem;
-  text-align: center;
-  position: relative;
 }
 
 .hero-decoration {
@@ -310,7 +305,7 @@ body {
   .hero-title { font-size: 3rem; }
   .hero-subtitle { font-size: 1.5rem; }
   .hero-tagline { font-size: 1rem; }
-  .hero { padding: 3rem 1rem 2rem; }
+  .hero-content { padding: 3rem 1rem 2rem; }
 }
 
 /* Home Welcome Section */
