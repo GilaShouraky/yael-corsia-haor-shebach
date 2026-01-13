@@ -3,9 +3,6 @@ import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-do
 import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Send, Play, Calendar, Users } from 'lucide-react';
 import './YaelCorsiaWebsite.css';
 
-// Background image URL
-const BACKGROUND_IMAGE = 'https://i.imgur.com/PLACEHOLDER.jpg'; // יוחלף בתמונה שהעלית
-
 // Shared data and state management
 const useSharedState = () => {
   const [cart, setCart] = useState([]);
@@ -68,7 +65,9 @@ const useSharedState = () => {
       id: 3,
       name: 'בובי ואני',
       shortDescription: 'ספר ילדים מרגש על התמודדות עם פחדים ופיתוח שפה רגשית',
-      fullDescription: 'את הספר "בובי ואני" כתבתי מתוך חוויה אישית כאימא וכסבתא, שפוגשת לא מעט לבבות קטנים שפוחדים, במיוחד בלילות.\n\nיש רגעים שבהם העולם משתתק ודווקא אז עולים הפחדים. אבל ברגעים אלו מסתתרת הזדמנות: לעצור, לנשום, להקשיב, להיות עם הילד ולא למהר להעלים את הפחד, אלא ללמד את הילד לעבד את רגשותיו.',
+      fullDescription: `את הספר "בובי ואני" כתבתי מתוך חוויה אישית כאימא וכסבתא, שפוגשת לא מעט לבבות קטנים שפוחדים, במיוחד בלילות.
+
+יש רגעים שבהם העולם משתתק ודווקא אז עולים הפחדים. אבל ברגעים אלו מסתתרת הזדמנות: לעצור, לנשום, להקשיב, להיות עם הילד ולא למהר 'להעלים את הפחד', אלא ללמד את הילד לעבד את רגשותיו.`,
       aboutBook: 'סיפור מחבק על דָּוִד והפחד, ועל הדרך למצוא בתוכנו אומץ, אמון ואהבה. כי כל ילד פוגש פחד, וכל הורה רוצה לדעת איך לעזור לו. ספר שמדבר לילדים - ונוגע בלב של כולנו. מזמין שיח רגשי, זמן איכות וריפוי עדין יחד.',
       forWho: [
         'לילדים בגילאי 3-8',
@@ -164,7 +163,7 @@ const useSharedState = () => {
     ]}
   ];
 
-  // YouTube lessons - להחליף בקישורים אמיתיים
+  // YouTube lessons
   const lessons = [
     { id: 1, title: 'שיעור ראשון', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
     { id: 2, title: 'שיעור שני', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
@@ -172,7 +171,7 @@ const useSharedState = () => {
     { id: 4, title: 'שיעור רביעי', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
   ];
 
-  // Events - להוסיף אירועים
+  // Events
   const events = [
     { id: 1, title: 'ערב העצמה לנשים', date: '2025-02-15', location: 'תל אביב', description: 'ערב מיוחד של חיבור והעצמה' },
     { id: 2, title: 'סדנת קלפים', date: '2025-02-22', location: 'ירושלים', description: 'למדי להשתמש בקלפי מסע החיים' },
@@ -489,15 +488,17 @@ const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotal
 // Hero Section Component - Only for Home Page
 const HeroSection = () => (
   <section className="hero">
-    <div className="hero-decoration">
-      <span className="sparkle">✦</span>
-      <span className="sparkle">✦</span>
-      <span className="sparkle">✦</span>
+    <div className="hero-content">
+      <div className="hero-decoration">
+        <span className="sparkle">✦</span>
+        <span className="sparkle">✦</span>
+        <span className="sparkle">✦</span>
+      </div>
+      <h1 className="hero-title">האור שבך</h1>
+      <p className="hero-subtitle">עם יעל כורסיה</p>
+      <div className="hero-divider"></div>
+      <p className="hero-tagline">מסע של התבוננות, השראה וצמיחה אישית</p>
     </div>
-    <h1 className="hero-title">האור שבך</h1>
-    <p className="hero-subtitle">עם יעל כורסיה</p>
-    <div className="hero-divider"></div>
-    <p className="hero-tagline">מסע של התבוננות, השראה וצמיחה אישית</p>
   </section>
 );
 
