@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Crown, MessageCircle, Calendar, Users } from 'lucide-react';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp } from 'lucide-react';
 import './YaelCorsiaWebsite.css';
 
-export default function HaOrShebachWebsite() {
+// Shared data and state management
+const useSharedState = () => {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [expandedPickup, setExpandedPickup] = useState(false);
-  const [showBulkPopup, setShowBulkPopup] = useState(false);
 
   const products = [
     {
       id: 1,
       name: 'קלפי מסע החיים',
       shortDescription: 'קלפים מעוררי השראה שנכתבו מתוך 30 שנות טיפול והנחיה',
-      fullDescription: `קלפים מעוררי השראה שנכתבו מתוך השיעורים והטיפולים שאני מעבירה מעל ל-30 שנה. כל קלף מלווה בתובנה ובתפילה אישית שתחזק אותך. הקלפים פותחים צוהר להתבוננות פנימית - כלי מדהים לתהליכי עומק והתפתחות.`,
+      fullDescription: 'קלפים מעוררי השראה שנכתבו מתוך השיעורים והטיפולים שאני מעבירה מעל ל-30 שנה. כל קלף מלווה בתובנה ובתפילה אישית שתחזק אותך. הקלפים פותחים צוהר להתבוננות פנימית - כלי מדהים לתהליכי עומק והתפתחות.',
       whatsInside: [
         '42 קלפים מעוררי השראה - כל קלף יפתח לך צוהר להתבוננות פנימית עמוקה ולצמיחה אישית',
         'מסרים מתוך מקורות יהודיים - מילים שיחברו אותך אל הנשמה, אל האמונה ואל הדרך שלך',
@@ -42,7 +43,7 @@ export default function HaOrShebachWebsite() {
       id: 2,
       name: 'מחברת פשוט להודות',
       shortDescription: 'מחברת מעוצבת לכתיבת תודות - נמכרה באלפי עותקים בארץ ובעולם',
-      fullDescription: `מחברת מעוצבת לכתיבת תודות עם משפטים מעוררי השראה. המחברת עוזרת בעיסוק בראיית הטוב, באימון אישי ובמשיכת אור ושפע לחיים!`,
+      fullDescription: 'מחברת מעוצבת לכתיבת תודות עם משפטים מעוררי השראה. המחברת עוזרת בעיסוק בראיית הטוב, באימון אישי ובמשיכת אור ושפע לחיים!',
       forWho: [
         'לכל אחד, בכל גיל ובכל שלב - גילאי 9-99!',
         'לכתיבה אישית, זוגית, משפחתית או צוותית',
@@ -62,11 +63,9 @@ export default function HaOrShebachWebsite() {
     },
     {
       id: 3,
-      name: 'בֻּבִּי ואני',
+      name: 'בובי ואני',
       shortDescription: 'ספר ילדים מרגש על התמודדות עם פחדים ופיתוח שפה רגשית',
-      fullDescription: `את הספר "בֻּבִּי ואני" כתבתי מתוך חוויה אישית כאימא וכסבתא, שפוגשת לא מעט לבבות קטנים שפוחדים, במיוחד בלילות.
-
-יש רגעים שבהם העולם משתתק ודווקא אז עולים הפחדים. אבל ברגעים אלו מסתתרת הזדמנות: לעצור, לנשום, להקשיב, להיות עם הילד ולא למהר 'להעלים את הפחד', אלא ללמד את הילד לעבד את רגשותיו.`,
+      fullDescription: 'את הספר "בובי ואני" כתבתי מתוך חוויה אישית כאימא וכסבתא, שפוגשת לא מעט לבבות קטנים שפוחדים, במיוחד בלילות.\n\nיש רגעים שבהם העולם משתתק ודווקא אז עולים הפחדים. אבל ברגעים אלו מסתתרת הזדמנות: לעצור, לנשום, להקשיב, להיות עם הילד ולא למהר להעלים את הפחד, אלא ללמד את הילד לעבד את רגשותיו.',
       aboutBook: 'סיפור מחבק על דָּוִד והפחד, ועל הדרך למצוא בתוכנו אומץ, אמון ואהבה. כי כל ילד פוגש פחד, וכל הורה רוצה לדעת איך לעזור לו. ספר שמדבר לילדים - ונוגע בלב של כולנו. מזמין שיח רגשי, זמן איכות וריפוי עדין יחד.',
       forWho: [
         'לילדים בגילאי 3-8',
@@ -105,8 +104,8 @@ export default function HaOrShebachWebsite() {
     {
       id: 'bundle2',
       name: 'ערכה מלאה',
-      description: 'קלפי מסע החיים + מחברת פשוט להודות + ספר בֻּבִּי ואני',
-      items: ['קלפי מסע החיים', 'מחברת פשוט להודות', 'ספר בֻּבִּי ואני'],
+      description: 'קלפי מסע החיים + מחברת פשוט להודות + ספר בובי ואני',
+      items: ['קלפי מסע החיים', 'מחברת פשוט להודות', 'ספר בובי ואני'],
       originalPrice: 283,
       price: 250,
       savings: 33,
@@ -163,15 +162,6 @@ export default function HaOrShebachWebsite() {
   ];
 
   const addToCart = (product) => {
-    // Check for bulk order (notebook over 50)
-    if (product.id === 2) {
-      const existing = cart.find(i => i.id === 2);
-      if (existing && existing.quantity >= 49) {
-        setShowBulkPopup(true);
-        return;
-      }
-    }
-    
     const existingItem = cart.find(item => item.id === product.id);
     if (existingItem) {
       setCart(cart.map(item => 
@@ -194,11 +184,6 @@ export default function HaOrShebachWebsite() {
     if (newQuantity === 0) {
       removeFromCart(productId);
     } else {
-      // Check for bulk order
-      if (productId === 2 && newQuantity >= 50) {
-        setShowBulkPopup(true);
-        return;
-      }
       setCart(cart.map(item => 
         item.id === productId 
           ? { ...item, quantity: newQuantity }
@@ -207,17 +192,9 @@ export default function HaOrShebachWebsite() {
     }
   };
 
-  const getItemPrice = (item) => {
-    // Special pricing for notebook bulk orders (10+)
-    if (item.id === 2 && item.quantity >= 10) {
-      return item.bulkPrice;
-    }
-    return item.salePrice || item.price;
-  };
-
   const getTotalPrice = () => {
     return cart.reduce((sum, item) => {
-      const price = getItemPrice(item);
+      const price = item.salePrice || item.price;
       return sum + (price * item.quantity);
     }, 0);
   };
@@ -237,556 +214,728 @@ export default function HaOrShebachWebsite() {
     window.open(`https://wa.me/972546588503?text=${whatsappMessage}`, '_blank');
   };
 
+  return {
+    cart, setCart,
+    isCartOpen, setIsCartOpen,
+    showNotification, setShowNotification,
+    selectedProduct, setSelectedProduct,
+    expandedPickup, setExpandedPickup,
+    products, bundles, pickupPoints,
+    addToCart, removeFromCart, updateQuantity,
+    getTotalPrice, getTotalItems, handleCheckout
+  };
+};
+
+// Header Component
+const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
+  const location = useLocation();
+  
   return (
-    <div className="website-container" dir="rtl">
-      {/* Header */}
-      <header className="header">
-        <div className="header-content">
-          <div className="logo">
-            <Crown className="logo-crown" />
-            <div className="logo-title">האור שבך</div>
-          </div>
-          <nav className="nav-links">
-            <a href="#products">חנות</a>
-            <a href="#bundles">מבצעים</a>
-            <a href="#purchase">רכישה</a>
-            <a href="#subscribers">מועמדות מנויות</a>
-            <a href="#events">אירועים</a>
-            <a href="#about">אודות</a>
-          </nav>
-          <div className="header-actions">
-            <a 
-              href="https://did.li/D3hx5"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="whatsapp-group-btn"
-            >
-              <MessageCircle className="whatsapp-icon" />
-              <span className="whatsapp-btn-text">להצטרפות לקבוצת העצמה לחצי כאן</span>
-            </a>
-            <button 
-              onClick={() => setIsCartOpen(!isCartOpen)}
-              className="cart-button"
-            >
-              <ShoppingCart className="cart-icon" />
-              {getTotalItems() > 0 && (
-                <span className="cart-badge">
-                  {getTotalItems()}
-                </span>
-              )}
-            </button>
-          </div>
-        </div>
-      </header>
+    <header className="header">
+      <div className="header-content">
+        <Link to="/" className="logo">
+          <div className="logo-title">האור שבך</div>
+        </Link>
+        <nav className="nav-links">
+          <Link to="/products" className={location.pathname === '/products' ? 'active' : ''}>המוצרים</Link>
+          <Link to="/bundles" className={location.pathname === '/bundles' ? 'active' : ''}>מבצעים</Link>
+          <Link to="/purchase" className={location.pathname === '/purchase' ? 'active' : ''}>רכישה</Link>
+          <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>אודות</Link>
+        </nav>
+        <button 
+          onClick={() => setIsCartOpen(!isCartOpen)}
+          className="cart-button"
+        >
+          <ShoppingCart className="cart-icon" />
+          {getTotalItems() > 0 && (
+            <span className="cart-badge">
+              {getTotalItems()}
+            </span>
+          )}
+        </button>
+      </div>
+    </header>
+  );
+};
 
-      {/* Bulk Order Popup */}
-      {showBulkPopup && (
-        <>
-          <div className="modal-overlay" onClick={() => setShowBulkPopup(false)} />
-          <div className="bulk-popup">
-            <button onClick={() => setShowBulkPopup(false)} className="modal-close">
-              <X className="close-icon" />
-            </button>
-            <h3>הזמנה מרוכזת</h3>
-            <p>להזמנה מרוכזת מעל 50 יחידות אנא פנו אלינו בוואטסאפ</p>
-            <a 
-              href="https://wa.me/972546588503?text=שלום, אשמח לברר לגבי הזמנה מרוכזת של מחברות פשוט להודות"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bulk-whatsapp-btn"
-            >
-              <MessageCircle className="whatsapp-icon" />
-              <span>פנו אלינו בוואטסאפ</span>
-            </a>
-          </div>
-        </>
-      )}
-
-      {/* Product Modal */}
-      {selectedProduct && (
-        <>
-          <div 
-            className="modal-overlay"
-            onClick={() => setSelectedProduct(null)}
-          />
-          <div className="modal product-modal">
-            <div className="modal-content">
-              <button 
-                onClick={() => setSelectedProduct(null)}
-                className="modal-close"
-              >
-                <X className="close-icon" />
-              </button>
-              
-              <div className="modal-grid">
-                <div className="modal-image-section">
-                  {typeof selectedProduct.image === 'string' && selectedProduct.image.startsWith('http') ? (
-                    <img 
-                      src={selectedProduct.image} 
-                      alt={selectedProduct.name}
-                      className="modal-image"
-                    />
-                  ) : (
-                    <div className="modal-emoji">{selectedProduct.image}</div>
-                  )}
-                </div>
-                
-                <div className="modal-info-section">
-                  <h2 className="modal-title">{selectedProduct.name}</h2>
-                  
-                  <div className="modal-pricing">
-                    {selectedProduct.salePrice ? (
-                      <>
-                        <span className="original-price">₪{selectedProduct.price}</span>
-                        <span className="sale-price">₪{selectedProduct.salePrice}</span>
-                        <span className="sale-badge">מחיר השקה!</span>
-                      </>
-                    ) : selectedProduct.price ? (
-                      <span className="current-price">₪{selectedProduct.price}</span>
-                    ) : null}
-                  </div>
-
-                  <div className="modal-description">
-                    <p>{selectedProduct.fullDescription}</p>
-                    {selectedProduct.aboutBook && (
-                      <p className="about-book">{selectedProduct.aboutBook}</p>
-                    )}
-                  </div>
-
-                  {selectedProduct.whatsInside && (
-                    <div className="modal-section">
-                      <h3>מה בערכה?</h3>
-                      <ul>
-                        {selectedProduct.whatsInside.map((item, idx) => (
-                          <li key={idx}>✔ {item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {selectedProduct.forWho && (
-                    <div className="modal-section">
-                      <h3>למי מתאים?</h3>
-                      <ul>
-                        {selectedProduct.forWho.map((item, idx) => (
-                          <li key={idx}>❤ {item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {selectedProduct.howToUse && (
-                    <div className="modal-section">
-                      <h3>איך זה עובד?</h3>
-                      <p>{selectedProduct.howToUse}</p>
-                    </div>
-                  )}
-
-                  {selectedProduct.testimonials && (
-                    <div className="modal-section testimonials-section">
-                      <h3>מה אומרים עלינו</h3>
-                      <div className="testimonials-grid">
-                        {selectedProduct.testimonials.map((testimonial, idx) => (
-                          <div key={idx} className="testimonial-card">
-                            <p>"{testimonial}"</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedProduct.bulkPrice && (
-                    <div className="bulk-notice">
-                      💡 מעל {selectedProduct.bulkMinimum} יחידות - רק ₪{selectedProduct.bulkPrice} ליחידה!
-                    </div>
-                  )}
-                  
-                  {selectedProduct.comingSoon ? (
-                    <div className="coming-soon-container">
-                      <span className="coming-soon-badge">בקרוב</span>
-                    </div>
-                  ) : (
-                    <div className="modal-actions">
-                      <button
-                        onClick={() => {
-                          addToCart(selectedProduct);
-                          setSelectedProduct(null);
-                        }}
-                        className="add-to-cart-button"
-                      >
-                        הוסף לסל
-                      </button>
-                      {selectedProduct.link && (
-                        <a 
-                          href={selectedProduct.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="view-original-link"
-                        >
-                          לעמוד המוצר המלא
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Cart Sidebar */}
-      {isCartOpen && (
-        <>
-          <div 
-            className="modal-overlay"
-            onClick={() => setIsCartOpen(false)}
-          />
-          <div className="cart-sidebar">
-            <div className="cart-header">
-              <h2 className="cart-title">סל הקניות</h2>
-              <button 
-                onClick={() => setIsCartOpen(false)}
-                className="cart-close"
-              >
-                <X className="close-icon" />
-              </button>
-            </div>
-            
-            {cart.length === 0 ? (
-              <p className="cart-empty">הסל ריק</p>
-            ) : (
-              <>
-                <div className="cart-items">
-                  {cart.map((item) => (
-                    <div key={item.id} className="cart-item">
-                      <div className="cart-item-info">
-                        <h3 className="cart-item-name">{item.name}</h3>
-                        <p className="cart-item-price">
-                          ₪{getItemPrice(item)}
-                          {item.id === 2 && item.quantity >= 10 && (
-                            <span className="bulk-discount-note"> (מחיר מיוחד!)</span>
-                          )}
-                        </p>
-                      </div>
-                      <div className="cart-item-quantity">
-                        <button
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="quantity-button"
-                        >
-                          -
-                        </button>
-                        <span className="quantity-value">{item.quantity}</span>
-                        <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="quantity-button"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="cart-summary">
-                  <div className="cart-divider"></div>
-                  <div className="cart-total">
-                    <span>סה"כ לתשלום:</span>
-                    <span className="total-price">₪{getTotalPrice()}</span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={handleCheckout}
-                  className="checkout-button"
-                >
-                  <Phone className="button-icon" />
-                  המשך להזמנה בוואטסאפ
-                </button>
-              </>
-            )}
-          </div>
-        </>
-      )}
-
-      {/* Hero */}
-      <section className="hero">
-        <div className="hero-background"></div>
-        <div className="hero-content">
-          <div className="hero-decoration">
-            <Crown className="hero-crown" />
-          </div>
-          <h1 className="hero-title">האור שבך</h1>
-          <p className="hero-subtitle">עם יעל כורסיה</p>
-          <div className="hero-divider"></div>
-          <p className="hero-tagline">מסע של התבוננות, השראה וצמיחה אישית</p>
-          
-          <div className="hero-cta">
-            <p className="hero-question">רוצה לגדול ולצמוח? להתמלא בביטחון ולהרגיש מדויקת?</p>
-            <h2 className="hero-invite">בואי לגדול איתנו!</h2>
-            <p className="hero-description">
-              האור שבך הוקם מתוך חזון להעביר נשים תהליך התפתחותי של התבוננות, חיזוק האמונה בעצמי, בבורא ובמציאות כולה.
-            </p>
-            <p className="hero-source">עבודה פנימית ומדויקת מתוך המקורות היהודיים</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Products */}
-      <section id="products" className="products-section">
-        <h2 className="section-title">חנות</h2>
-        <div className="products-grid">
-          {products.map((product) => {
-            const IconComponent = product.icon;
-            return (
-              <div key={product.id} className="product-card">
-                <div className="product-image-container">
-                  {typeof product.image === 'string' && product.image.startsWith('http') ? (
-                    <img 
-                      src={product.image} 
-                      alt={product.name}
-                      className="product-image"
-                    />
-                  ) : (
-                    <div className="product-emoji">{product.image}</div>
-                  )}
-                </div>
-                <div className="product-info">
-                  <div className="product-header">
-                    <IconComponent className="product-icon" />
-                    <h3 className="product-name">{product.name}</h3>
-                  </div>
-                  <p className="product-description">{product.shortDescription}</p>
-                  {product.comingSoon ? (
-                    <div className="coming-soon-container">
-                      <span className="coming-soon-badge">בקרוב</span>
-                    </div>
-                  ) : (
-                    <div className="product-footer">
-                      <div className="product-pricing">
-                        {product.salePrice ? (
-                          <>
-                            <span className="product-original-price">₪{product.price}</span>
-                            <span className="product-sale-price">₪{product.salePrice}</span>
-                          </>
-                        ) : (
-                          <span className="product-price">₪{product.price}</span>
-                        )}
-                      </div>
-                      <button
-                        onClick={() => setSelectedProduct(product)}
-                        className="details-button"
-                      >
-                        לפרטים נוספים
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Bundles / Special Offers */}
-      <section id="bundles" className="bundles-section">
-        <h2 className="section-title">מבצעים מיוחדים</h2>
-        <div className="bundles-grid">
-          {bundles.map((bundle) => (
-            <div key={bundle.id} className={`bundle-card ${bundle.recommended ? 'recommended' : ''}`}>
-              {bundle.recommended && (
-                <div className="recommended-badge">הכי משתלם!</div>
-              )}
-              <div className="bundle-emoji">{bundle.image}</div>
-              <h3 className="bundle-title">{bundle.name}</h3>
-              <p className="bundle-description">{bundle.description}</p>
-              
-              <div className="bundle-items">
-                <strong>הערכה כוללת:</strong>
-                <ul>
-                  {bundle.items.map((item, idx) => (
-                    <li key={idx}>✓ {item}</li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div className="bundle-pricing">
-                <span className="bundle-original">₪{bundle.originalPrice}</span>
-                <span className="bundle-price">₪{bundle.price}</span>
-                <span className="bundle-savings">חיסכון של ₪{bundle.savings}!</span>
-              </div>
-              
-              <button
-                onClick={() => addToCart(bundle)}
-                className="bundle-button"
-              >
-                הוסף לסל
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Purchase Info */}
-      <section id="purchase" className="purchase-section">
-        <h2 className="section-title">אופן הרכישה</h2>
-        
-        <div className="purchase-options">
-          <div className="purchase-card">
-            <div className="purchase-icon">
-              <CreditCard />
-            </div>
-            <h3>תשלום מאובטח</h3>
-            <p>תשלום בכרטיס אשראי דרך מערכת Grow המאובטחת</p>
-          </div>
-          
-          <div className="purchase-card">
-            <div className="purchase-icon">
-              <Truck />
-            </div>
-            <h3>משלוח עד הבית</h3>
-            <p>משלוח בשליח תוך 3-5 ימי עסקים בתשלום נוסף</p>
-          </div>
-          
-          <div className="purchase-card">
-            <div className="purchase-icon">
-              <MapPin />
-            </div>
-            <h3>איסוף עצמי</h3>
-            <p>נקודות איסוף ברחבי הארץ - ללא תשלום נוסף!</p>
-          </div>
-        </div>
-
-        {/* Pickup Points */}
-        <div className="pickup-section">
+// Product Modal Component
+const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart }) => {
+  if (!selectedProduct) return null;
+  
+  return (
+    <>
+      <div 
+        className="modal-overlay"
+        onClick={() => setSelectedProduct(null)}
+      />
+      <div className="modal product-modal">
+        <div className="modal-content">
           <button 
-            className="pickup-toggle"
-            onClick={() => setExpandedPickup(!expandedPickup)}
+            onClick={() => setSelectedProduct(null)}
+            className="modal-close"
           >
-            <MapPin className="toggle-icon" />
-            <span>נקודות איסוף עצמי ברחבי הארץ</span>
-            {expandedPickup ? <ChevronUp /> : <ChevronDown />}
+            <X className="close-icon" />
           </button>
           
-          {expandedPickup && (
-            <div className="pickup-points">
-              {pickupPoints.map((region, idx) => (
-                <div key={idx} className="pickup-region">
-                  <h4 className="region-title">{region.area}</h4>
-                  <div className="locations-grid">
-                    {region.locations.map((loc, locIdx) => (
-                      <div key={locIdx} className="location-card">
-                        <strong>{loc.city}</strong>
-                        {loc.address && <span className="location-address">{loc.address}</span>}
-                        <span className="location-contact">{loc.contact}</span>
-                        <a href={`tel:${loc.phone}`} className="location-phone">{loc.phone}</a>
+          <div className="modal-grid">
+            <div className="modal-image-section">
+              {typeof selectedProduct.image === 'string' && selectedProduct.image.startsWith('http') ? (
+                <img 
+                  src={selectedProduct.image} 
+                  alt={selectedProduct.name}
+                  className="modal-image"
+                />
+              ) : (
+                <div className="modal-emoji">{selectedProduct.image}</div>
+              )}
+            </div>
+            
+            <div className="modal-info-section">
+              <h2 className="modal-title">{selectedProduct.name}</h2>
+              
+              <div className="modal-pricing">
+                {selectedProduct.salePrice ? (
+                  <>
+                    <span className="original-price">₪{selectedProduct.price}</span>
+                    <span className="sale-price">₪{selectedProduct.salePrice}</span>
+                    <span className="sale-badge">מחיר השקה!</span>
+                  </>
+                ) : selectedProduct.price ? (
+                  <span className="current-price">₪{selectedProduct.price}</span>
+                ) : null}
+              </div>
+
+              <div className="modal-description">
+                <p>{selectedProduct.fullDescription}</p>
+                {selectedProduct.aboutBook && (
+                  <p className="about-book">{selectedProduct.aboutBook}</p>
+                )}
+              </div>
+
+              {selectedProduct.whatsInside && (
+                <div className="modal-section">
+                  <h3>מה בערכה?</h3>
+                  <ul>
+                    {selectedProduct.whatsInside.map((item, idx) => (
+                      <li key={idx}>✔ {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {selectedProduct.forWho && (
+                <div className="modal-section">
+                  <h3>למי מתאים?</h3>
+                  <ul>
+                    {selectedProduct.forWho.map((item, idx) => (
+                      <li key={idx}>❤ {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {selectedProduct.howToUse && (
+                <div className="modal-section">
+                  <h3>איך זה עובד?</h3>
+                  <p>{selectedProduct.howToUse}</p>
+                </div>
+              )}
+
+              {selectedProduct.testimonials && (
+                <div className="modal-section testimonials-section">
+                  <h3>מה אומרים עלינו</h3>
+                  <div className="testimonials-grid">
+                    {selectedProduct.testimonials.map((testimonial, idx) => (
+                      <div key={idx} className="testimonial-card">
+                        <p>"{testimonial}"</p>
                       </div>
                     ))}
                   </div>
                 </div>
+              )}
+
+              {selectedProduct.bulkPrice && (
+                <div className="bulk-notice">
+                  💡 מעל {selectedProduct.bulkMinimum} יחידות - רק ₪{selectedProduct.bulkPrice} ליחידה!
+                </div>
+              )}
+              
+              {selectedProduct.comingSoon ? (
+                <div className="coming-soon-container">
+                  <span className="coming-soon-badge">בקרוב</span>
+                </div>
+              ) : (
+                <div className="modal-actions">
+                  <button
+                    onClick={() => {
+                      addToCart(selectedProduct);
+                      setSelectedProduct(null);
+                    }}
+                    className="add-to-cart-button"
+                  >
+                    הוסף לסל
+                  </button>
+                  {selectedProduct.link && (
+                    <a 
+                      href={selectedProduct.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="view-original-link"
+                    >
+                      לעמוד המוצר המלא
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+// Cart Sidebar Component
+const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotalPrice, handleCheckout }) => {
+  if (!isCartOpen) return null;
+  
+  return (
+    <>
+      <div 
+        className="modal-overlay"
+        onClick={() => setIsCartOpen(false)}
+      />
+      <div className="cart-sidebar">
+        <div className="cart-header">
+          <h2 className="cart-title">סל הקניות</h2>
+          <button 
+            onClick={() => setIsCartOpen(false)}
+            className="cart-close"
+          >
+            <X className="close-icon" />
+          </button>
+        </div>
+        
+        {cart.length === 0 ? (
+          <p className="cart-empty">הסל ריק</p>
+        ) : (
+          <>
+            <div className="cart-items">
+              {cart.map((item) => (
+                <div key={item.id} className="cart-item">
+                  <div className="cart-item-info">
+                    <h3 className="cart-item-name">{item.name}</h3>
+                    <p className="cart-item-price">₪{item.salePrice || item.price}</p>
+                  </div>
+                  <div className="cart-item-quantity">
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="quantity-button"
+                    >
+                      -
+                    </button>
+                    <span className="quantity-value">{item.quantity}</span>
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="quantity-button"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
-          )}
-        </div>
-      </section>
 
-      {/* Subscribers Section */}
-      <section id="subscribers" className="subscribers-section">
-        <h2 className="section-title">מועמדות מנויות</h2>
-        <div className="subscribers-content">
-          <Users className="subscribers-icon" />
-          <p>הצטרפי למועדון הנשים שלנו וקבלי גישה לתכנים בלעדיים, סדנאות והנחות מיוחדות</p>
-          <a 
-            href="https://wa.me/972546588503?text=שלום, אשמח לשמוע פרטים על מועדון המנויות"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="subscribers-btn"
-          >
-            לפרטים נוספים
-          </a>
-        </div>
-      </section>
+            <div className="cart-summary">
+              <div className="cart-divider"></div>
+              <div className="cart-total">
+                <span>סה"כ לתשלום:</span>
+                <span className="total-price">₪{getTotalPrice()}</span>
+              </div>
+            </div>
 
-      {/* Events Section */}
-      <section id="events" className="events-section">
-        <h2 className="section-title">אירועים</h2>
-        <div className="events-content">
-          <Calendar className="events-icon" />
-          <p>סדנאות, הרצאות ומפגשים קרובים</p>
-          <p className="events-coming">בקרוב יפורסמו אירועים חדשים!</p>
-        </div>
-      </section>
-
-      {/* About */}
-      <section id="about" className="about-section">
-        <div className="about-image-wrapper">
-          <img 
-            src="https://i.imgur.com/01HMEOs.jpeg" 
-            alt="יעל כורסיה"
-            className="about-image"
-          />
-        </div>
-        <div className="about-card">
-          <h2 className="about-title">קצת עליי</h2>
-          <div className="about-content">
-            <p><strong>נעים מאוד! שמי יעל כורסיה</strong> - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.</p>
-            <p>אני מייסדת מועדון הנשים <strong>"מסע החיים"</strong> - מרחב של התבוננות, השראה וצמיחה אישית, שבו אנו נפגשות מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.</p>
-            <p>לאורך השנים ליוויתי נשים רבות בתהליכי מודעות, שינוי וצמיחה - ומתוך הדרך הזו נולד גם הרצון להעניק לילדים כלים רגשיים שיסייעו להם להכיר את עצמם, להתמודד עם פחדים וקשיים ולגלות את הכוחות שבתוכם.</p>
-            <p>הספר <strong>"בֻּבִּי וַאֲנִי"</strong> הוא הספר הראשון בסדרת ספרים חדשה, שמטרתה לעזור לילדים לפתח שפה רגשית, ביטחון עצמי ויכולת ביטוי בריאה - בדרך עדינה, מקרבת ומלאת לב.</p>
-            <p>בנוסף זכיתי להוציא לאור את <strong>מחברת "פשוט להודות"</strong> - מחברת מעוצבת לכתיבת תודות, שנמכרה באלפי עותקים בארץ ובעולם, ואת <strong>ערכת הקלפים "מודעות, תפילה והעצמה"</strong> - ערכה ייחודית ומרגשת המשלבת השראה, תפילה וכלים לעבודה פנימית.</p>
-            <p className="about-highlight">אני מאמינה שככל שנעניק לילדים (ולנו עצמנו) שפה רגשית, חיבור לעצמם ואמונה בטוב - נוכל ליצור עולם חומל, יצירתי ושמח יותר.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact */}
-      <section className="contact-section">
-        <div className="contact-content">
-          <h2 className="contact-title">יצירת קשר</h2>
-          <p className="contact-subtitle">אשמח לענות על כל שאלה ולהיות איתך בקשר</p>
-          <div className="contact-links">
-            <a 
-              href="https://wa.me/972546588503" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-link whatsapp"
+            <button
+              onClick={handleCheckout}
+              className="checkout-button"
             >
-              <Phone className="contact-icon" />
-              <span>054-6588503</span>
-            </a>
-            <a 
-              href="mailto:orshebach@gmail.com"
-              className="contact-link"
-            >
-              <Mail className="contact-icon" />
-              <span>orshebach@gmail.com</span>
-            </a>
-            <a 
-              href="https://instagram.com/yael_corsia"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-link"
-            >
-              <Instagram className="contact-icon" />
-              <span>yael_corsia</span>
-            </a>
-          </div>
-        </div>
-      </section>
+              <Phone className="button-icon" />
+              המשך להזמנה בוואטסאפ
+            </button>
+          </>
+        )}
+      </div>
+    </>
+  );
+};
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <p>© 2025 האור שבך - יעל כורסיה | כל הזכויות שמורות</p>
-        </div>
-      </footer>
-
-      {/* Notification */}
-      {showNotification && (
-        <div className="notification">
-          ✓ נוסף לסל בהצלחה!
-        </div>
-      )}
+// Hero Section Component
+const HeroSection = () => (
+  <section className="hero">
+    <div className="hero-decoration">
+      <span className="sparkle">✦</span>
+      <span className="sparkle">✦</span>
+      <span className="sparkle">✦</span>
     </div>
+    <h1 className="hero-title">האור שבך</h1>
+    <p className="hero-subtitle">עם יעל כורסיה</p>
+    <div className="hero-divider"></div>
+    <p className="hero-tagline">מסע של התבוננות, השראה וצמיחה אישית</p>
+  </section>
+);
+
+// Product Card Component
+const ProductCard = ({ product, setSelectedProduct }) => {
+  const IconComponent = product.icon;
+  return (
+    <div className="product-card">
+      <div className="product-image-container">
+        {typeof product.image === 'string' && product.image.startsWith('http') ? (
+          <img 
+            src={product.image} 
+            alt={product.name}
+            className="product-image"
+          />
+        ) : (
+          <div className="product-emoji">{product.image}</div>
+        )}
+      </div>
+      <div className="product-info">
+        <div className="product-header">
+          <IconComponent className="product-icon" />
+          <h3 className="product-name">{product.name}</h3>
+        </div>
+        <p className="product-description">{product.shortDescription}</p>
+        {product.comingSoon ? (
+          <div className="coming-soon-container">
+            <span className="coming-soon-badge">בקרוב</span>
+          </div>
+        ) : (
+          <div className="product-footer">
+            <div className="product-pricing">
+              {product.salePrice ? (
+                <>
+                  <span className="product-original-price">₪{product.price}</span>
+                  <span className="product-sale-price">₪{product.salePrice}</span>
+                </>
+              ) : (
+                <span className="product-price">₪{product.price}</span>
+              )}
+            </div>
+            <button
+              onClick={() => setSelectedProduct(product)}
+              className="details-button"
+            >
+              לפרטים נוספים
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Bundle Card Component
+const BundleCard = ({ bundle, addToCart }) => (
+  <div className={`bundle-card ${bundle.recommended ? 'recommended' : ''}`}>
+    {bundle.recommended && (
+      <div className="recommended-badge">הכי משתלם!</div>
+    )}
+    <div className="bundle-emoji">{bundle.image}</div>
+    <h3 className="bundle-title">{bundle.name}</h3>
+    <p className="bundle-description">{bundle.description}</p>
+    
+    <div className="bundle-items">
+      <strong>הערכה כוללת:</strong>
+      <ul>
+        {bundle.items.map((item, idx) => (
+          <li key={idx}>✓ {item}</li>
+        ))}
+      </ul>
+    </div>
+    
+    <div className="bundle-pricing">
+      <span className="bundle-original">₪{bundle.originalPrice}</span>
+      <span className="bundle-price">₪{bundle.price}</span>
+      <span className="bundle-savings">חיסכון של ₪{bundle.savings}!</span>
+    </div>
+    
+    <button
+      onClick={() => addToCart(bundle)}
+      className="bundle-button"
+    >
+      הוסף לסל
+    </button>
+  </div>
+);
+
+// Pickup Points Component
+const PickupPointsSection = ({ pickupPoints, expandedPickup, setExpandedPickup }) => (
+  <div className="pickup-section">
+    <button 
+      className="pickup-toggle"
+      onClick={() => setExpandedPickup(!expandedPickup)}
+    >
+      <MapPin className="toggle-icon" />
+      <span>נקודות איסוף עצמי ברחבי הארץ</span>
+      {expandedPickup ? <ChevronUp /> : <ChevronDown />}
+    </button>
+    
+    {expandedPickup && (
+      <div className="pickup-points">
+        {pickupPoints.map((region, idx) => (
+          <div key={idx} className="pickup-region">
+            <h4 className="region-title">{region.area}</h4>
+            <div className="locations-grid">
+              {region.locations.map((loc, locIdx) => (
+                <div key={locIdx} className="location-card">
+                  <strong>{loc.city}</strong>
+                  {loc.address && <span className="location-address">{loc.address}</span>}
+                  <span className="location-contact">{loc.contact}</span>
+                  <a href={`tel:${loc.phone}`} className="location-phone">{loc.phone}</a>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+);
+
+// Home Page Component
+const HomePage = ({ products, bundles, pickupPoints, addToCart, setSelectedProduct, expandedPickup, setExpandedPickup }) => (
+  <>
+    <HeroSection />
+    
+    {/* Products Section */}
+    <section id="products" className="products-section">
+      <h2 className="section-title">המוצרים שלי</h2>
+      <div className="products-grid">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} setSelectedProduct={setSelectedProduct} />
+        ))}
+      </div>
+    </section>
+
+    {/* Bundles Section */}
+    <section id="bundles" className="bundles-section">
+      <h2 className="section-title">מבצעים מיוחדים</h2>
+      <div className="bundles-grid">
+        {bundles.map((bundle) => (
+          <BundleCard key={bundle.id} bundle={bundle} addToCart={addToCart} />
+        ))}
+      </div>
+    </section>
+
+    {/* Purchase Section */}
+    <section id="purchase" className="purchase-section">
+      <h2 className="section-title">אופן הרכישה</h2>
+      
+      <div className="purchase-options">
+        <div className="purchase-card">
+          <div className="purchase-icon">
+            <CreditCard />
+          </div>
+          <h3>תשלום מאובטח</h3>
+          <p>תשלום בכרטיס אשראי דרך מערכת Grow המאובטחת</p>
+        </div>
+        
+        <div className="purchase-card">
+          <div className="purchase-icon">
+            <Truck />
+          </div>
+          <h3>משלוח עד הבית</h3>
+          <p>משלוח בשליח תוך 3-5 ימי עסקים בתשלום נוסף</p>
+        </div>
+        
+        <div className="purchase-card">
+          <div className="purchase-icon">
+            <MapPin />
+          </div>
+          <h3>איסוף עצמי</h3>
+          <p>נקודות איסוף ברחבי הארץ - ללא תשלום נוסף!</p>
+        </div>
+      </div>
+
+      <PickupPointsSection 
+        pickupPoints={pickupPoints}
+        expandedPickup={expandedPickup}
+        setExpandedPickup={setExpandedPickup}
+      />
+    </section>
+
+    {/* About Section */}
+    <section id="about" className="about-section">
+      <div className="about-image-wrapper">
+        <img 
+          src="https://i.imgur.com/01HMEOs.jpeg" 
+          alt="יעל כורסיה"
+          className="about-image"
+        />
+      </div>
+      <div className="about-card">
+        <h2 className="about-title">קצת עליי</h2>
+        <div className="about-content">
+          <p><strong>נעים מאוד! שמי יעל כורסיה</strong> - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.</p>
+          <p>אני מייסדת מועדון הנשים <strong>"מסע החיים"</strong> - מרחב של התבוננות, השראה וצמיחה אישית, שבו אנו נפגשות מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.</p>
+          <p>לאורך השנים ליוויתי נשים רבות בתהליכי מודעות, שינוי וצמיחה - ומתוך הדרך הזו נולד גם הרצון להעניק לילדים כלים רגשיים שיסייעו להם להכיר את עצמם, להתמודד עם פחדים וקשיים ולגלות את הכוחות שבתוכם.</p>
+          <p>הספר <strong>"בּוּבִּי וַאֲנִי"</strong> הוא הספר הראשון בסדרת ספרים חדשה, שמטרתה לעזור לילדים לפתח שפה רגשית, ביטחון עצמי ויכולת ביטוי בריאה - בדרך עדינה, מקרבת ומלאת לב.</p>
+          <p>בנוסף זכיתי להוציא לאור את <strong>מחברת "פשוט להודות"</strong> - מחברת מעוצבת לכתיבת תודות, שנמכרה באלפי עותקים בארץ ובעולם, ואת <strong>ערכת הקלפים "מודעות, תפילה והעצמה"</strong> - ערכה ייחודית ומרגשת המשלבת השראה, תפילה וכלים לעבודה פנימית.</p>
+          <p className="about-highlight">אני מאמינה שככל שנעניק לילדים (ולנו עצמנו) שפה רגשית, חיבור לעצמם ואמונה בטוב - נוכל ליצור עולם חומל, יצירתי ושמח יותר.</p>
+        </div>
+      </div>
+    </section>
+  </>
+);
+
+// Products Page Component
+const ProductsPage = ({ products, setSelectedProduct }) => (
+  <>
+    <HeroSection />
+    <section className="products-section">
+      <h2 className="section-title">המוצרים שלי</h2>
+      <div className="products-grid">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} setSelectedProduct={setSelectedProduct} />
+        ))}
+      </div>
+    </section>
+  </>
+);
+
+// Bundles Page Component
+const BundlesPage = ({ bundles, addToCart }) => (
+  <>
+    <HeroSection />
+    <section className="bundles-section">
+      <h2 className="section-title">מבצעים מיוחדים</h2>
+      <div className="bundles-grid">
+        {bundles.map((bundle) => (
+          <BundleCard key={bundle.id} bundle={bundle} addToCart={addToCart} />
+        ))}
+      </div>
+    </section>
+  </>
+);
+
+// Purchase Page Component
+const PurchasePage = ({ pickupPoints, expandedPickup, setExpandedPickup }) => (
+  <>
+    <HeroSection />
+    <section className="purchase-section">
+      <h2 className="section-title">אופן הרכישה</h2>
+      
+      <div className="purchase-options">
+        <div className="purchase-card">
+          <div className="purchase-icon">
+            <CreditCard />
+          </div>
+          <h3>תשלום מאובטח</h3>
+          <p>תשלום בכרטיס אשראי דרך מערכת Grow המאובטחת</p>
+        </div>
+        
+        <div className="purchase-card">
+          <div className="purchase-icon">
+            <Truck />
+          </div>
+          <h3>משלוח עד הבית</h3>
+          <p>משלוח בשליח תוך 3-5 ימי עסקים בתשלום נוסף</p>
+        </div>
+        
+        <div className="purchase-card">
+          <div className="purchase-icon">
+            <MapPin />
+          </div>
+          <h3>איסוף עצמי</h3>
+          <p>נקודות איסוף ברחבי הארץ - ללא תשלום נוסף!</p>
+        </div>
+      </div>
+
+      <PickupPointsSection 
+        pickupPoints={pickupPoints}
+        expandedPickup={expandedPickup}
+        setExpandedPickup={setExpandedPickup}
+      />
+    </section>
+  </>
+);
+
+// About Page Component
+const AboutPage = () => (
+  <>
+    <HeroSection />
+    <section className="about-section">
+      <div className="about-image-wrapper">
+        <img 
+          src="https://i.imgur.com/01HMEOs.jpeg" 
+          alt="יעל כורסיה"
+          className="about-image"
+        />
+      </div>
+      <div className="about-card">
+        <h2 className="about-title">קצת עליי</h2>
+        <div className="about-content">
+          <p><strong>נעים מאוד! שמי יעל כורסיה</strong> - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.</p>
+          <p>אני מייסדת מועדון הנשים <strong>"מסע החיים"</strong> - מרחב של התבוננות, השראה וצמיחה אישית, שבו אנו נפגשות מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.</p>
+          <p>לאורך השנים ליוויתי נשים רבות בתהליכי מודעות, שינוי וצמיחה - ומתוך הדרך הזו נולד גם הרצון להעניק לילדים כלים רגשיים שיסייעו להם להכיר את עצמם, להתמודד עם פחדים וקשיים ולגלות את הכוחות שבתוכם.</p>
+          <p>הספר <strong>"בּוּבִּי וַאֲנִי"</strong> הוא הספר הראשון בסדרת ספרים חדשה, שמטרתה לעזור לילדים לפתח שפה רגשית, ביטחון עצמי ויכולת ביטוי בריאה - בדרך עדינה, מקרבת ומלאת לב.</p>
+          <p>בנוסף זכיתי להוציא לאור את <strong>מחברת "פשוט להודות"</strong> - מחברת מעוצבת לכתיבת תודות, שנמכרה באלפי עותקים בארץ ובעולם, ואת <strong>ערכת הקלפים "מודעות, תפילה והעצמה"</strong> - ערכה ייחודית ומרגשת המשלבת השראה, תפילה וכלים לעבודה פנימית.</p>
+          <p className="about-highlight">אני מאמינה שככל שנעניק לילדים (ולנו עצמנו) שפה רגשית, חיבור לעצמם ואמונה בטוב - נוכל ליצור עולם חומל, יצירתי ושמח יותר.</p>
+        </div>
+      </div>
+    </section>
+  </>
+);
+
+// Contact Section Component
+const ContactSection = () => (
+  <section className="contact-section">
+    <div className="contact-content">
+      <h2 className="contact-title">יצירת קשר</h2>
+      <p className="contact-subtitle">אשמח לענות על כל שאלה ולהיות איתך בקשר</p>
+      <div className="contact-links">
+        <a 
+          href="https://wa.me/972546588503" 
+          target="_blank"
+          rel="noopener noreferrer"
+          className="contact-link whatsapp"
+        >
+          <Phone className="contact-icon" />
+          <span>054-6588503</span>
+        </a>
+        <a 
+          href="mailto:orshebach@gmail.com"
+          className="contact-link"
+        >
+          <Mail className="contact-icon" />
+          <span>orshebach@gmail.com</span>
+        </a>
+        <a 
+          href="https://instagram.com/yael_corsia"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="contact-link"
+        >
+          <Instagram className="contact-icon" />
+          <span>yael_corsia</span>
+        </a>
+      </div>
+    </div>
+  </section>
+);
+
+// Footer Component
+const Footer = () => (
+  <footer className="footer">
+    <div className="footer-content">
+      <p>© 2025 האור שבך - יעל כורסיה | כל הזכויות שמורות</p>
+    </div>
+  </footer>
+);
+
+// Notification Component
+const Notification = ({ showNotification }) => {
+  if (!showNotification) return null;
+  return (
+    <div className="notification">
+      ✓ נוסף לסל בהצלחה!
+    </div>
+  );
+};
+
+// Main Layout Component
+const Layout = ({ children, state }) => {
+  const {
+    cart, isCartOpen, setIsCartOpen,
+    showNotification, selectedProduct, setSelectedProduct,
+    getTotalItems, getTotalPrice, updateQuantity, handleCheckout, addToCart
+  } = state;
+
+  return (
+    <div className="website-container" dir="rtl">
+      <Header 
+        getTotalItems={getTotalItems} 
+        setIsCartOpen={setIsCartOpen}
+        isCartOpen={isCartOpen}
+      />
+      
+      <ProductModal 
+        selectedProduct={selectedProduct}
+        setSelectedProduct={setSelectedProduct}
+        addToCart={addToCart}
+      />
+      
+      <CartSidebar 
+        isCartOpen={isCartOpen}
+        setIsCartOpen={setIsCartOpen}
+        cart={cart}
+        updateQuantity={updateQuantity}
+        getTotalPrice={getTotalPrice}
+        handleCheckout={handleCheckout}
+      />
+      
+      {children}
+      
+      <ContactSection />
+      <Footer />
+      <Notification showNotification={showNotification} />
+    </div>
+  );
+};
+
+// App Content Component (inside Router)
+const AppContent = () => {
+  const state = useSharedState();
+  const {
+    products, bundles, pickupPoints,
+    addToCart, setSelectedProduct,
+    expandedPickup, setExpandedPickup
+  } = state;
+
+  return (
+    <Layout state={state}>
+      <Routes>
+        <Route path="/" element={
+          <HomePage 
+            products={products}
+            bundles={bundles}
+            pickupPoints={pickupPoints}
+            addToCart={addToCart}
+            setSelectedProduct={setSelectedProduct}
+            expandedPickup={expandedPickup}
+            setExpandedPickup={setExpandedPickup}
+          />
+        } />
+        <Route path="/products" element={
+          <ProductsPage 
+            products={products}
+            setSelectedProduct={setSelectedProduct}
+          />
+        } />
+        <Route path="/bundles" element={
+          <BundlesPage 
+            bundles={bundles}
+            addToCart={addToCart}
+          />
+        } />
+        <Route path="/purchase" element={
+          <PurchasePage 
+            pickupPoints={pickupPoints}
+            expandedPickup={expandedPickup}
+            setExpandedPickup={setExpandedPickup}
+          />
+        } />
+        <Route path="/about" element={<AboutPage />} />
+      </Routes>
+    </Layout>
+  );
+};
+
+// Main App Component
+export default function HaOrShebachWebsite() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
