@@ -1,6 +1,6 @@
 /* ===========================================
    האור שבך - יעל כורסיה
-   Website Styles - Updated Version
+   Website Styles - New Color Scheme
    =========================================== */
 
 /* Balerina Font */
@@ -11,38 +11,49 @@
   font-style: normal;
 }
 
-/* CSS Variables - Burgundy, Rose Gold & Cream Theme */
+/* CSS Variables - Pink, Orange & Turquoise Theme */
 :root {
-  /* Primary - Burgundy/Wine */
-  --primary-50: #fdf2f4;
-  --primary-100: #fce7eb;
-  --primary-200: #f9d0d9;
-  --primary-300: #f4a9ba;
-  --primary-400: #ec7694;
-  --primary-500: #722f37;
-  --primary-600: #5c252c;
-  --primary-700: #4a1e24;
-  --primary-800: #3d191e;
-  --primary-900: #2d1216;
+  /* Primary - Pink/Rose */
+  --primary-50: #fef2f4;
+  --primary-100: #fde6ea;
+  --primary-200: #facdd6;
+  --primary-300: #f5a3b5;
+  --primary-400: #e8728a;
+  --primary-500: #d85a7b;
+  --primary-600: #c44a6a;
+  --primary-700: #a53d58;
+  --primary-800: #89354b;
+  --primary-900: #753143;
   
-  /* Accent - Rose Gold */
-  --accent-50: #fefaf8;
-  --accent-100: #fdf3ed;
-  --accent-200: #f9e4d8;
-  --accent-300: #e8c4b8;
-  --accent-400: #d4a594;
-  --accent-500: #b76e79;
-  --accent-600: #a45a65;
-  --accent-700: #8b4a54;
-  --accent-gold: #c9a87c;
-  --accent-gold-light: #ddc9ad;
-  --accent-gold-dark: #a68b5b;
+  /* Secondary - Orange/Peach */
+  --secondary-50: #fff8f3;
+  --secondary-100: #feefdf;
+  --secondary-200: #fddfc0;
+  --secondary-300: #f5bb7a;
+  --secondary-400: #f0a968;
+  --secondary-500: #e9a268;
+  --secondary-600: #d48a4a;
+  --secondary-700: #b06f3a;
+  --secondary-800: #8f5a32;
+  --secondary-900: #764c2c;
+  
+  /* Accent - Turquoise/Teal */
+  --accent-50: #f0fdfb;
+  --accent-100: #ccfbf1;
+  --accent-200: #99f6e4;
+  --accent-300: #6bcaba;
+  --accent-400: #5bbcad;
+  --accent-500: #5fb8aa;
+  --accent-600: #4a9e92;
+  --accent-700: #3d7f76;
+  --accent-800: #356560;
+  --accent-900: #2f534f;
   
   /* Neutral - Cream & Warm Grays */
   --cream-50: #fefdfb;
-  --cream-100: #fdf9f3;
-  --cream-200: #faf3e8;
-  --cream-300: #f5ead8;
+  --cream-100: #fdfaf5;
+  --cream-200: #faf5ed;
+  --cream-300: #f5edd8;
   --cream-400: #e8d5bd;
   
   --warm-gray-50: #faf9f7;
@@ -93,7 +104,7 @@ body {
   position: relative;
 }
 
-/* Background Image Overlay */
+/* Background Image Overlay - שימי לב לנתיב! */
 .website-container::before {
   content: '';
   position: fixed;
@@ -105,15 +116,26 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  opacity: 0.08;
-  z-index: -1;
+  opacity: 0.12;
+  z-index: 0;
   pointer-events: none;
+}
+
+/* Make sure content is above the background */
+.header,
+.hero,
+.home-welcome,
+.page-content,
+.contact-section,
+.footer {
+  position: relative;
+  z-index: 1;
 }
 
 /* Header */
 .header {
   background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 20px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 2px 20px rgba(216, 90, 123, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -167,7 +189,7 @@ body {
   right: 0;
   left: 0;
   height: 2px;
-  background: var(--accent-gold);
+  background: var(--secondary-500);
 }
 
 @media (max-width: 768px) {
@@ -205,7 +227,7 @@ body {
 }
 
 .cart-badge {
-  background: var(--accent-gold);
+  background: var(--secondary-500);
   color: var(--white);
   border-radius: 50%;
   width: 1.5rem;
@@ -237,7 +259,7 @@ body {
 }
 
 .sparkle {
-  color: var(--accent-gold);
+  color: var(--secondary-500);
   font-size: 1.5rem;
   animation: sparkle 2s ease-in-out infinite;
 }
@@ -262,14 +284,15 @@ body {
 .hero-divider {
   width: 120px;
   height: 3px;
-  background: var(--accent-gold);
+  background: var(--secondary-500);
   margin: 1.5rem auto;
   border-radius: 2px;
 }
 
 .hero-subtitle {
+  font-family: 'Balerina', serif;
   font-size: 2rem;
-  color: var(--primary-500);
+  color: var(--accent-500);
   margin-bottom: 1rem;
   font-weight: 500;
   letter-spacing: 1px;
@@ -322,7 +345,7 @@ body {
   border-radius: 1rem;
   text-decoration: none;
   color: var(--primary-500);
-  box-shadow: 0 4px 20px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 4px 20px rgba(216, 90, 123, 0.1);
   transition: all var(--transition-normal);
   display: flex;
   flex-direction: column;
@@ -333,19 +356,20 @@ body {
 
 .home-link-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(114, 47, 55, 0.15);
-  border-color: var(--accent-gold-light);
+  box-shadow: 0 12px 30px rgba(216, 90, 123, 0.15);
+  border-color: var(--secondary-300);
 }
 
 .home-link-icon {
   width: 2.5rem;
   height: 2.5rem;
-  color: var(--accent-gold);
+  color: var(--secondary-500);
 }
 
 .home-link-card span {
+  font-family: 'Balerina', serif;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
 /* Page Content */
@@ -385,7 +409,7 @@ body {
   display: block;
   width: 60px;
   height: 3px;
-  background: var(--accent-gold);
+  background: var(--secondary-500);
   margin: 0.75rem auto 0;
   border-radius: 2px;
 }
@@ -394,7 +418,7 @@ body {
   font-family: 'Balerina', serif;
   font-size: 1.75rem;
   text-align: center;
-  color: var(--primary-500);
+  color: var(--accent-500);
   margin-bottom: 1.5rem;
 }
 
@@ -415,7 +439,7 @@ body {
 .product-card {
   background: var(--white);
   border-radius: 1rem;
-  box-shadow: 0 4px 20px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 4px 20px rgba(216, 90, 123, 0.08);
   overflow: hidden;
   transition: all var(--transition-normal);
   border: 1px solid var(--cream-300);
@@ -423,7 +447,7 @@ body {
 
 .product-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(114, 47, 55, 0.15);
+  box-shadow: 0 12px 30px rgba(216, 90, 123, 0.15);
 }
 
 .product-image-container {
@@ -458,12 +482,13 @@ body {
 .product-icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: var(--accent-gold);
+  color: var(--secondary-500);
   flex-shrink: 0;
 }
 
 .product-name {
-  font-size: 1.125rem;
+  font-family: 'Balerina', serif;
+  font-size: 1.2rem;
   font-weight: bold;
   color: var(--primary-600);
 }
@@ -504,7 +529,7 @@ body {
 .product-sale-price {
   font-size: 1.5rem;
   font-weight: bold;
-  color: var(--accent-500);
+  color: var(--accent-600);
 }
 
 .details-button {
@@ -528,8 +553,8 @@ body {
 
 .coming-soon-badge {
   display: inline-block;
-  background: var(--cream-300);
-  color: var(--warm-gray-600);
+  background: var(--accent-200);
+  color: var(--accent-700);
   padding: 0.5rem 1.5rem;
   border-radius: 2rem;
   font-weight: 500;
@@ -561,7 +586,7 @@ body {
   border-radius: 1rem;
   padding: 2rem;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 4px 20px rgba(216, 90, 123, 0.08);
   transition: all var(--transition-normal);
   position: relative;
   border: 1px solid var(--cream-300);
@@ -569,18 +594,18 @@ body {
 
 .bundle-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(114, 47, 55, 0.15);
+  box-shadow: 0 12px 30px rgba(216, 90, 123, 0.15);
 }
 
 .bundle-card.recommended {
-  border: 2px solid var(--accent-gold);
+  border: 2px solid var(--secondary-500);
 }
 
 .recommended-badge {
   position: absolute;
   top: -0.75rem;
   right: 1rem;
-  background: var(--accent-gold);
+  background: var(--secondary-500);
   color: var(--white);
   padding: 0.25rem 1rem;
   border-radius: 1rem;
@@ -594,7 +619,8 @@ body {
 }
 
 .bundle-title {
-  font-size: 1.25rem;
+  font-family: 'Balerina', serif;
+  font-size: 1.4rem;
   font-weight: bold;
   color: var(--primary-500);
   margin-bottom: 0.5rem;
@@ -642,7 +668,7 @@ body {
 }
 
 .bundle-savings {
-  background: var(--accent-gold);
+  background: var(--accent-500);
   color: var(--white);
   padding: 0.2rem 0.6rem;
   border-radius: 1rem;
@@ -688,21 +714,21 @@ body {
   border-radius: 1rem;
   padding: 1.5rem;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 4px 15px rgba(216, 90, 123, 0.08);
   transition: all var(--transition-normal);
   border: 1px solid var(--cream-300);
 }
 
 .purchase-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(114, 47, 55, 0.12);
+  box-shadow: 0 8px 25px rgba(216, 90, 123, 0.12);
 }
 
 .purchase-icon {
   width: 3rem;
   height: 3rem;
   margin: 0 auto 1rem;
-  color: var(--accent-gold);
+  color: var(--accent-500);
 }
 
 .purchase-icon svg {
@@ -711,7 +737,8 @@ body {
 }
 
 .purchase-card h3 {
-  font-size: 1.1rem;
+  font-family: 'Balerina', serif;
+  font-size: 1.2rem;
   color: var(--primary-500);
   margin-bottom: 0.5rem;
 }
@@ -725,7 +752,7 @@ body {
 .pickup-section {
   background: var(--white);
   border-radius: 1rem;
-  box-shadow: 0 4px 15px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 4px 15px rgba(216, 90, 123, 0.08);
   overflow: hidden;
   border: 1px solid var(--cream-300);
 }
@@ -751,7 +778,7 @@ body {
 .toggle-icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: var(--accent-gold);
+  color: var(--secondary-500);
 }
 
 .pickup-points { padding: 1.5rem; }
@@ -760,11 +787,12 @@ body {
 .pickup-region:last-child { margin-bottom: 0; }
 
 .region-title {
-  font-size: 1.1rem;
+  font-family: 'Balerina', serif;
+  font-size: 1.2rem;
   color: var(--primary-500);
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--accent-gold-light);
+  border-bottom: 2px solid var(--secondary-300);
 }
 
 .locations-grid {
@@ -795,7 +823,7 @@ body {
 }
 
 .location-phone {
-  color: var(--accent-gold-dark);
+  color: var(--accent-600);
   text-decoration: none;
   font-weight: 500;
 }
@@ -812,7 +840,7 @@ body {
   background: var(--white);
   padding: 2rem;
   border-radius: 1rem;
-  box-shadow: 0 4px 20px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 4px 20px rgba(216, 90, 123, 0.08);
   border: 1px solid var(--cream-300);
 }
 
@@ -839,7 +867,7 @@ body {
 
 .form-group input[type="text"]:focus {
   outline: none;
-  border-color: var(--accent-gold);
+  border-color: var(--secondary-500);
 }
 
 .form-group input[type="text"]::placeholder {
@@ -909,18 +937,19 @@ body {
   padding: 3rem 2rem;
   background: var(--white);
   border-radius: 1rem;
-  box-shadow: 0 4px 20px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 4px 20px rgba(216, 90, 123, 0.08);
   border: 1px solid var(--cream-300);
 }
 
 .success-icon {
   width: 4rem;
   height: 4rem;
-  color: var(--accent-gold);
+  color: var(--accent-500);
   margin-bottom: 1rem;
 }
 
 .subscribe-success h2 {
+  font-family: 'Balerina', serif;
   color: var(--primary-500);
   margin-bottom: 0.5rem;
   font-size: 1.5rem;
@@ -945,19 +974,19 @@ body {
   border-radius: 1rem;
   overflow: hidden;
   text-decoration: none;
-  box-shadow: 0 4px 20px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 4px 20px rgba(216, 90, 123, 0.08);
   transition: all var(--transition-normal);
   border: 1px solid var(--cream-300);
 }
 
 .lesson-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(114, 47, 55, 0.15);
+  box-shadow: 0 12px 30px rgba(216, 90, 123, 0.15);
 }
 
 .lesson-thumbnail {
   height: 140px;
-  background: var(--cream-200);
+  background: linear-gradient(135deg, var(--secondary-200), var(--accent-200));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -971,7 +1000,7 @@ body {
   background: var(--white);
   border-radius: 50%;
   padding: 0.75rem;
-  box-shadow: 0 4px 15px rgba(114, 47, 55, 0.2);
+  box-shadow: 0 4px 15px rgba(216, 90, 123, 0.2);
   transition: all var(--transition-normal);
 }
 
@@ -982,10 +1011,11 @@ body {
 }
 
 .lesson-title {
+  font-family: 'Balerina', serif;
   padding: 1rem;
   text-align: center;
   color: var(--primary-600);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
 }
 
@@ -1002,21 +1032,21 @@ body {
   background: var(--white);
   padding: 1.5rem;
   border-radius: 1rem;
-  box-shadow: 0 4px 20px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 4px 20px rgba(216, 90, 123, 0.08);
   border: 1px solid var(--cream-300);
   transition: all var(--transition-normal);
 }
 
 .event-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(114, 47, 55, 0.12);
+  box-shadow: 0 8px 25px rgba(216, 90, 123, 0.12);
 }
 
 .event-date {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--accent-gold-dark);
+  color: var(--secondary-600);
   margin-bottom: 0.75rem;
   font-weight: 500;
 }
@@ -1027,7 +1057,8 @@ body {
 }
 
 .event-title {
-  font-size: 1.25rem;
+  font-family: 'Balerina', serif;
+  font-size: 1.4rem;
   margin-bottom: 0.5rem;
   color: var(--primary-500);
   font-weight: 600;
@@ -1054,7 +1085,7 @@ body {
 .no-events-icon {
   width: 4rem;
   height: 4rem;
-  color: var(--cream-400);
+  color: var(--accent-300);
   margin-bottom: 1rem;
 }
 
@@ -1079,8 +1110,8 @@ body {
   height: 14rem;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 20px 50px rgba(114, 47, 55, 0.2);
-  border: 4px solid var(--accent-gold-light);
+  box-shadow: 0 20px 50px rgba(216, 90, 123, 0.2);
+  border: 4px solid var(--secondary-300);
   transition: transform var(--transition-slow);
 }
 
@@ -1089,7 +1120,7 @@ body {
 .about-card {
   background: var(--white);
   border-radius: 1rem;
-  box-shadow: 0 8px 30px rgba(114, 47, 55, 0.08);
+  box-shadow: 0 8px 30px rgba(216, 90, 123, 0.08);
   padding: 2.5rem;
   border: 1px solid var(--cream-300);
 }
@@ -1118,12 +1149,12 @@ body {
   padding: 1rem;
   border-radius: 0.5rem;
   margin-top: 0.5rem;
-  border-right: 4px solid var(--accent-gold);
+  border-right: 4px solid var(--secondary-500);
 }
 
 /* Contact Section */
 .contact-section {
-  background: var(--cream-200);
+  background: linear-gradient(135deg, var(--secondary-100), var(--accent-100));
   padding: 4rem 1rem;
 }
 
@@ -1162,7 +1193,7 @@ body {
   color: var(--warm-gray-700);
   padding: 0.875rem 1.5rem;
   border-radius: 3rem;
-  box-shadow: 0 4px 15px rgba(114, 47, 55, 0.1);
+  box-shadow: 0 4px 15px rgba(216, 90, 123, 0.1);
   text-decoration: none;
   font-weight: 500;
   transition: all var(--transition-normal);
@@ -1171,7 +1202,7 @@ body {
 
 .contact-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(114, 47, 55, 0.15);
+  box-shadow: 0 8px 25px rgba(216, 90, 123, 0.15);
 }
 
 .contact-link.whatsapp:hover {
@@ -1185,12 +1216,12 @@ body {
 .contact-icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: var(--accent-gold);
+  color: var(--secondary-500);
 }
 
 /* Footer */
 .footer {
-  background: var(--primary-800);
+  background: var(--primary-700);
   color: var(--cream-200);
   padding: 1.5rem 1rem;
 }
@@ -1207,7 +1238,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(45, 18, 22, 0.5);
+  background: rgba(216, 90, 123, 0.3);
   z-index: 200;
   backdrop-filter: blur(4px);
 }
@@ -1223,7 +1254,7 @@ body {
   max-width: 56rem;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 50px rgba(114, 47, 55, 0.3);
+  box-shadow: 0 25px 50px rgba(216, 90, 123, 0.3);
   z-index: 201;
 }
 
@@ -1274,7 +1305,7 @@ body {
 .modal-image {
   width: 100%;
   border-radius: 0.75rem;
-  box-shadow: 0 8px 25px rgba(114, 47, 55, 0.1);
+  box-shadow: 0 8px 25px rgba(216, 90, 123, 0.1);
 }
 
 .modal-emoji {
@@ -1309,7 +1340,7 @@ body {
 }
 
 .sale-price {
-  color: var(--accent-500);
+  color: var(--accent-600);
   font-size: 1.75rem;
   font-weight: bold;
 }
@@ -1347,6 +1378,7 @@ body {
 }
 
 .modal-section h3 {
+  font-family: 'Balerina', serif;
   color: var(--primary-500);
   font-size: 1.1rem;
   margin-bottom: 0.75rem;
@@ -1372,14 +1404,14 @@ body {
   font-style: italic;
   color: var(--warm-gray-500);
   font-size: 0.9rem;
-  border-right: 3px solid var(--accent-gold-light);
+  border-right: 3px solid var(--secondary-300);
 }
 
 .bulk-notice {
-  background: #fef3c7;
+  background: var(--secondary-100);
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  color: #92400e;
+  color: var(--secondary-700);
   font-weight: 500;
 }
 
@@ -1433,7 +1465,7 @@ body {
   z-index: 201;
   display: flex;
   flex-direction: column;
-  box-shadow: 10px 0 40px rgba(114, 47, 55, 0.2);
+  box-shadow: 10px 0 40px rgba(216, 90, 123, 0.2);
 }
 
 .cart-header {
@@ -1445,7 +1477,8 @@ body {
 }
 
 .cart-title {
-  font-size: 1.25rem;
+  font-family: 'Balerina', serif;
+  font-size: 1.4rem;
   color: var(--primary-500);
   font-weight: 600;
 }
@@ -1497,7 +1530,7 @@ body {
 }
 
 .cart-item-price {
-  color: var(--accent-gold-dark);
+  color: var(--secondary-600);
   font-weight: 600;
   margin-top: 0.25rem;
 }
@@ -1578,11 +1611,11 @@ body {
   position: fixed;
   bottom: 1.5rem;
   left: 1.5rem;
-  background: var(--green-500);
+  background: var(--accent-500);
   color: var(--white);
   padding: 1rem 1.5rem;
   border-radius: 0.5rem;
-  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 8px 25px rgba(95, 184, 170, 0.3);
   font-weight: 500;
   animation: slideIn 0.3s ease;
   z-index: 300;
