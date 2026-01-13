@@ -6,7 +6,7 @@
 /* Balerina Font */
 @font-face {
   font-family: 'Balerina';
-  src: url('./HKBalerina-Regular.otf') format('opentype');
+  src: url('./fonts/HKBalerina-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
