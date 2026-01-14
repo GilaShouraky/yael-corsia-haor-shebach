@@ -1,7 +1,44 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Send, Play, Calendar, Users } from 'lucide-react';
+import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Send, Play, Calendar, Users, MessageCircle } from 'lucide-react';
 import './YaelCorsiaWebsite.css';
+
+// WhatsApp Icon Component
+const WhatsAppIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+);
+
+// Bulk Order Popup Component
+const BulkOrderPopup = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+  
+  const handleWhatsAppClick = () => {
+    const message = encodeURIComponent('שלום יעל! אשמח לבצע הזמנה מרוכזת של מעל 50 מחברות "פשוט להודות"');
+    window.open(`https://wa.me/972546588503?text=${message}`, '_blank');
+    onClose();
+  };
+  
+  return (
+    <>
+      <div className="modal-overlay" onClick={onClose} />
+      <div className="bulk-popup">
+        <button onClick={onClose} className="popup-close">
+          <X />
+        </button>
+        <div className="bulk-popup-content">
+          <h3>הזמנה מרוכזת</h3>
+          <p>להזמנה מרוכזת מעל 50 יחידות אנא פנו אלינו בווצאפ</p>
+          <button onClick={handleWhatsAppClick} className="whatsapp-bulk-button">
+            <WhatsAppIcon className="whatsapp-icon" />
+            פנו אלינו בווצאפ
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
 
 // Shared data and state management
 const useSharedState = () => {
@@ -10,6 +47,7 @@ const useSharedState = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [expandedPickup, setExpandedPickup] = useState(false);
+  const [showBulkPopup, setShowBulkPopup] = useState(false);
 
   const products = [
     {
@@ -57,6 +95,7 @@ const useSharedState = () => {
       price: 35,
       bulkPrice: 30,
       bulkMinimum: 10,
+      bulkMaxBeforePopup: 50,
       image: 'https://i.imgur.com/ielPgE4.jpeg',
       icon: Heart,
       link: 'https://lp.vp4.me/qqkm'
@@ -163,7 +202,6 @@ const useSharedState = () => {
     ]}
   ];
 
-  // YouTube lessons
   const lessons = [
     { id: 1, title: 'שיעור ראשון', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
     { id: 2, title: 'שיעור שני', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
@@ -171,22 +209,32 @@ const useSharedState = () => {
     { id: 4, title: 'שיעור רביעי', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
   ];
 
-  // Events
   const events = [
     { id: 1, title: 'ערב העצמה לנשים', date: '2025-02-15', location: 'תל אביב', description: 'ערב מיוחד של חיבור והעצמה' },
     { id: 2, title: 'סדנת קלפים', date: '2025-02-22', location: 'ירושלים', description: 'למדי להשתמש בקלפי מסע החיים' },
   ];
 
-  const addToCart = (product) => {
+  const addToCart = (product, quantity = 1) => {
+    // Check for bulk popup for notebook
+    if (product.id === 2 && quantity > 50) {
+      setShowBulkPopup(true);
+      return;
+    }
+    
     const existingItem = cart.find(item => item.id === product.id);
     if (existingItem) {
+      const newQuantity = existingItem.quantity + quantity;
+      if (product.id === 2 && newQuantity > 50) {
+        setShowBulkPopup(true);
+        return;
+      }
       setCart(cart.map(item => 
         item.id === product.id 
-          ? { ...item, quantity: item.quantity + 1 }
+          ? { ...item, quantity: newQuantity }
           : item
       ));
     } else {
-      setCart([...cart, { ...product, quantity: 1 }]);
+      setCart([...cart, { ...product, quantity }]);
     }
     setShowNotification(true);
     setTimeout(() => setShowNotification(false), 2000);
@@ -197,6 +245,13 @@ const useSharedState = () => {
   };
 
   const updateQuantity = (productId, newQuantity) => {
+    // Check for bulk popup for notebook
+    const item = cart.find(i => i.id === productId);
+    if (item && item.id === 2 && newQuantity > 50) {
+      setShowBulkPopup(true);
+      return;
+    }
+    
     if (newQuantity === 0) {
       removeFromCart(productId);
     } else {
@@ -210,7 +265,11 @@ const useSharedState = () => {
 
   const getTotalPrice = () => {
     return cart.reduce((sum, item) => {
-      const price = item.salePrice || item.price;
+      let price = item.salePrice || item.price;
+      // Apply bulk pricing for notebook (10+ units = 30 NIS each)
+      if (item.id === 2 && item.quantity >= 10) {
+        price = 30;
+      }
       return sum + (price * item.quantity);
     }, 0);
   };
@@ -220,9 +279,13 @@ const useSharedState = () => {
   };
 
   const handleCheckout = () => {
-    const message = cart.map(item => 
-      `${item.name} x${item.quantity}`
-    ).join('\n');
+    const message = cart.map(item => {
+      let priceInfo = '';
+      if (item.id === 2 && item.quantity >= 10) {
+        priceInfo = ' (מחיר מיוחד: ₪30 ליחידה)';
+      }
+      return `${item.name} x${item.quantity}${priceInfo}`;
+    }).join('\n');
     const total = getTotalPrice();
     const whatsappMessage = encodeURIComponent(
       `שלום יעל! אשמח להזמין:\n${message}\n\nסה"כ: ₪${total}`
@@ -236,13 +299,14 @@ const useSharedState = () => {
     showNotification, setShowNotification,
     selectedProduct, setSelectedProduct,
     expandedPickup, setExpandedPickup,
+    showBulkPopup, setShowBulkPopup,
     products, bundles, pickupPoints, lessons, events,
     addToCart, removeFromCart, updateQuantity,
     getTotalPrice, getTotalItems, handleCheckout
   };
 };
 
-// Header Component
+// Header Component with WhatsApp button
 const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
   const location = useLocation();
   
@@ -259,36 +323,71 @@ const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
           <Link to="/events" className={location.pathname === '/events' ? 'active' : ''}>אירועים</Link>
           <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>אודות</Link>
         </nav>
-        <button 
-          onClick={() => setIsCartOpen(!isCartOpen)}
-          className="cart-button"
-        >
-          <ShoppingCart className="cart-icon" />
-          {getTotalItems() > 0 && (
-            <span className="cart-badge">
-              {getTotalItems()}
-            </span>
-          )}
-        </button>
+        <div className="header-buttons">
+          <a 
+            href="https://did.li/D3hx5"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="join-whatsapp-button"
+          >
+            <WhatsAppIcon className="whatsapp-header-icon" />
+            <span className="join-text">להצטרפות לקבוצת העצמה לחצי כאן</span>
+          </a>
+          <button 
+            onClick={() => setIsCartOpen(!isCartOpen)}
+            className="cart-button"
+          >
+            <ShoppingCart className="cart-icon" />
+            {getTotalItems() > 0 && (
+              <span className="cart-badge">
+                {getTotalItems()}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );
 };
 
-// Product Modal Component
-const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart }) => {
+// Product Modal Component - Updated for notebook bulk pricing
+const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowBulkPopup }) => {
+  const [quantity, setQuantity] = useState(1);
+  
   if (!selectedProduct) return null;
+  
+  const isNotebook = selectedProduct.id === 2;
+  const currentPrice = isNotebook && quantity >= 10 ? 30 : (selectedProduct.salePrice || selectedProduct.price);
+  const totalPrice = currentPrice * quantity;
+  
+  const handleQuantityChange = (newQty) => {
+    if (newQty > 50 && isNotebook) {
+      setShowBulkPopup(true);
+      return;
+    }
+    setQuantity(Math.max(1, newQty));
+  };
+  
+  const handleAddToCart = () => {
+    if (quantity > 50 && isNotebook) {
+      setShowBulkPopup(true);
+      return;
+    }
+    addToCart(selectedProduct, quantity);
+    setSelectedProduct(null);
+    setQuantity(1);
+  };
   
   return (
     <>
       <div 
         className="modal-overlay"
-        onClick={() => setSelectedProduct(null)}
+        onClick={() => { setSelectedProduct(null); setQuantity(1); }}
       />
       <div className="modal product-modal">
         <div className="modal-content">
           <button 
-            onClick={() => setSelectedProduct(null)}
+            onClick={() => { setSelectedProduct(null); setQuantity(1); }}
             className="modal-close"
           >
             <X className="close-icon" />
@@ -371,9 +470,16 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart }) => {
                 </div>
               )}
 
-              {selectedProduct.bulkPrice && (
-                <div className="bulk-notice">
-                  💡 מעל {selectedProduct.bulkMinimum} יחידות - רק ₪{selectedProduct.bulkPrice} ליחידה!
+              {isNotebook && (
+                <div className="bulk-pricing-info">
+                  <div className="bulk-notice success">
+                    💡 מעל 10 יחידות - רק ₪30 ליחידה!
+                  </div>
+                  {quantity >= 10 && (
+                    <div className="bulk-applied">
+                      ✓ מחיר מיוחד הופעל! ₪30 ליחידה
+                    </div>
+                  )}
                 </div>
               )}
               
@@ -383,11 +489,25 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart }) => {
                 </div>
               ) : (
                 <div className="modal-actions">
+                  {isNotebook && (
+                    <div className="quantity-selector">
+                      <label>כמות:</label>
+                      <div className="quantity-controls">
+                        <button onClick={() => handleQuantityChange(quantity - 1)}>-</button>
+                        <input 
+                          type="number" 
+                          value={quantity} 
+                          onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+                          min="1"
+                          max="50"
+                        />
+                        <button onClick={() => handleQuantityChange(quantity + 1)}>+</button>
+                      </div>
+                      <span className="total-price">סה"כ: ₪{totalPrice}</span>
+                    </div>
+                  )}
                   <button
-                    onClick={() => {
-                      addToCart(selectedProduct);
-                      setSelectedProduct(null);
-                    }}
+                    onClick={handleAddToCart}
                     className="add-to-cart-button"
                   >
                     הוסף לסל
@@ -413,8 +533,17 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart }) => {
 };
 
 // Cart Sidebar Component
-const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotalPrice, handleCheckout }) => {
+const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotalPrice, handleCheckout, setShowBulkPopup }) => {
   if (!isCartOpen) return null;
+  
+  const handleQtyChange = (itemId, newQty) => {
+    const item = cart.find(i => i.id === itemId);
+    if (item && item.id === 2 && newQty > 50) {
+      setShowBulkPopup(true);
+      return;
+    }
+    updateQuantity(itemId, newQty);
+  };
   
   return (
     <>
@@ -438,29 +567,38 @@ const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotal
         ) : (
           <>
             <div className="cart-items">
-              {cart.map((item) => (
-                <div key={item.id} className="cart-item">
-                  <div className="cart-item-info">
-                    <h3 className="cart-item-name">{item.name}</h3>
-                    <p className="cart-item-price">₪{item.salePrice || item.price}</p>
+              {cart.map((item) => {
+                const isNotebook = item.id === 2;
+                const unitPrice = isNotebook && item.quantity >= 10 ? 30 : (item.salePrice || item.price);
+                return (
+                  <div key={item.id} className="cart-item">
+                    <div className="cart-item-info">
+                      <h3 className="cart-item-name">{item.name}</h3>
+                      <p className="cart-item-price">
+                        ₪{unitPrice}
+                        {isNotebook && item.quantity >= 10 && (
+                          <span className="bulk-discount-badge"> (מחיר מיוחד!)</span>
+                        )}
+                      </p>
+                    </div>
+                    <div className="cart-item-quantity">
+                      <button
+                        onClick={() => handleQtyChange(item.id, item.quantity - 1)}
+                        className="quantity-button"
+                      >
+                        -
+                      </button>
+                      <span className="quantity-value">{item.quantity}</span>
+                      <button
+                        onClick={() => handleQtyChange(item.id, item.quantity + 1)}
+                        className="quantity-button"
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
-                  <div className="cart-item-quantity">
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="quantity-button"
-                    >
-                      -
-                    </button>
-                    <span className="quantity-value">{item.quantity}</span>
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="quantity-button"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="cart-summary">
@@ -485,7 +623,7 @@ const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotal
   );
 };
 
-// Hero Section Component - Only for Home Page
+// Hero Section Component
 const HeroSection = () => (
   <section className="hero">
     <div className="hero-content">
@@ -498,6 +636,32 @@ const HeroSection = () => (
       <p className="hero-subtitle">עם יעל כורסיה</p>
       <div className="hero-divider"></div>
       <p className="hero-tagline">מסע של התבוננות, השראה וצמיחה אישית</p>
+    </div>
+  </section>
+);
+
+// About Section Component (for HomePage)
+const AboutSectionHome = () => (
+  <section className="about-section-home">
+    <div className="about-container">
+      <div className="about-image-wrapper">
+        <img 
+          src="https://i.imgur.com/01HMEOs.jpeg" 
+          alt="יעל כורסיה"
+          className="about-image"
+        />
+      </div>
+      <div className="about-card">
+        <h2 className="about-title">קצת עליי</h2>
+        <div className="about-content">
+          <p><strong>נעים מאוד! שמי יעל כורסיה</strong> - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.</p>
+          <p>אני מייסדת מועדון הנשים <strong>"מסע החיים"</strong> - מרחב של התבוננות, השראה וצמיחה אישית, שבו אנו נפגשות מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.</p>
+          <p>לאורך השנים ליוויתי נשים רבות בתהליכי מודעות, שינוי וצמיחה - ומתוך הדרך הזו נולד גם הרצון להעניק לילדים כלים רגשיים שיסייעו להם להכיר את עצמם, להתמודד עם פחדים וקשיים ולגלות את הכוחות שבתוכם.</p>
+          <p>הספר <strong>"בּוּבִּי וַאֲנִי"</strong> הוא הספר הראשון בסדרת ספרים חדשה, שמטרתה לעזור לילדים לפתח שפה רגשית, ביטחון עצמי ויכולת ביטוי בריאה - בדרך עדינה, מקרבת ומלאת לב.</p>
+          <p>בנוסף זכיתי להוציא לאור את <strong>מחברת "פשוט להודות"</strong> - מחברת מעוצבת לכתיבת תודות, שנמכרה באלפי עותקים בארץ ובעולם, ואת <strong>ערכת הקלפים "מודעות, תפילה והעצמה"</strong> - ערכה ייחודית ומרגשת המשלבת השראה, תפילה וכלים לעבודה פנימית.</p>
+          <p className="about-highlight">אני מאמינה שככל שנעניק לילדים (ולנו עצמנו) שפה רגשית, חיבור לעצמם ואמונה בטוב - נוכל ליצור עולם חומל, יצירתי ושמח יותר.</p>
+        </div>
+      </div>
     </div>
   </section>
 );
@@ -621,7 +785,7 @@ const PickupPointsSection = ({ pickupPoints, expandedPickup, setExpandedPickup }
   </div>
 );
 
-// Home Page Component - with Hero
+// Home Page Component - with Hero and About section
 const HomePage = () => (
   <>
     <HeroSection />
@@ -646,15 +810,14 @@ const HomePage = () => (
         </Link>
       </div>
     </div>
+    <AboutSectionHome />
   </>
 );
 
 // Shop Page Component
 const ShopPage = ({ products, bundles, pickupPoints, addToCart, setSelectedProduct, expandedPickup, setExpandedPickup }) => (
   <div className="page-content">
-    <h1 className="page-title">החנות</h1>
     
-    {/* Products Section */}
     <section className="products-section">
       <h2 className="section-title">המוצרים שלי</h2>
       <div className="products-grid">
@@ -664,7 +827,6 @@ const ShopPage = ({ products, bundles, pickupPoints, addToCart, setSelectedProdu
       </div>
     </section>
 
-    {/* Bundles Section */}
     <section className="bundles-section-small">
       <h2 className="section-title-small">מבצעים מיוחדים</h2>
       <div className="bundles-grid-small">
@@ -674,7 +836,6 @@ const ShopPage = ({ products, bundles, pickupPoints, addToCart, setSelectedProdu
       </div>
     </section>
 
-    {/* Purchase Section */}
     <section className="purchase-section">
       <h2 className="section-title-small">אופן הרכישה</h2>
       
@@ -936,7 +1097,7 @@ const ContactSection = () => (
           rel="noopener noreferrer"
           className="contact-link whatsapp"
         >
-          <Phone className="contact-icon" />
+          <WhatsAppIcon className="contact-icon" />
           <span>054-6588503</span>
         </a>
         <a 
@@ -984,6 +1145,7 @@ const Layout = ({ children, state }) => {
   const {
     cart, isCartOpen, setIsCartOpen,
     showNotification, selectedProduct, setSelectedProduct,
+    showBulkPopup, setShowBulkPopup,
     getTotalItems, getTotalPrice, updateQuantity, handleCheckout, addToCart
   } = state;
 
@@ -999,6 +1161,7 @@ const Layout = ({ children, state }) => {
         selectedProduct={selectedProduct}
         setSelectedProduct={setSelectedProduct}
         addToCart={addToCart}
+        setShowBulkPopup={setShowBulkPopup}
       />
       
       <CartSidebar 
@@ -1008,6 +1171,12 @@ const Layout = ({ children, state }) => {
         updateQuantity={updateQuantity}
         getTotalPrice={getTotalPrice}
         handleCheckout={handleCheckout}
+        setShowBulkPopup={setShowBulkPopup}
+      />
+      
+      <BulkOrderPopup 
+        isOpen={showBulkPopup}
+        onClose={() => setShowBulkPopup(false)}
       />
       
       {children}

@@ -129,6 +129,7 @@ body {
 
 .logo-title {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   font-size: 2rem;
   color: var(--primary-500);
   letter-spacing: 1px;
@@ -207,7 +208,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: normal;
   position: absolute;
   top: -0.25rem;
   right: -0.25rem;
@@ -234,7 +235,7 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.3;
+  opacity: 0.5;
   z-index: 0;
 }
 
@@ -270,44 +271,56 @@ body {
 
 .hero-title {
   font-family: 'Balerina', serif;
-  font-size: 7rem;
-  font-weight: 300;
-  color: var(--primary-600);
-  margin-bottom: 1rem;
+  font-size: 9rem;
+  font-weight: normal;
+  color: #c45a6a;
+  margin-bottom: 0.2rem;
   letter-spacing: 4px;
-  line-height: 1.1;
-  text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+  line-height: 1;
+  text-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.9),
+    0 0 40px rgba(255, 255, 255, 0.7),
+    0 0 60px rgba(255, 255, 255, 0.5),
+    2px 2px 4px rgba(255, 255, 255, 0.8);
 }
 
 .hero-subtitle {
   font-family: 'Balerina', serif;
-  font-size: 2.5rem;
-  font-weight: 300;
-  color: var(--secondary-600);
-  margin-bottom: 1rem;
+  font-size: 2.8rem;
+  font-weight: normal;
+  color: #c45a6a;
+  margin-bottom: 0.3rem;
   letter-spacing: 2px;
+  text-shadow: 
+    0 0 15px rgba(255, 255, 255, 1),
+    0 0 30px rgba(255, 255, 255, 0.9),
+    0 0 45px rgba(255, 255, 255, 0.7),
+    0 0 60px rgba(255, 240, 200, 0.5);
 }
 
 .hero-divider {
   width: 150px;
   height: 3px;
-  background: var(--secondary-500);
-  margin: 1.5rem auto;
+  background: #daa06d;
+  margin: 1rem auto;
   border-radius: 2px;
+  box-shadow: 0 0 15px rgba(255, 240, 200, 0.8);
 }
 
 .hero-tagline {
-  font-family: 'Balerina', serif;
-  font-size: 2rem;
-  font-weight: 300;
-  color: var(--accent-600);
+  font-size: 1.5rem;
+  font-weight: normal;
+  color: #ffffff;
   max-width: 600px;
   margin: 0 auto;
   letter-spacing: 1px;
+  text-shadow: 
+    0 0 15px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 640px) {
-  .hero-title { font-size: 4rem; }
+  .hero-title { font-size: 5rem; }
   .hero-subtitle { font-size: 1.8rem; }
   .hero-tagline { font-size: 1.3rem; }
   .hero-content { padding: 3rem 1rem 2rem; }
@@ -361,15 +374,16 @@ body {
 }
 
 .home-link-icon {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3rem;
+  height: 3rem;
   color: var(--secondary-500);
 }
 
 .home-link-card span {
   font-family: 'Balerina', serif;
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-weight: normal;
+  font-size: 1.5rem;
+  color: var(--primary-500);
 }
 
 /* Page Content */
@@ -381,10 +395,22 @@ body {
 
 .page-title {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   font-size: 3rem;
   color: var(--primary-500);
   text-align: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.page-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: #daa06d;
+  margin: 0.75rem auto 0;
+  border-radius: 2px;
 }
 
 .page-subtitle {
@@ -397,7 +423,8 @@ body {
 /* Section Title */
 .section-title {
   font-family: 'Balerina', serif;
-  font-size: 2.5rem;
+  font-weight: normal;
+  font-size: 3rem;
   text-align: center;
   color: var(--primary-500);
   margin-bottom: 2.5rem;
@@ -407,19 +434,31 @@ body {
 .section-title::after {
   content: '';
   display: block;
-  width: 60px;
+  width: 80px;
   height: 3px;
-  background: var(--secondary-500);
+  background: #daa06d;
   margin: 0.75rem auto 0;
   border-radius: 2px;
 }
 
 .section-title-small {
   font-family: 'Balerina', serif;
-  font-size: 1.75rem;
+  font-weight: normal;
+  font-size: 2.5rem;
   text-align: center;
-  color: var(--accent-500);
+  color: var(--primary-500);
   margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.section-title-small::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #daa06d;
+  margin: 0.75rem auto 0;
+  border-radius: 2px;
 }
 
 /* Products */
@@ -488,8 +527,8 @@ body {
 
 .product-name {
   font-family: 'Balerina', serif;
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-weight: normal;
+  font-size: 1.5rem;
   color: var(--primary-600);
 }
 
@@ -516,20 +555,21 @@ body {
 
 .product-price {
   font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-500);
+  font-weight: 600;
+  color: #6a8a9a;
 }
 
 .product-original-price {
   font-size: 1rem;
+  font-weight: normal;
   color: var(--warm-gray-400);
   text-decoration: line-through;
 }
 
 .product-sale-price {
   font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--accent-600);
+  font-weight: 600;
+  color: #6a8a9a;
 }
 
 .details-button {
@@ -620,8 +660,9 @@ body {
 
 .bundle-title {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   font-size: 1.4rem;
-  font-weight: bold;
+  font-weight: normal;
   color: var(--primary-500);
   margin-bottom: 0.5rem;
 }
@@ -663,7 +704,7 @@ body {
 
 .bundle-price {
   font-size: 1.75rem;
-  font-weight: bold;
+  font-weight: normal;
   color: var(--primary-500);
 }
 
@@ -683,7 +724,7 @@ body {
   padding: 0.75rem;
   border-radius: 0.5rem;
   border: none;
-  font-weight: bold;
+  font-weight: normal;
   font-size: 1rem;
   cursor: pointer;
   transition: all var(--transition-normal);
@@ -738,6 +779,7 @@ body {
 
 .purchase-card h3 {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   font-size: 1.2rem;
   color: var(--primary-500);
   margin-bottom: 0.5rem;
@@ -788,6 +830,7 @@ body {
 
 .region-title {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   font-size: 1.2rem;
   color: var(--primary-500);
   margin-bottom: 1rem;
@@ -950,6 +993,7 @@ body {
 
 .subscribe-success h2 {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   color: var(--primary-500);
   margin-bottom: 0.5rem;
   font-size: 1.5rem;
@@ -1012,6 +1056,7 @@ body {
 
 .lesson-title {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   padding: 1rem;
   text-align: center;
   color: var(--primary-600);
@@ -1058,6 +1103,7 @@ body {
 
 .event-title {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   font-size: 1.4rem;
   margin-bottom: 0.5rem;
   color: var(--primary-500);
@@ -1127,6 +1173,7 @@ body {
 
 .about-title {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   font-size: 2rem;
   color: var(--primary-500);
   margin-bottom: 2rem;
@@ -1166,6 +1213,7 @@ body {
 
 .contact-title {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   font-size: 2rem;
   color: var(--primary-500);
   margin-bottom: 0.75rem;
@@ -1238,7 +1286,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(216, 90, 123, 0.3);
+  background: rgba(255, 250, 230, 0.85);
   z-index: 200;
   backdrop-filter: blur(4px);
 }
@@ -1254,7 +1302,7 @@ body {
   max-width: 56rem;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 50px rgba(216, 90, 123, 0.3);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
   z-index: 201;
 }
 
@@ -1322,6 +1370,7 @@ body {
 
 .modal-title {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   font-size: 2rem;
   color: var(--primary-500);
 }
@@ -1342,13 +1391,13 @@ body {
 .sale-price {
   color: var(--accent-600);
   font-size: 1.75rem;
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .current-price {
   color: var(--primary-500);
   font-size: 1.75rem;
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .sale-badge {
@@ -1379,6 +1428,7 @@ body {
 
 .modal-section h3 {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   color: var(--primary-500);
   font-size: 1.1rem;
   margin-bottom: 0.75rem;
@@ -1478,6 +1528,7 @@ body {
 
 .cart-title {
   font-family: 'Balerina', serif;
+  font-weight: normal;
   font-size: 1.4rem;
   color: var(--primary-500);
   font-weight: 600;
@@ -1589,7 +1640,7 @@ body {
 
 .checkout-button {
   margin: 1rem;
-  background: var(--green-500);
+  background: #6a8a9a;
   color: var(--white);
   border: none;
   padding: 1rem;
@@ -1604,7 +1655,7 @@ body {
   transition: all var(--transition-normal);
 }
 
-.checkout-button:hover { background: var(--green-600); }
+.checkout-button:hover { background: #5a7a8a; }
 
 /* Notification */
 .notification {
@@ -1629,5 +1680,270 @@ body {
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+/* WhatsApp Header Button */
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.join-whatsapp-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #6a8a70;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(106, 138, 112, 0.3);
+}
+
+.join-whatsapp-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(106, 138, 112, 0.4);
+  background: #5a7a60;
+}
+
+.whatsapp-header-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.join-text {
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .join-text {
+    display: none;
+  }
+  .join-whatsapp-button {
+    padding: 0.5rem;
+    border-radius: 50%;
+  }
+}
+
+/* Bulk Order Popup */
+.bulk-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.popup-close {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--warm-gray-400);
+}
+
+.bulk-popup-content h3 {
+  font-family: 'Balerina', serif;
+  font-size: 1.8rem;
+  color: var(--primary-600);
+  margin-bottom: 1rem;
+}
+
+.bulk-popup-content p {
+  color: var(--warm-gray-600);
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.whatsapp-bulk-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #6a8a70;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.whatsapp-bulk-button:hover {
+  transform: scale(1.05);
+  background: #5a7a60;
+  box-shadow: 0 4px 15px rgba(106, 138, 112, 0.4);
+}
+
+.whatsapp-icon {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+/* Bulk Pricing Info in Modal */
+.bulk-pricing-info {
+  margin: 1rem 0;
+}
+
+.bulk-notice.success {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.bulk-applied {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+  color: #856404;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.bulk-discount-badge {
+  color: #28a745;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Quantity Selector in Modal */
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: var(--cream-100);
+  border-radius: 8px;
+}
+
+.quantity-selector label {
+  font-weight: 500;
+  color: var(--warm-gray-600);
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quantity-controls button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--primary-300);
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--primary-600);
+  transition: all 0.2s;
+}
+
+.quantity-controls button:hover {
+  background: var(--primary-100);
+}
+
+.quantity-controls input {
+  width: 60px;
+  height: 32px;
+  text-align: center;
+  border: 1px solid var(--primary-300);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.quantity-selector .total-price {
+  margin-right: auto;
+  font-weight: 600;
+  color: var(--primary-600);
+  font-size: 1.1rem;
+}
+
+/* About Section on Home Page */
+.about-section-home {
+  background: linear-gradient(180deg, var(--cream-100) 0%, var(--cream-200) 100%);
+  padding: 4rem 1rem;
+}
+
+.about-section-home .about-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.about-section-home .about-image-wrapper {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 4px solid var(--white);
+}
+
+.about-section-home .about-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-section-home .about-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.about-section-home .about-title {
+  font-family: 'Balerina', serif;
+  font-weight: normal;
+  font-size: 2.5rem;
+  color: var(--primary-600);
+  margin-bottom: 1.5rem;
+}
+
+.about-section-home .about-content {
+  text-align: right;
+}
+
+.about-section-home .about-content p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--warm-gray-600);
+}
+
+.about-section-home .about-highlight {
+  background: linear-gradient(135deg, var(--primary-100) 0%, var(--secondary-100) 100%);
+  padding: 1rem;
+  border-radius: 8px;
+  border-right: 4px solid var(--primary-500);
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .about-section-home .about-image-wrapper {
+    width: 150px;
+    height: 150px;
   }
 }
