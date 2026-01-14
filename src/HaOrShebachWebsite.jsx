@@ -628,9 +628,11 @@ const HeroSection = () => (
   <section className="hero">
     <div className="hero-content">
       <div className="hero-decoration">
-        <span className="crown">👑</span>
-        <span className="crown">👑</span>
-        <span className="crown">👑</span>
+        <img 
+          src="/images/crown.png" 
+          alt="כתר" 
+          className="crown-image"
+        />
       </div>
       <h1 className="hero-title">האור שבך</h1>
       <p className="hero-subtitle">עם יעל כורסיה</p>
