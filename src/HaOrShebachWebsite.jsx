@@ -629,7 +629,7 @@ const HeroSection = () => (
     <div className="hero-content">
       <div className="hero-decoration">
         <img 
-          src="./public/crown.png" 
+          src="/crown.png" 
           alt="כתר" 
           className="crown-image"
         />
