@@ -1,7 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Send, Play, Calendar, Users, MessageCircle } from 'lucide-react';
 import './YaelCorsiaWebsite.css';
+
+// Custom Hook for Scroll Animation
+const useScrollAnimation = () => {
+  const ref = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, []);
+
+  return [ref, isVisible];
+};
+
+// Animated Section Wrapper
+const AnimatedSection = ({ children, className = '' }) => {
+  const [ref, isVisible] = useScrollAnimation();
+  return (
+    <div 
+      ref={ref} 
+      className={`animate-on-scroll ${isVisible ? 'visible' : ''} ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
 
 // WhatsApp Icon Component
 const WhatsAppIcon = ({ className }) => (
@@ -306,12 +348,21 @@ const useSharedState = () => {
   };
 };
 
-// Header Component with WhatsApp button
+// Header Component with WhatsApp button and scroll effect
 const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
   const location = useLocation();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   return (
-    <header className="header">
+    <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="header-content">
         <Link to="/" className="logo">
           <div className="logo-title">האור שבך</div>
@@ -1142,6 +1193,41 @@ const Notification = ({ showNotification }) => {
   );
 };
 
+// Back to Top Button Component
+const BackToTop = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.pageYOffset > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  return (
+    <button 
+      className={`back-to-top ${isVisible ? 'visible' : ''}`}
+      onClick={scrollToTop}
+      aria-label="חזרה למעלה"
+    >
+      <ChevronUp size={24} />
+    </button>
+  );
+};
+
 // Main Layout Component
 const Layout = ({ children, state }) => {
   const {
@@ -1185,6 +1271,7 @@ const Layout = ({ children, state }) => {
       
       <ContactSection />
       <Footer />
+      <BackToTop />
       <Notification showNotification={showNotification} />
     </div>
   );
