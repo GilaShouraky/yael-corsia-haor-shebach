@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Send, Play, Calendar, Users, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Send, Play, Calendar, Users, MessageCircle, Star, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
 import './YaelCorsiaWebsite.css';
 
 // Custom Hook for Scroll Animation
@@ -36,8 +36,8 @@ const useScrollAnimation = () => {
 const AnimatedSection = ({ children, className = '' }) => {
   const [ref, isVisible] = useScrollAnimation();
   return (
-    <div 
-      ref={ref} 
+    <div
+      ref={ref}
       className={`animate-on-scroll ${isVisible ? 'visible' : ''} ${className}`}
     >
       {children}
@@ -48,20 +48,139 @@ const AnimatedSection = ({ children, className = '' }) => {
 // WhatsApp Icon Component
 const WhatsAppIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
   </svg>
 );
+
+// Stats Section Component
+const StatsSection = () => {
+  const stats = [
+    { number: '30+', label: 'שנות ניסיון', icon: Calendar },
+    { number: '5000+', label: 'נשים ליוויתי', icon: Users },
+    { number: '10,000+', label: 'מחברות נמכרו', icon: Heart },
+    { number: '100+', label: 'סדנאות ומפגשים', icon: Sparkles }
+  ];
+
+  return (
+    <section className="stats-section">
+      <div className="stats-grid">
+        {stats.map((stat, index) => (
+          <div key={index} className="stat-card">
+            <stat.icon className="stat-icon" size={40} />
+            <div className="stat-number">{stat.number}</div>
+            <div className="stat-label">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+// Product Gallery Component (inside modal)
+const ProductGalleryModal = ({ images }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  if (!images || images.length === 0) return null;
+
+  const nextImage = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  return (
+    <div className="product-gallery-section">
+      <h3 className="modal-section-title">
+        <Camera size={20} />
+        גלריית תמונות
+      </h3>
+      <div className="product-gallery-grid">
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className="product-gallery-item"
+            onClick={() => {
+              setCurrentIndex(index);
+              setIsLightboxOpen(true);
+            }}
+          >
+            <img src={image.url} alt={image.caption} loading="lazy" />
+            <div className="product-gallery-overlay">
+              <Camera size={24} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {isLightboxOpen && (
+        <>
+          <div className="lightbox-overlay" onClick={() => setIsLightboxOpen(false)} />
+          <div className="lightbox">
+            <button className="lightbox-close" onClick={() => setIsLightboxOpen(false)}>
+              <X size={32} />
+            </button>
+            {images.length > 1 && (
+              <>
+                <button className="lightbox-nav lightbox-prev" onClick={prevImage}>
+                  <ChevronLeft size={40} />
+                </button>
+                <button className="lightbox-nav lightbox-next" onClick={nextImage}>
+                  <ChevronRight size={40} />
+                </button>
+              </>
+            )}
+            <img src={images[currentIndex].url} alt={images[currentIndex].caption} />
+            <p className="lightbox-caption">{images[currentIndex].caption}</p>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+// Product Reviews Component (inside modal)
+const ProductReviewsModal = ({ reviews }) => {
+  if (!reviews || reviews.length === 0) return null;
+
+  return (
+    <div className="product-reviews-section">
+      <h3 className="modal-section-title">
+        <Star size={20} />
+        מה אומרים על המוצר
+      </h3>
+      <div className="product-reviews-grid">
+        {reviews.map((review, index) => (
+          <div key={index} className="product-review-card">
+            <div className="review-stars">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={16} fill="var(--secondary-500)" color="var(--secondary-500)" />
+              ))}
+            </div>
+            <p className="review-text">"{review.text}"</p>
+            <div className="review-author">
+              <div className="review-avatar">{review.name.charAt(0)}</div>
+              <span className="review-name">{review.name}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 // Bulk Order Popup Component
 const BulkOrderPopup = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
-  
+
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent('שלום יעל! אשמח לבצע הזמנה מרוכזת של מעל 50 מחברות "פשוט להודות"');
     window.open(`https://wa.me/972546588503?text=${message}`, '_blank');
     onClose();
   };
-  
+
   return (
     <>
       <div className="modal-overlay" onClick={onClose} />
@@ -109,15 +228,20 @@ const useSharedState = () => {
         'לכל מי שמחפשת חיבור עמוק יותר לעצמה ולבורא'
       ],
       howToUse: 'בחרי קלף בהכוונה או באינטואיציה, קראי את המסר שבו. התחברי אליו דרך שאלה פנימית או תפילה אישית - ותני לו להאיר לך את הדרך.',
-      testimonials: [
-        'הקלפים האלה פשוט מדהימים! כל בוקר אני שולפת קלף והוא תמיד מדויק',
-        'כלי עבודה נפלא לסדנאות שלי, התלמידות מתחברות מיד',
-        'המתנה המושלמת לכל אישה - משמעותי ומרגש'
-      ],
       price: 180,
       image: 'https://i.imgur.com/EvOv2HL.jpeg',
       icon: Sparkles,
-      link: 'https://lp.vp4.me/17y3'
+      link: 'https://lp.vp4.me/17y3',
+      gallery: [
+        { url: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=600', caption: 'ערכת הקלפים המלאה' },
+        { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600', caption: 'קלפי השראה יומיים' },
+        { url: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=600', caption: 'עבודה עם הקלפים' }
+      ],
+      reviews: [
+        { name: 'דבורה כהן', text: 'הקלפים האלה פשוט מדהימים! כל בוקר אני שולפת קלף והוא תמיד מדויק' },
+        { name: 'רות לוי', text: 'כלי עבודה נפלא לסדנאות שלי, התלמידות מתחברות מיד' },
+        { name: 'שרה גולד', text: 'המתנה המושלמת לכל אישה - משמעותי ומרגש' }
+      ]
     },
     {
       id: 2,
@@ -129,18 +253,23 @@ const useSharedState = () => {
         'לכתיבה אישית, זוגית, משפחתית או צוותית',
         'לכל מי שרוצה להתמקד בטוב ולהכניס יותר שמחה לחיים'
       ],
-      testimonials: [
-        'המחברת הזו שינתה לי את החיים! אני כותבת כל יום ומרגישה את השינוי',
-        'קניתי לכל המשפחה - אנחנו כותבים ביחד כל ערב',
-        'מתנה מושלמת שכולם אוהבים לקבל'
-      ],
       price: 35,
       bulkPrice: 30,
       bulkMinimum: 10,
       bulkMaxBeforePopup: 50,
       image: 'https://i.imgur.com/ielPgE4.jpeg',
       icon: Heart,
-      link: 'https://lp.vp4.me/qqkm'
+      link: 'https://lp.vp4.me/qqkm',
+      gallery: [
+        { url: 'https://images.unsplash.com/photo-1517971129774-8a2b38fa128e?w=600', caption: 'המחברת המעוצבת' },
+        { url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600', caption: 'כתיבת תודות יומית' },
+        { url: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600', caption: 'רגעי השראה' }
+      ],
+      reviews: [
+        { name: 'מרים אברהם', text: 'המחברת הזו שינתה לי את החיים! אני כותבת כל יום ומרגישה את השינוי' },
+        { name: 'יהודית ברגר', text: 'קניתי לכל המשפחה - אנחנו כותבים ביחד כל ערב' },
+        { name: 'חנה שפירא', text: 'מתנה מושלמת שכולם אוהבים לקבל' }
+      ]
     },
     {
       id: 3,
@@ -159,7 +288,17 @@ const useSharedState = () => {
       salePrice: 50,
       image: 'https://i.imgur.com/OXNGHx2.png',
       icon: BookOpen,
-      link: 'https://yaelcorsiabook1.netlify.app/'
+      link: 'https://yaelcorsiabook1.netlify.app/',
+      gallery: [
+        { url: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600', caption: 'הספר המלא' },
+        { url: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600', caption: 'איורים מקסימים' },
+        { url: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600', caption: 'קריאה משפחתית' }
+      ],
+      reviews: [
+        { name: 'לאה כהן', text: 'הספר עזר לבת שלי להתמודד עם הפחד מהחושך. תודה רבה!' },
+        { name: 'טל גרינברג', text: 'כמורה בגן, הספר הזה הפך לחלק בלתי נפרד מהשגרה שלנו' },
+        { name: 'נועה לוי', text: 'סיפור מרגש ומחבק שנוגע ישר ללב' }
+      ]
     },
     {
       id: 4,
@@ -198,50 +337,60 @@ const useSharedState = () => {
   ];
 
   const pickupPoints = [
-    { area: 'מרכז', locations: [
-      { city: 'פתח תקוה', address: 'רח׳ דגל ראובן 27', contact: 'חגית גרינברג', phone: '058-6253893' },
-      { city: 'רמת גן', address: 'מבצע עין 9', contact: 'אורטל', phone: '054-6588503' },
-      { city: 'תל אביב', address: 'רח׳ נתן ילין מור', contact: 'יהודה', phone: '055-6631648' },
-      { city: 'ראשון לציון / בת ים', address: 'רח׳ שושנה דמרי', contact: 'הודיה', phone: '054-6588573' },
-      { city: 'רחובות', address: 'מלצר 1', contact: 'מיכל עוקשי', phone: '052-6661033' },
-      { city: 'רעננה', address: 'הפנינה 6 (ימי ב׳ ו-ד׳)', contact: 'מוריה', phone: '054-6979143' },
-      { city: 'נתניה', address: 'רח׳ שבח 3', contact: 'פרלה', phone: '053-5269028' },
-      { city: 'חדרה', address: '', contact: 'צליל שבת', phone: '054-5315136' },
-      { city: 'חריש', address: '', contact: 'הילה לנגה', phone: '050-3199460' },
-    ]},
-    { area: 'ירושלים והסביבה', locations: [
-      { city: 'ירושלים - קרית משה', address: '', contact: 'בריינה', phone: '054-7984328' },
-      { city: 'בית אל', address: '', contact: 'גיתית כורסיה', phone: '054-3370180' },
-      { city: 'נוף אילון', address: '', contact: 'משפחת כורסיה', phone: '054-5971840' },
-      { city: 'נריה', address: '', contact: 'אורטל', phone: '054-6588503' },
-      { city: 'בית שמש (מרכז ביג, מושב זכריה)', address: '', contact: 'דלית', phone: '054-4535140' },
-      { city: 'מודיעין', address: 'אולפנת אורות', contact: 'הרב אשר', phone: '052-8308305' },
-      { city: 'יד בנימין', address: '', contact: 'רינה זוזוט', phone: '050-9348825' },
-      { city: 'תפוח', address: '', contact: 'טל שחר', phone: '058-4771085' },
-      { city: 'יישוב הדעת', address: '', contact: 'תפארת', phone: '058-4770975' },
-    ]},
-    { area: 'דרום', locations: [
-      { city: 'אשקלון - שכונת אגמים', address: '', contact: 'אורטל', phone: '054-6588503' },
-      { city: 'אשקלון', address: 'מעלה הגת 6', contact: 'סיגלית כרמי', phone: '054-3001580' },
-      { city: 'באר שבע', address: 'נחל לבן 10, שכונת הפארק', contact: 'לינוי זולדן', phone: '053-2330623' },
-      { city: 'אופקים', address: '', contact: 'הדר קוסובסקי כהן', phone: '054-5214048' },
-      { city: 'ירוחם', address: '', contact: 'ענבל אלמקייס', phone: '058-5828745' },
-      { city: 'אילת', address: 'סתונית 9 גנים א', contact: 'פדות בקנרוט', phone: '050-2527121' },
-      { city: 'ניצן', address: 'רח׳ השקמה 12א', contact: 'סמדר', phone: '052-2654733' },
-    ]},
-    { area: 'צפון', locations: [
-      { city: 'טבריה', address: '', contact: 'ענבל', phone: '054-6748611' },
-      { city: 'צפת', address: '', contact: 'אתי מורדיאן', phone: '050-6851140' },
-      { city: 'כרמיאל', address: '', contact: 'מרים', phone: '054-6517260' },
-      { city: 'נהריה', address: '', contact: 'דניאל אזולאי', phone: '054-6116657' },
-      { city: 'עכו / קריות', address: 'שלום הגליל 22', contact: 'גלית אלקחיל', phone: '052-8401889' },
-      { city: 'חספין (גולן)', address: '', contact: 'מיה סבג', phone: '058-4599886' },
-      { city: 'שדמות דבורה', address: '', contact: 'רחלי מרום', phone: '050-7791000' },
-    ]},
-    { area: 'שומרון ובנימין', locations: [
-      { city: 'אלעד', address: 'אבטליון 26', contact: 'יעל עזר', phone: '052-7062852' },
-      { city: 'שומריה', address: '', contact: 'מוריה יאול', phone: '052-8119131' },
-    ]}
+    {
+      area: 'מרכז', locations: [
+        { city: 'פתח תקוה', address: 'רח׳ דגל ראובן 27', contact: 'חגית גרינברג', phone: '058-6253893' },
+        { city: 'רמת גן', address: 'מבצע עין 9', contact: 'אורטל', phone: '054-6588503' },
+        { city: 'תל אביב', address: 'רח׳ נתן ילין מור', contact: 'יהודה', phone: '055-6631648' },
+        { city: 'ראשון לציון / בת ים', address: 'רח׳ שושנה דמרי', contact: 'הודיה', phone: '054-6588573' },
+        { city: 'רחובות', address: 'מלצר 1', contact: 'מיכל עוקשי', phone: '052-6661033' },
+        { city: 'רעננה', address: 'הפנינה 6 (ימי ב׳ ו-ד׳)', contact: 'מוריה', phone: '054-6979143' },
+        { city: 'נתניה', address: 'רח׳ שבח 3', contact: 'פרלה', phone: '053-5269028' },
+        { city: 'חדרה', address: '', contact: 'צליל שבת', phone: '054-5315136' },
+        { city: 'חריש', address: '', contact: 'הילה לנגה', phone: '050-3199460' },
+      ]
+    },
+    {
+      area: 'ירושלים והסביבה', locations: [
+        { city: 'ירושלים - קרית משה', address: '', contact: 'בריינה', phone: '054-7984328' },
+        { city: 'בית אל', address: '', contact: 'גיתית כורסיה', phone: '054-3370180' },
+        { city: 'נוף אילון', address: '', contact: 'משפחת כורסיה', phone: '054-5971840' },
+        { city: 'נריה', address: '', contact: 'אורטל', phone: '054-6588503' },
+        { city: 'בית שמש (מרכז ביג, מושב זכריה)', address: '', contact: 'דלית', phone: '054-4535140' },
+        { city: 'מודיעין', address: 'אולפנת אורות', contact: 'הרב אשר', phone: '052-8308305' },
+        { city: 'יד בנימין', address: '', contact: 'רינה זוזוט', phone: '050-9348825' },
+        { city: 'תפוח', address: '', contact: 'טל שחר', phone: '058-4771085' },
+        { city: 'יישוב הדעת', address: '', contact: 'תפארת', phone: '058-4770975' },
+      ]
+    },
+    {
+      area: 'דרום', locations: [
+        { city: 'אשקלון - שכונת אגמים', address: '', contact: 'אורטל', phone: '054-6588503' },
+        { city: 'אשקלון', address: 'מעלה הגת 6', contact: 'סיגלית כרמי', phone: '054-3001580' },
+        { city: 'באר שבע', address: 'נחל לבן 10, שכונת הפארק', contact: 'לינוי זולדן', phone: '053-2330623' },
+        { city: 'אופקים', address: '', contact: 'הדר קוסובסקי כהן', phone: '054-5214048' },
+        { city: 'ירוחם', address: '', contact: 'ענבל אלמקייס', phone: '058-5828745' },
+        { city: 'אילת', address: 'סתונית 9 גנים א', contact: 'פדות בקנרוט', phone: '050-2527121' },
+        { city: 'ניצן', address: 'רח׳ השקמה 12א', contact: 'סמדר', phone: '052-2654733' },
+      ]
+    },
+    {
+      area: 'צפון', locations: [
+        { city: 'טבריה', address: '', contact: 'ענבל', phone: '054-6748611' },
+        { city: 'צפת', address: '', contact: 'אתי מורדיאן', phone: '050-6851140' },
+        { city: 'כרמיאל', address: '', contact: 'מרים', phone: '054-6517260' },
+        { city: 'נהריה', address: '', contact: 'דניאל אזולאי', phone: '054-6116657' },
+        { city: 'עכו / קריות', address: 'שלום הגליל 22', contact: 'גלית אלקחיל', phone: '052-8401889' },
+        { city: 'חספין (גולן)', address: '', contact: 'מיה סבג', phone: '058-4599886' },
+        { city: 'שדמות דבורה', address: '', contact: 'רחלי מרום', phone: '050-7791000' },
+      ]
+    },
+    {
+      area: 'שומרון ובנימין', locations: [
+        { city: 'אלעד', address: 'אבטליון 26', contact: 'יעל עזר', phone: '052-7062852' },
+        { city: 'שומריה', address: '', contact: 'מוריה יאול', phone: '052-8119131' },
+      ]
+    }
   ];
 
   const lessons = [
@@ -257,12 +406,11 @@ const useSharedState = () => {
   ];
 
   const addToCart = (product, quantity = 1) => {
-    // Check for bulk popup for notebook
     if (product.id === 2 && quantity > 50) {
       setShowBulkPopup(true);
       return;
     }
-    
+
     const existingItem = cart.find(item => item.id === product.id);
     if (existingItem) {
       const newQuantity = existingItem.quantity + quantity;
@@ -270,8 +418,8 @@ const useSharedState = () => {
         setShowBulkPopup(true);
         return;
       }
-      setCart(cart.map(item => 
-        item.id === product.id 
+      setCart(cart.map(item =>
+        item.id === product.id
           ? { ...item, quantity: newQuantity }
           : item
       ));
@@ -287,18 +435,17 @@ const useSharedState = () => {
   };
 
   const updateQuantity = (productId, newQuantity) => {
-    // Check for bulk popup for notebook
     const item = cart.find(i => i.id === productId);
     if (item && item.id === 2 && newQuantity > 50) {
       setShowBulkPopup(true);
       return;
     }
-    
+
     if (newQuantity === 0) {
       removeFromCart(productId);
     } else {
-      setCart(cart.map(item => 
-        item.id === productId 
+      setCart(cart.map(item =>
+        item.id === productId
           ? { ...item, quantity: newQuantity }
           : item
       ));
@@ -308,7 +455,6 @@ const useSharedState = () => {
   const getTotalPrice = () => {
     return cart.reduce((sum, item) => {
       let price = item.salePrice || item.price;
-      // Apply bulk pricing for notebook (10+ units = 30 NIS each)
       if (item.id === 2 && item.quantity >= 10) {
         price = 30;
       }
@@ -348,7 +494,8 @@ const useSharedState = () => {
   };
 };
 
-// Header Component with WhatsApp button and scroll effect
+
+// Header Component
 const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -360,7 +507,7 @@ const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
+
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="header-content">
@@ -375,7 +522,7 @@ const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
           <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>אודות</Link>
         </nav>
         <div className="header-buttons">
-          <a 
+          <a
             href="https://did.li/D3hx5"
             target="_blank"
             rel="noopener noreferrer"
@@ -384,7 +531,7 @@ const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
             <WhatsAppIcon className="whatsapp-header-icon" />
             <span className="join-text">להצטרפות לקבוצת העצמה לחצי כאן</span>
           </a>
-          <button 
+          <button
             onClick={() => setIsCartOpen(!isCartOpen)}
             className="cart-button"
           >
@@ -401,16 +548,16 @@ const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
   );
 };
 
-// Product Modal Component - Updated for notebook bulk pricing
+// Product Modal Component - WITH GALLERY AND REVIEWS
 const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowBulkPopup }) => {
   const [quantity, setQuantity] = useState(1);
-  
+
   if (!selectedProduct) return null;
-  
+
   const isNotebook = selectedProduct.id === 2;
   const currentPrice = isNotebook && quantity >= 10 ? 30 : (selectedProduct.salePrice || selectedProduct.price);
   const totalPrice = currentPrice * quantity;
-  
+
   const handleQuantityChange = (newQty) => {
     if (newQty > 50 && isNotebook) {
       setShowBulkPopup(true);
@@ -418,7 +565,7 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowB
     }
     setQuantity(Math.max(1, newQty));
   };
-  
+
   const handleAddToCart = () => {
     if (quantity > 50 && isNotebook) {
       setShowBulkPopup(true);
@@ -428,27 +575,27 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowB
     setSelectedProduct(null);
     setQuantity(1);
   };
-  
+
   return (
     <>
-      <div 
+      <div
         className="modal-overlay"
         onClick={() => { setSelectedProduct(null); setQuantity(1); }}
       />
       <div className="modal product-modal">
         <div className="modal-content">
-          <button 
+          <button
             onClick={() => { setSelectedProduct(null); setQuantity(1); }}
             className="modal-close"
           >
             <X className="close-icon" />
           </button>
-          
+
           <div className="modal-grid">
             <div className="modal-image-section">
               {typeof selectedProduct.image === 'string' && selectedProduct.image.startsWith('http') ? (
-                <img 
-                  src={selectedProduct.image} 
+                <img
+                  src={selectedProduct.image}
                   alt={selectedProduct.name}
                   className="modal-image"
                 />
@@ -456,10 +603,10 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowB
                 <div className="modal-emoji">{selectedProduct.image}</div>
               )}
             </div>
-            
+
             <div className="modal-info-section">
               <h2 className="modal-title">{selectedProduct.name}</h2>
-              
+
               <div className="modal-pricing">
                 {selectedProduct.salePrice ? (
                   <>
@@ -508,19 +655,6 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowB
                 </div>
               )}
 
-              {selectedProduct.testimonials && (
-                <div className="modal-section testimonials-section">
-                  <h3>מה אומרים עלינו</h3>
-                  <div className="testimonials-grid">
-                    {selectedProduct.testimonials.map((testimonial, idx) => (
-                      <div key={idx} className="testimonial-card">
-                        <p>"{testimonial}"</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
               {isNotebook && (
                 <div className="bulk-pricing-info">
                   <div className="bulk-notice success">
@@ -533,7 +667,7 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowB
                   )}
                 </div>
               )}
-              
+
               {selectedProduct.comingSoon ? (
                 <div className="coming-soon-container">
                   <span className="coming-soon-badge">בקרוב</span>
@@ -545,9 +679,9 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowB
                       <label>כמות:</label>
                       <div className="quantity-controls">
                         <button onClick={() => handleQuantityChange(quantity - 1)}>-</button>
-                        <input 
-                          type="number" 
-                          value={quantity} 
+                        <input
+                          type="number"
+                          value={quantity}
                           onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
                           min="1"
                           max="50"
@@ -564,7 +698,7 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowB
                     הוסף לסל
                   </button>
                   {selectedProduct.link && (
-                    <a 
+                    <a
                       href={selectedProduct.link}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -575,6 +709,12 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowB
                   )}
                 </div>
               )}
+
+              {/* GALLERY FOR THIS PRODUCT */}
+              {selectedProduct.gallery && <ProductGalleryModal images={selectedProduct.gallery} />}
+
+              {/* REVIEWS FOR THIS PRODUCT */}
+              {selectedProduct.reviews && <ProductReviewsModal reviews={selectedProduct.reviews} />}
             </div>
           </div>
         </div>
@@ -586,7 +726,7 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowB
 // Cart Sidebar Component
 const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotalPrice, handleCheckout, setShowBulkPopup }) => {
   if (!isCartOpen) return null;
-  
+
   const handleQtyChange = (itemId, newQty) => {
     const item = cart.find(i => i.id === itemId);
     if (item && item.id === 2 && newQty > 50) {
@@ -595,24 +735,24 @@ const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotal
     }
     updateQuantity(itemId, newQty);
   };
-  
+
   return (
     <>
-      <div 
+      <div
         className="modal-overlay"
         onClick={() => setIsCartOpen(false)}
       />
       <div className="cart-sidebar">
         <div className="cart-header">
           <h2 className="cart-title">סל הקניות</h2>
-          <button 
+          <button
             onClick={() => setIsCartOpen(false)}
             className="cart-close"
           >
             <X className="close-icon" />
           </button>
         </div>
-        
+
         {cart.length === 0 ? (
           <p className="cart-empty">הסל ריק</p>
         ) : (
@@ -679,9 +819,9 @@ const HeroSection = () => (
   <section className="hero">
     <div className="hero-content">
       <div className="hero-decoration">
-        <img 
-          src="/crown.png" 
-          alt="כתר" 
+        <img
+          src="/crown.png"
+          alt="כתר"
           className="crown-image"
         />
       </div>
@@ -698,8 +838,8 @@ const AboutSectionHome = () => (
   <section className="about-section-home">
     <div className="about-container">
       <div className="about-image-wrapper">
-        <img 
-          src="https://i.imgur.com/01HMEOs.jpeg" 
+        <img
+          src="https://i.imgur.com/01HMEOs.jpeg"
           alt="יעל כורסיה"
           className="about-image"
         />
@@ -719,15 +859,15 @@ const AboutSectionHome = () => (
   </section>
 );
 
-// Product Card Component
+// Product Card Component  
 const ProductCard = ({ product, setSelectedProduct }) => {
   const IconComponent = product.icon;
   return (
     <div className="product-card">
       <div className="product-image-container">
         {typeof product.image === 'string' && product.image.startsWith('http') ? (
-          <img 
-            src={product.image} 
+          <img
+            src={product.image}
             alt={product.name}
             className="product-image"
           />
@@ -779,7 +919,7 @@ const BundleCard = ({ bundle, addToCart }) => (
     <div className="bundle-emoji">{bundle.image}</div>
     <h3 className="bundle-title">{bundle.name}</h3>
     <p className="bundle-description">{bundle.description}</p>
-    
+
     <div className="bundle-items">
       <strong>הערכה כוללת:</strong>
       <ul>
@@ -788,13 +928,13 @@ const BundleCard = ({ bundle, addToCart }) => (
         ))}
       </ul>
     </div>
-    
+
     <div className="bundle-pricing">
       <span className="bundle-original">₪{bundle.originalPrice}</span>
       <span className="bundle-price">₪{bundle.price}</span>
       <span className="bundle-savings">חיסכון של ₪{bundle.savings}!</span>
     </div>
-    
+
     <button
       onClick={() => addToCart(bundle)}
       className="bundle-button"
@@ -807,7 +947,7 @@ const BundleCard = ({ bundle, addToCart }) => (
 // Pickup Points Component
 const PickupPointsSection = ({ pickupPoints, expandedPickup, setExpandedPickup }) => (
   <div className="pickup-section">
-    <button 
+    <button
       className="pickup-toggle"
       onClick={() => setExpandedPickup(!expandedPickup)}
     >
@@ -815,7 +955,7 @@ const PickupPointsSection = ({ pickupPoints, expandedPickup, setExpandedPickup }
       <span>נקודות איסוף עצמי ברחבי הארץ</span>
       {expandedPickup ? <ChevronUp /> : <ChevronDown />}
     </button>
-    
+
     {expandedPickup && (
       <div className="pickup-points">
         {pickupPoints.map((region, idx) => (
@@ -838,7 +978,7 @@ const PickupPointsSection = ({ pickupPoints, expandedPickup, setExpandedPickup }
   </div>
 );
 
-// Home Page Component - with Hero and About section
+// Home Page Component - CLEAN VERSION WITH STATS ONLY
 const HomePage = () => (
   <>
     <HeroSection />
@@ -863,14 +1003,18 @@ const HomePage = () => (
         </Link>
       </div>
     </div>
+    
+    {/* רק סטטיסטיקות! */}
+    <StatsSection />
+    
     <AboutSectionHome />
   </>
 );
 
-// Shop Page Component
+
+// Shop Page Component - ENHANCED
 const ShopPage = ({ products, bundles, pickupPoints, addToCart, setSelectedProduct, expandedPickup, setExpandedPickup }) => (
   <div className="page-content">
-    
     <section className="products-section">
       <h2 className="section-title">המוצרים שלי</h2>
       <div className="products-grid">
@@ -891,7 +1035,7 @@ const ShopPage = ({ products, bundles, pickupPoints, addToCart, setSelectedProdu
 
     <section className="purchase-section">
       <h2 className="section-title-small">אופן הרכישה</h2>
-      
+
       <div className="purchase-options">
         <div className="purchase-card">
           <div className="purchase-icon">
@@ -900,7 +1044,7 @@ const ShopPage = ({ products, bundles, pickupPoints, addToCart, setSelectedProdu
           <h3>תשלום מאובטח</h3>
           <p>תשלום בכרטיס אשראי דרך מערכת Grow המאובטחת</p>
         </div>
-        
+
         <div className="purchase-card">
           <div className="purchase-icon">
             <Truck />
@@ -908,7 +1052,7 @@ const ShopPage = ({ products, bundles, pickupPoints, addToCart, setSelectedProdu
           <h3>משלוח עד הבית</h3>
           <p>משלוח בשליח תוך 3-5 ימי עסקים בתשלום נוסף</p>
         </div>
-        
+
         <div className="purchase-card">
           <div className="purchase-icon">
             <MapPin />
@@ -918,7 +1062,7 @@ const ShopPage = ({ products, bundles, pickupPoints, addToCart, setSelectedProdu
         </div>
       </div>
 
-      <PickupPointsSection 
+      <PickupPointsSection
         pickupPoints={pickupPoints}
         expandedPickup={expandedPickup}
         setExpandedPickup={setExpandedPickup}
@@ -940,16 +1084,16 @@ const SubscribePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const selections = [];
     if (formData.whatsappGroup) selections.push('קבוצת ווצאפ העצמה');
     if (formData.fullSubscription) selections.push('מנוי שלם במסע החיים');
-    
+
     const message = `שלום יעל! אשמח להירשם
 שם: ${formData.firstName} ${formData.lastName}
 אזור מגורים: ${formData.area}
 אני רוצה להצטרף ל: ${selections.join(', ')}`;
-    
+
     const whatsappMessage = encodeURIComponent(message);
     window.open(`https://wa.me/972546588503?text=${whatsappMessage}`, '_blank');
     setSubmitted(true);
@@ -966,7 +1110,7 @@ const SubscribePage = () => {
   return (
     <div className="page-content">
       <h1 className="page-title">הצטרפי אלינו</h1>
-      
+
       <div className="subscribe-container">
         {submitted ? (
           <div className="subscribe-success">
@@ -1017,7 +1161,7 @@ const SubscribePage = () => {
 
             <div className="form-group checkbox-group">
               <label>אני רוצה להצטרף ל:</label>
-              
+
               <div className="checkbox-item">
                 <input
                   type="checkbox"
@@ -1057,10 +1201,10 @@ const LessonsPage = ({ lessons }) => (
   <div className="page-content">
     <h1 className="page-title">שיעורים</h1>
     <p className="page-subtitle">שיעורי וידאו להעצמה והשראה</p>
-    
+
     <div className="lessons-grid">
       {lessons.map((lesson) => (
-        <a 
+        <a
           key={lesson.id}
           href={lesson.youtubeUrl}
           target="_blank"
@@ -1082,7 +1226,7 @@ const EventsPage = ({ events }) => (
   <div className="page-content">
     <h1 className="page-title">אירועים</h1>
     <p className="page-subtitle">האירועים הקרובים שלנו</p>
-    
+
     {events.length === 0 ? (
       <div className="no-events">
         <Calendar className="no-events-icon" />
@@ -1116,8 +1260,8 @@ const AboutPage = () => (
   <div className="page-content">
     <section className="about-section">
       <div className="about-image-wrapper">
-        <img 
-          src="https://i.imgur.com/01HMEOs.jpeg" 
+        <img
+          src="https://i.imgur.com/01HMEOs.jpeg"
           alt="יעל כורסיה"
           className="about-image"
         />
@@ -1144,8 +1288,8 @@ const ContactSection = () => (
       <h2 className="contact-title">יצירת קשר</h2>
       <p className="contact-subtitle">אשמח לענות על כל שאלה ולהיות איתך בקשר</p>
       <div className="contact-links">
-        <a 
-          href="https://wa.me/972546588503" 
+        <a
+          href="https://wa.me/972546588503"
           target="_blank"
           rel="noopener noreferrer"
           className="contact-link whatsapp"
@@ -1153,14 +1297,14 @@ const ContactSection = () => (
           <WhatsAppIcon className="contact-icon" />
           <span>054-6588503</span>
         </a>
-        <a 
+        <a
           href="mailto:orshebach@gmail.com"
           className="contact-link"
         >
           <Mail className="contact-icon" />
           <span>orshebach@gmail.com</span>
         </a>
-        <a 
+        <a
           href="https://instagram.com/yael_corsia"
           target="_blank"
           rel="noopener noreferrer"
@@ -1218,7 +1362,7 @@ const BackToTop = () => {
   };
 
   return (
-    <button 
+    <button
       className={`back-to-top ${isVisible ? 'visible' : ''}`}
       onClick={scrollToTop}
       aria-label="חזרה למעלה"
@@ -1239,20 +1383,20 @@ const Layout = ({ children, state }) => {
 
   return (
     <div className="website-container" dir="rtl">
-      <Header 
-        getTotalItems={getTotalItems} 
+      <Header
+        getTotalItems={getTotalItems}
         setIsCartOpen={setIsCartOpen}
         isCartOpen={isCartOpen}
       />
-      
-      <ProductModal 
+
+      <ProductModal
         selectedProduct={selectedProduct}
         setSelectedProduct={setSelectedProduct}
         addToCart={addToCart}
         setShowBulkPopup={setShowBulkPopup}
       />
-      
-      <CartSidebar 
+
+      <CartSidebar
         isCartOpen={isCartOpen}
         setIsCartOpen={setIsCartOpen}
         cart={cart}
@@ -1261,14 +1405,14 @@ const Layout = ({ children, state }) => {
         handleCheckout={handleCheckout}
         setShowBulkPopup={setShowBulkPopup}
       />
-      
-      <BulkOrderPopup 
+
+      <BulkOrderPopup
         isOpen={showBulkPopup}
         onClose={() => setShowBulkPopup(false)}
       />
-      
+
       {children}
-      
+
       <ContactSection />
       <Footer />
       <BackToTop />
@@ -1291,7 +1435,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={
-          <ShopPage 
+          <ShopPage
             products={products}
             bundles={bundles}
             pickupPoints={pickupPoints}
