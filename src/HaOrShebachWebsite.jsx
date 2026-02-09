@@ -212,7 +212,7 @@ const useSharedState = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [expandedPickup, setExpandedPickup] = useState(false);
   const [showBulkPopup, setShowBulkPopup] = useState(false);
-  const products = sanityProducts.length > 0 ? sanityProducts : hardcodedProducts;
+const products = sanityProducts && sanityProducts.length > 0 ? sanityProducts : [];
 
   //   const products = [
   //     {
