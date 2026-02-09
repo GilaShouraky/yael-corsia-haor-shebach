@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Send, Play, Calendar, Users, MessageCircle, Star, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
 import './YaelCorsiaWebsite.css';
-import { useProducts } from './sanity/useSanity';
-
 
 // Custom Hook for Scroll Animation
 const useScrollAnimation = () => {
@@ -205,116 +203,114 @@ const BulkOrderPopup = ({ isOpen, onClose }) => {
 
 // Shared data and state management
 const useSharedState = () => {
-  const { products: sanityProducts, loading } = useProducts();
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [expandedPickup, setExpandedPickup] = useState(false);
   const [showBulkPopup, setShowBulkPopup] = useState(false);
-const products = sanityProducts && sanityProducts.length > 0 ? sanityProducts : [];
 
-  //   const products = [
-  //     {
-  //       id: 1,
-  //       name: 'קלפי מסע החיים',
-  //       shortDescription: 'קלפים מעוררי השראה שנכתבו מתוך 30 שנות טיפול והנחיה',
-  //       fullDescription: 'קלפים מעוררי השראה שנכתבו מתוך השיעורים והטיפולים שאני מעבירה מעל ל-30 שנה. כל קלף מלווה בתובנה ובתפילה אישית שתחזק אותך. הקלפים פותחים צוהר להתבוננות פנימית - כלי מדהים לתהליכי עומק והתפתחות.',
-  //       whatsInside: [
-  //         '42 קלפים מעוררי השראה - כל קלף יפתח לך צוהר להתבוננות פנימית עמוקה ולצמיחה אישית',
-  //         'מסרים מתוך מקורות יהודיים - מילים שיחברו אותך אל הנשמה, אל האמונה ואל הדרך שלך',
-  //         'שילוב מיוחד של מודעות ותפילה - כל קלף מלווה בתובנה ובכיוון תפילה אישי',
-  //         'דרך יצירתית לעבוד על עצמך - לבד, עם חברות או בקבוצה'
-  //       ],
-  //       forWho: [
-  //         'לנשים שמבקשות להכניס יותר משמעות לחיי היומיום',
-  //         'למנחות ומאמנות שרוצות כלי טיפולי ייחודי לקבוצות ולמפגשים',
-  //         'לכל מי שמחפשת חיבור עמוק יותר לעצמה ולבורא'
-  //       ],
-  //       howToUse: 'בחרי קלף בהכוונה או באינטואיציה, קראי את המסר שבו. התחברי אליו דרך שאלה פנימית או תפילה אישית - ותני לו להאיר לך את הדרך.',
-  //       price: 180,
-  //       image: 'https://i.imgur.com/EvOv2HL.jpeg',
-  //       icon: Sparkles,
-  //       link: 'https://lp.vp4.me/17y3',
-  //       gallery: [
-  //         { url: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=600', caption: 'ערכת הקלפים המלאה' },
-  //         { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600', caption: 'קלפי השראה יומיים' },
-  //         { url: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=600', caption: 'עבודה עם הקלפים' }
-  //       ],
-  //       reviews: [
-  //         { name: 'דבורה כהן', text: 'הקלפים האלה פשוט מדהימים! כל בוקר אני שולפת קלף והוא תמיד מדויק' },
-  //         { name: 'רות לוי', text: 'כלי עבודה נפלא לסדנאות שלי, התלמידות מתחברות מיד' },
-  //         { name: 'שרה גולד', text: 'המתנה המושלמת לכל אישה - משמעותי ומרגש' }
-  //       ]
-  //     },
-  //     {
-  //       id: 2,
-  //       name: 'מחברת פשוט להודות',
-  //       shortDescription: 'מחברת מעוצבת לכתיבת תודות - נמכרה באלפי עותקים בארץ ובעולם',
-  //       fullDescription: 'מחברת מעוצבת לכתיבת תודות עם משפטים מעוררי השראה. המחברת עוזרת בעיסוק בראיית הטוב, באימון אישי ובמשיכת אור ושפע לחיים!',
-  //       forWho: [
-  //         'לכל אחד, בכל גיל ובכל שלב - גילאי 9-99!',
-  //         'לכתיבה אישית, זוגית, משפחתית או צוותית',
-  //         'לכל מי שרוצה להתמקד בטוב ולהכניס יותר שמחה לחיים'
-  //       ],
-  //       price: 35,
-  //       bulkPrice: 30,
-  //       bulkMinimum: 10,
-  //       bulkMaxBeforePopup: 50,
-  //       image: 'https://i.imgur.com/ielPgE4.jpeg',
-  //       icon: Heart,
-  //       link: 'https://lp.vp4.me/qqkm',
-  //       gallery: [
-  //         { url: 'https://images.unsplash.com/photo-1517971129774-8a2b38fa128e?w=600', caption: 'המחברת המעוצבת' },
-  //         { url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600', caption: 'כתיבת תודות יומית' },
-  //         { url: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600', caption: 'רגעי השראה' }
-  //       ],
-  //       reviews: [
-  //         { name: 'מרים אברהם', text: 'המחברת הזו שינתה לי את החיים! אני כותבת כל יום ומרגישה את השינוי' },
-  //         { name: 'יהודית ברגר', text: 'קניתי לכל המשפחה - אנחנו כותבים ביחד כל ערב' },
-  //         { name: 'חנה שפירא', text: 'מתנה מושלמת שכולם אוהבים לקבל' }
-  //       ]
-  //     },
-  //     {
-  //       id: 3,
-  //       name: 'בובי ואני',
-  //       shortDescription: 'ספר ילדים מרגש על התמודדות עם פחדים ופיתוח שפה רגשית',
-  //       fullDescription: `את הספר "בובי ואני" כתבתי מתוך חוויה אישית כאימא וכסבתא, שפוגשת לא מעט לבבות קטנים שפוחדים, במיוחד בלילות.
+    const products = [
+      {
+        id: 1,
+        name: 'קלפי מסע החיים',
+        shortDescription: 'קלפים מעוררי השראה שנכתבו מתוך 30 שנות טיפול והנחיה',
+        fullDescription: 'קלפים מעוררי השראה שנכתבו מתוך השיעורים והטיפולים שאני מעבירה מעל ל-30 שנה. כל קלף מלווה בתובנה ובתפילה אישית שתחזק אותך. הקלפים פותחים צוהר להתבוננות פנימית - כלי מדהים לתהליכי עומק והתפתחות.',
+        whatsInside: [
+          '42 קלפים מעוררי השראה - כל קלף יפתח לך צוהר להתבוננות פנימית עמוקה ולצמיחה אישית',
+          'מסרים מתוך מקורות יהודיים - מילים שיחברו אותך אל הנשמה, אל האמונה ואל הדרך שלך',
+          'שילוב מיוחד של מודעות ותפילה - כל קלף מלווה בתובנה ובכיוון תפילה אישי',
+          'דרך יצירתית לעבוד על עצמך - לבד, עם חברות או בקבוצה'
+        ],
+        forWho: [
+          'לנשים שמבקשות להכניס יותר משמעות לחיי היומיום',
+          'למנחות ומאמנות שרוצות כלי טיפולי ייחודי לקבוצות ולמפגשים',
+          'לכל מי שמחפשת חיבור עמוק יותר לעצמה ולבורא'
+        ],
+        howToUse: 'בחרי קלף בהכוונה או באינטואיציה, קראי את המסר שבו. התחברי אליו דרך שאלה פנימית או תפילה אישית - ותני לו להאיר לך את הדרך.',
+        price: 180,
+        image: 'https://i.imgur.com/EvOv2HL.jpeg',
+        icon: Sparkles,
+        link: 'https://lp.vp4.me/17y3',
+        gallery: [
+          { url: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=600', caption: 'ערכת הקלפים המלאה' },
+          { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600', caption: 'קלפי השראה יומיים' },
+          { url: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=600', caption: 'עבודה עם הקלפים' }
+        ],
+        reviews: [
+          { name: 'דבורה כהן', text: 'הקלפים האלה פשוט מדהימים! כל בוקר אני שולפת קלף והוא תמיד מדויק' },
+          { name: 'רות לוי', text: 'כלי עבודה נפלא לסדנאות שלי, התלמידות מתחברות מיד' },
+          { name: 'שרה גולד', text: 'המתנה המושלמת לכל אישה - משמעותי ומרגש' }
+        ]
+      },
+      {
+        id: 2,
+        name: 'מחברת פשוט להודות',
+        shortDescription: 'מחברת מעוצבת לכתיבת תודות - נמכרה באלפי עותקים בארץ ובעולם',
+        fullDescription: 'מחברת מעוצבת לכתיבת תודות עם משפטים מעוררי השראה. המחברת עוזרת בעיסוק בראיית הטוב, באימון אישי ובמשיכת אור ושפע לחיים!',
+        forWho: [
+          'לכל אחד, בכל גיל ובכל שלב - גילאי 9-99!',
+          'לכתיבה אישית, זוגית, משפחתית או צוותית',
+          'לכל מי שרוצה להתמקד בטוב ולהכניס יותר שמחה לחיים'
+        ],
+        price: 35,
+        bulkPrice: 30,
+        bulkMinimum: 10,
+        bulkMaxBeforePopup: 50,
+        image: 'https://i.imgur.com/ielPgE4.jpeg',
+        icon: Heart,
+        link: 'https://lp.vp4.me/qqkm',
+        gallery: [
+          { url: 'https://images.unsplash.com/photo-1517971129774-8a2b38fa128e?w=600', caption: 'המחברת המעוצבת' },
+          { url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600', caption: 'כתיבת תודות יומית' },
+          { url: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600', caption: 'רגעי השראה' }
+        ],
+        reviews: [
+          { name: 'מרים אברהם', text: 'המחברת הזו שינתה לי את החיים! אני כותבת כל יום ומרגישה את השינוי' },
+          { name: 'יהודית ברגר', text: 'קניתי לכל המשפחה - אנחנו כותבים ביחד כל ערב' },
+          { name: 'חנה שפירא', text: 'מתנה מושלמת שכולם אוהבים לקבל' }
+        ]
+      },
+      {
+        id: 3,
+        name: 'בובי ואני',
+        shortDescription: 'ספר ילדים מרגש על התמודדות עם פחדים ופיתוח שפה רגשית',
+        fullDescription: `את הספר "בובי ואני" כתבתי מתוך חוויה אישית כאימא וכסבתא, שפוגשת לא מעט לבבות קטנים שפוחדים, במיוחד בלילות.
 
-  // יש רגעים שבהם העולם משתתק ודווקא אז עולים הפחדים. אבל ברגעים אלו מסתתרת הזדמנות: לעצור, לנשום, להקשיב, להיות עם הילד ולא למהר 'להעלים את הפחד', אלא ללמד את הילד לעבד את רגשותיו.`,
-  //       aboutBook: 'סיפור מחבק על דָּוִד והפחד, ועל הדרך למצוא בתוכנו אומץ, אמון ואהבה. כי כל ילד פוגש פחד, וכל הורה רוצה לדעת איך לעזור לו. ספר שמדבר לילדים - ונוגע בלב של כולנו. מזמין שיח רגשי, זמן איכות וריפוי עדין יחד.',
-  //       forWho: [
-  //         'לילדים בגילאי 3-8',
-  //         'להורים שרוצים לעזור לילדיהם להתמודד עם פחדים',
-  //         'למטפלים, גננות ואנשי חינוך לגיל הרך'
-  //       ],
-  //       price: 68,
-  //       salePrice: 50,
-  //       image: 'https://i.imgur.com/OXNGHx2.png',
-  //       icon: BookOpen,
-  //       link: 'https://yaelcorsiabook1.netlify.app/',
-  //       gallery: [
-  //         { url: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600', caption: 'הספר המלא' },
-  //         { url: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600', caption: 'איורים מקסימים' },
-  //         { url: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600', caption: 'קריאה משפחתית' }
-  //       ],
-  //       reviews: [
-  //         { name: 'לאה כהן', text: 'הספר עזר לבת שלי להתמודד עם הפחד מהחושך. תודה רבה!' },
-  //         { name: 'טל גרינברג', text: 'כמורה בגן, הספר הזה הפך לחלק בלתי נפרד מהשגרה שלנו' },
-  //         { name: 'נועה לוי', text: 'סיפור מרגש ומחבק שנוגע ישר ללב' }
-  //       ]
-  //     },
-  //     {
-  //       id: 4,
-  //       name: 'מנוי למסע החיים',
-  //       shortDescription: 'מועדון נשים - מרחב של התבוננות, השראה וצמיחה אישית',
-  //       fullDescription: 'מועדון נשים ייחודי המתכנס מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.',
-  //       price: null,
-  //       image: '✨',
-  //       icon: Sparkles,
-  //       comingSoon: true
-  //     }
-  //   ];
+  יש רגעים שבהם העולם משתתק ודווקא אז עולים הפחדים. אבל ברגעים אלו מסתתרת הזדמנות: לעצור, לנשום, להקשיב, להיות עם הילד ולא למהר 'להעלים את הפחד', אלא ללמד את הילד לעבד את רגשותיו.`,
+        aboutBook: 'סיפור מחבק על דָּוִד והפחד, ועל הדרך למצוא בתוכנו אומץ, אמון ואהבה. כי כל ילד פוגש פחד, וכל הורה רוצה לדעת איך לעזור לו. ספר שמדבר לילדים - ונוגע בלב של כולנו. מזמין שיח רגשי, זמן איכות וריפוי עדין יחד.',
+        forWho: [
+          'לילדים בגילאי 3-8',
+          'להורים שרוצים לעזור לילדיהם להתמודד עם פחדים',
+          'למטפלים, גננות ואנשי חינוך לגיל הרך'
+        ],
+        price: 68,
+        salePrice: 50,
+        image: 'https://i.imgur.com/OXNGHx2.png',
+        icon: BookOpen,
+        link: 'https://yaelcorsiabook1.netlify.app/',
+        gallery: [
+          { url: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600', caption: 'הספר המלא' },
+          { url: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600', caption: 'איורים מקסימים' },
+          { url: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600', caption: 'קריאה משפחתית' }
+        ],
+        reviews: [
+          { name: 'לאה כהן', text: 'הספר עזר לבת שלי להתמודד עם הפחד מהחושך. תודה רבה!' },
+          { name: 'טל גרינברג', text: 'כמורה בגן, הספר הזה הפך לחלק בלתי נפרד מהשגרה שלנו' },
+          { name: 'נועה לוי', text: 'סיפור מרגש ומחבק שנוגע ישר ללב' }
+        ]
+      },
+      {
+        id: 4,
+        name: 'מנוי למסע החיים',
+        shortDescription: 'מועדון נשים - מרחב של התבוננות, השראה וצמיחה אישית',
+        fullDescription: 'מועדון נשים ייחודי המתכנס מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.',
+        price: null,
+        image: '✨',
+        icon: Sparkles,
+        comingSoon: true
+      }
+    ];
 
   const bundles = [
     {
