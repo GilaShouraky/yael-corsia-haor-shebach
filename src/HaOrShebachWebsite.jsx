@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Send, Play, Calendar, Users, MessageCircle, Star, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
 import './YaelCorsiaWebsite.css';
+import { useProducts, useTexts, useBundles, usePickupPoints } from './hooks/useGoogleSheets';
+
 
 // Custom Hook for Scroll Animation
 const useScrollAnimation = () => {
@@ -53,12 +55,28 @@ const WhatsAppIcon = ({ className }) => (
 );
 
 // Stats Section Component
-const StatsSection = () => {
+const StatsSection = ({ texts }) => {
   const stats = [
-    { number: '30+', label: 'שנות ניסיון', icon: Calendar },
-    { number: '5000+', label: 'נשים ליוויתי', icon: Users },
-    { number: '10,000+', label: 'מחברות נמכרו', icon: Heart },
-    { number: '100+', label: 'סדנאות ומפגשים', icon: Sparkles }
+    {
+      number: texts.stats_years_num || '30+',
+      label: texts.stats_years_label || 'שנות ניסיון',
+      icon: Calendar
+    },
+    {
+      number: texts.stats_women_num || '5000+',
+      label: texts.stats_women_label || 'נשים ליוויתי',
+      icon: Users
+    },
+    {
+      number: texts.stats_notebooks_num || '10,000+',
+      label: texts.stats_notebooks_label || 'מחברות נמכרו',
+      icon: Heart
+    },
+    {
+      number: texts.stats_workshops_num || '100+',
+      label: texts.stats_workshops_label || 'סדנאות ומפגשים',
+      icon: Sparkles
+    }
   ];
 
   return (
@@ -75,6 +93,7 @@ const StatsSection = () => {
     </section>
   );
 };
+
 
 // Product Gallery Component (inside modal)
 const ProductGalleryModal = ({ images }) => {
@@ -203,114 +222,172 @@ const BulkOrderPopup = ({ isOpen, onClose }) => {
 
 // Shared data and state management
 const useSharedState = () => {
-  const [cart, setCart] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [expandedPickup, setExpandedPickup] = useState(false);
-  const [showBulkPopup, setShowBulkPopup] = useState(false);
+  const useSharedState = () => {
+    // Fetch data from Google Sheets
+    const { products: sheetProducts, loading: productsLoading } = useProducts();
+    const { texts, loading: textsLoading } = useTexts();
+    const { bundles: sheetBundles, loading: bundlesLoading } = useBundles();
+    const { pickupPoints: sheetPickupPoints, loading: pickupLoading } = usePickupPoints();
 
-    const products = [
+    const [cart, setCart] = useState([]);
+    const [isCartOpen, setIsCartOpen] = useState(false);
+    const [showNotification, setShowNotification] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [expandedPickup, setExpandedPickup] = useState(false);
+    const [showBulkPopup, setShowBulkPopup] = useState(false);
+
+    // Fallback data in case Google Sheets fails
+    const fallbackProducts = [
       {
         id: 1,
         name: 'קלפי מסע החיים',
         shortDescription: 'קלפים מעוררי השראה שנכתבו מתוך 30 שנות טיפול והנחיה',
-        fullDescription: 'קלפים מעוררי השראה שנכתבו מתוך השיעורים והטיפולים שאני מעבירה מעל ל-30 שנה. כל קלף מלווה בתובנה ובתפילה אישית שתחזק אותך. הקלפים פותחים צוהר להתבוננות פנימית - כלי מדהים לתהליכי עומק והתפתחות.',
-        whatsInside: [
-          '42 קלפים מעוררי השראה - כל קלף יפתח לך צוהר להתבוננות פנימית עמוקה ולצמיחה אישית',
-          'מסרים מתוך מקורות יהודיים - מילים שיחברו אותך אל הנשמה, אל האמונה ואל הדרך שלך',
-          'שילוב מיוחד של מודעות ותפילה - כל קלף מלווה בתובנה ובכיוון תפילה אישי',
-          'דרך יצירתית לעבוד על עצמך - לבד, עם חברות או בקבוצה'
-        ],
-        forWho: [
-          'לנשים שמבקשות להכניס יותר משמעות לחיי היומיום',
-          'למנחות ומאמנות שרוצות כלי טיפולי ייחודי לקבוצות ולמפגשים',
-          'לכל מי שמחפשת חיבור עמוק יותר לעצמה ולבורא'
-        ],
-        howToUse: 'בחרי קלף בהכוונה או באינטואיציה, קראי את המסר שבו. התחברי אליו דרך שאלה פנימית או תפילה אישית - ותני לו להאיר לך את הדרך.',
         price: 180,
         image: 'https://i.imgur.com/EvOv2HL.jpeg',
         icon: Sparkles,
         link: 'https://lp.vp4.me/17y3',
-        gallery: [
-          { url: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=600', caption: 'ערכת הקלפים המלאה' },
-          { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600', caption: 'קלפי השראה יומיים' },
-          { url: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=600', caption: 'עבודה עם הקלפים' }
-        ],
-        reviews: [
-          { name: 'דבורה כהן', text: 'הקלפים האלה פשוט מדהימים! כל בוקר אני שולפת קלף והוא תמיד מדויק' },
-          { name: 'רות לוי', text: 'כלי עבודה נפלא לסדנאות שלי, התלמידות מתחברות מיד' },
-          { name: 'שרה גולד', text: 'המתנה המושלמת לכל אישה - משמעותי ומרגש' }
-        ]
       },
       {
         id: 2,
         name: 'מחברת פשוט להודות',
-        shortDescription: 'מחברת מעוצבת לכתיבת תודות - נמכרה באלפי עותקים בארץ ובעולם',
-        fullDescription: 'מחברת מעוצבת לכתיבת תודות עם משפטים מעוררי השראה. המחברת עוזרת בעיסוק בראיית הטוב, באימון אישי ובמשיכת אור ושפע לחיים!',
-        forWho: [
-          'לכל אחד, בכל גיל ובכל שלב - גילאי 9-99!',
-          'לכתיבה אישית, זוגית, משפחתית או צוותית',
-          'לכל מי שרוצה להתמקד בטוב ולהכניס יותר שמחה לחיים'
-        ],
+        shortDescription: 'מחברת מעוצבת לכתיבת תודות',
         price: 35,
         bulkPrice: 30,
         bulkMinimum: 10,
-        bulkMaxBeforePopup: 50,
         image: 'https://i.imgur.com/ielPgE4.jpeg',
         icon: Heart,
         link: 'https://lp.vp4.me/qqkm',
-        gallery: [
-          { url: 'https://images.unsplash.com/photo-1517971129774-8a2b38fa128e?w=600', caption: 'המחברת המעוצבת' },
-          { url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600', caption: 'כתיבת תודות יומית' },
-          { url: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600', caption: 'רגעי השראה' }
-        ],
-        reviews: [
-          { name: 'מרים אברהם', text: 'המחברת הזו שינתה לי את החיים! אני כותבת כל יום ומרגישה את השינוי' },
-          { name: 'יהודית ברגר', text: 'קניתי לכל המשפחה - אנחנו כותבים ביחד כל ערב' },
-          { name: 'חנה שפירא', text: 'מתנה מושלמת שכולם אוהבים לקבל' }
-        ]
-      },
-      {
-        id: 3,
-        name: 'בובי ואני',
-        shortDescription: 'ספר ילדים מרגש על התמודדות עם פחדים ופיתוח שפה רגשית',
-        fullDescription: `את הספר "בובי ואני" כתבתי מתוך חוויה אישית כאימא וכסבתא, שפוגשת לא מעט לבבות קטנים שפוחדים, במיוחד בלילות.
-
-  יש רגעים שבהם העולם משתתק ודווקא אז עולים הפחדים. אבל ברגעים אלו מסתתרת הזדמנות: לעצור, לנשום, להקשיב, להיות עם הילד ולא למהר 'להעלים את הפחד', אלא ללמד את הילד לעבד את רגשותיו.`,
-        aboutBook: 'סיפור מחבק על דָּוִד והפחד, ועל הדרך למצוא בתוכנו אומץ, אמון ואהבה. כי כל ילד פוגש פחד, וכל הורה רוצה לדעת איך לעזור לו. ספר שמדבר לילדים - ונוגע בלב של כולנו. מזמין שיח רגשי, זמן איכות וריפוי עדין יחד.',
-        forWho: [
-          'לילדים בגילאי 3-8',
-          'להורים שרוצים לעזור לילדיהם להתמודד עם פחדים',
-          'למטפלים, גננות ואנשי חינוך לגיל הרך'
-        ],
-        price: 68,
-        salePrice: 50,
-        image: 'https://i.imgur.com/OXNGHx2.png',
-        icon: BookOpen,
-        link: 'https://yaelcorsiabook1.netlify.app/',
-        gallery: [
-          { url: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600', caption: 'הספר המלא' },
-          { url: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600', caption: 'איורים מקסימים' },
-          { url: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600', caption: 'קריאה משפחתית' }
-        ],
-        reviews: [
-          { name: 'לאה כהן', text: 'הספר עזר לבת שלי להתמודד עם הפחד מהחושך. תודה רבה!' },
-          { name: 'טל גרינברג', text: 'כמורה בגן, הספר הזה הפך לחלק בלתי נפרד מהשגרה שלנו' },
-          { name: 'נועה לוי', text: 'סיפור מרגש ומחבק שנוגע ישר ללב' }
-        ]
-      },
-      {
-        id: 4,
-        name: 'מנוי למסע החיים',
-        shortDescription: 'מועדון נשים - מרחב של התבוננות, השראה וצמיחה אישית',
-        fullDescription: 'מועדון נשים ייחודי המתכנס מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.',
-        price: null,
-        image: '✨',
-        icon: Sparkles,
-        comingSoon: true
       }
     ];
+
+    const fallbackBundles = [
+      {
+        id: 'bundle1',
+        name: 'חבילת קלפים + מחברת',
+        description: 'קלפי מסע החיים + מחברת פשוט להודות',
+        items: ['קלפי מסע החיים', 'מחברת פשוט להודות'],
+        originalPrice: 215,
+        price: 200,
+        savings: 15,
+        image: '🎁'
+      }
+    ];
+
+    const fallbackPickupPoints = [
+      {
+        area: 'מרכז',
+        locations: [
+          { city: 'פתח תקוה', address: 'רח׳ דגל ראובן 27', contact: 'חגית גרינברג', phone: '058-6253893' }
+        ]
+      }
+    ];
+
+    // Use Google Sheets data if available, otherwise use fallback
+    const products = sheetProducts.length > 0 ? sheetProducts : fallbackProducts;
+    const bundles = sheetBundles.length > 0 ? sheetBundles : fallbackBundles;
+    const pickupPoints = sheetPickupPoints.length > 0 ? sheetPickupPoints : fallbackPickupPoints;
+
+    // Hardcoded lessons and events (rarely change)
+    const lessons = [
+      { id: 1, title: 'שיעור ראשון', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
+      { id: 2, title: 'שיעור שני', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
+    ];
+
+    const events = [
+      { id: 1, title: 'ערב העצמה לנשים', date: '2025-02-15', location: 'תל אביב', description: 'ערב מיוחד של חיבור והעצמה' },
+    ];
+
+    // Cart functions
+    const addToCart = (product, quantity = 1) => {
+      if (product.id === 2 && quantity > 50) {
+        setShowBulkPopup(true);
+        return;
+      }
+
+      const existingItem = cart.find(item => item.id === product.id);
+      if (existingItem) {
+        const newQuantity = existingItem.quantity + quantity;
+        if (product.id === 2 && newQuantity > 50) {
+          setShowBulkPopup(true);
+          return;
+        }
+        setCart(cart.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: newQuantity }
+            : item
+        ));
+      } else {
+        setCart([...cart, { ...product, quantity }]);
+      }
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 2000);
+    };
+
+    const removeFromCart = (productId) => {
+      setCart(cart.filter(item => item.id !== productId));
+    };
+
+    const updateQuantity = (productId, newQuantity) => {
+      const item = cart.find(i => i.id === productId);
+      if (item && item.id === 2 && newQuantity > 50) {
+        setShowBulkPopup(true);
+        return;
+      }
+
+      if (newQuantity === 0) {
+        removeFromCart(productId);
+      } else {
+        setCart(cart.map(item =>
+          item.id === productId
+            ? { ...item, quantity: newQuantity }
+            : item
+        ));
+      }
+    };
+
+    const getTotalPrice = () => {
+      return cart.reduce((sum, item) => {
+        let price = item.salePrice || item.price;
+        if (item.id === 2 && item.quantity >= 10) {
+          price = 30;
+        }
+        return sum + (price * item.quantity);
+      }, 0);
+    };
+
+    const getTotalItems = () => {
+      return cart.reduce((sum, item) => sum + item.quantity, 0);
+    };
+
+    const handleCheckout = () => {
+      const message = cart.map(item => {
+        let priceInfo = '';
+        if (item.id === 2 && item.quantity >= 10) {
+          priceInfo = ' (מחיר מיוחד: ₪30 ליחידה)';
+        }
+        return `${item.name} x${item.quantity}${priceInfo}`;
+      }).join('\n');
+      const total = getTotalPrice();
+      const whatsappMessage = encodeURIComponent(
+        `שלום יעל! אשמח להזמין:\n${message}\n\nסה"כ: ₪${total}`
+      );
+      window.open(`https://wa.me/${texts.contact_whatsapp || '972546588503'}?text=${whatsappMessage}`, '_blank');
+    };
+
+    return {
+      cart, setCart,
+      isCartOpen, setIsCartOpen,
+      showNotification, setShowNotification,
+      selectedProduct, setSelectedProduct,
+      expandedPickup, setExpandedPickup,
+      showBulkPopup, setShowBulkPopup,
+      products, bundles, pickupPoints, lessons, events,
+      texts, // 👈 New! Texts from Google Sheets
+      addToCart, removeFromCart, updateQuantity,
+      getTotalPrice, getTotalItems, handleCheckout
+    };
+  };
+
 
   const bundles = [
     {
@@ -815,44 +892,33 @@ const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotal
 };
 
 // Hero Section Component
-const HeroSection = () => (
+const HeroSection = ({ texts }) => (
   <section className="hero">
     <div className="hero-content">
       <div className="hero-decoration">
-        <img
-          src="/crown.png"
-          alt="כתר"
-          className="crown-image"
-        />
+        <img src="/crown.png" alt="כתר" className="crown-image" />
       </div>
       <h1 className="hero-title">האור שבך</h1>
       <p className="hero-subtitle">עם יעל כורסיה</p>
       <div className="hero-divider"></div>
-      <p className="hero-tagline">מסע של התבוננות, השראה וצמיחה אישית</p>
+      <p className="hero-tagline">{texts.hero_tagline || 'מסע של התבוננות, השראה וצמיחה אישית'}</p>
     </div>
   </section>
 );
 
 // About Section Component (for HomePage)
-const AboutSectionHome = () => (
+const AboutSectionHome = ({ texts }) => (
   <section className="about-section-home">
     <div className="about-container">
       <div className="about-image-wrapper">
-        <img
-          src="https://i.imgur.com/01HMEOs.jpeg"
-          alt="יעל כורסיה"
-          className="about-image"
-        />
+        <img src="https://i.imgur.com/01HMEOs.jpeg" alt="יעל כורסיה" className="about-image" />
       </div>
       <div className="about-card">
-        <h2 className="about-title">קצת עליי</h2>
+        <h2 className="about-title">{texts.about_title || 'קצת עליי'}</h2>
         <div className="about-content">
-          <p><strong>נעים מאוד! שמי יעל כורסיה</strong> - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.</p>
-          <p>אני מייסדת מועדון הנשים <strong>"מסע החיים"</strong> - מרחב של התבוננות, השראה וצמיחה אישית, שבו אנו נפגשות מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.</p>
-          <p>לאורך השנים ליוויתי נשים רבות בתהליכי מודעות, שינוי וצמיחה - ומתוך הדרך הזו נולד גם הרצון להעניק לילדים כלים רגשיים שיסייעו להם להכיר את עצמם, להתמודד עם פחדים וקשיים ולגלות את הכוחות שבתוכם.</p>
-          <p>הספר <strong>"בּוּבִּי וַאֲנִי"</strong> הוא הספר הראשון בסדרת ספרים חדשה, שמטרתה לעזור לילדים לפתח שפה רגשית, ביטחון עצמי ויכולת ביטוי בריאה - בדרך עדינה, מקרבת ומלאת לב.</p>
-          <p>בנוסף זכיתי להוציא לאור את <strong>מחברת "פשוט להודות"</strong> - מחברת מעוצבת לכתיבת תודות, שנמכרה באלפי עותקים בארץ ובעולם, ואת <strong>ערכת הקלפים "מודעות, תפילה והעצמה"</strong> - ערכה ייחודית ומרגשת המשלבת השראה, תפילה וכלים לעבודה פנימית.</p>
-          <p className="about-highlight">אני מאמינה שככל שנעניק לילדים (ולנו עצמנו) שפה רגשית, חיבור לעצמם ואמונה בטוב - נוכל ליצור עולם חומל, יצירתי ושמח יותר.</p>
+          <p>{texts.about_intro || 'נעים מאוד! שמי יעל כורסיה - מטפלת אישית וזוגית...'}</p>
+          <p>{texts.about_p1 || 'אני מייסדת מועדון הנשים "מסע החיים"...'}</p>
+          <p>{texts.about_p2 || 'לאורך השנים ליוויתי נשים רבות...'}</p>
         </div>
       </div>
     </div>
@@ -979,11 +1045,11 @@ const PickupPointsSection = ({ pickupPoints, expandedPickup, setExpandedPickup }
 );
 
 // Home Page Component - CLEAN VERSION WITH STATS ONLY
-const HomePage = () => (
+const HomePage = ({ texts }) => (
   <>
-    <HeroSection />
+    <HeroSection texts={texts} />
     <div className="home-welcome">
-      <p>ברוכים הבאים לעולם של השראה, צמיחה והתפתחות אישית</p>
+      <p>{texts.hero_welcome || 'ברוכים הבאים לעולם של השראה, צמיחה והתפתחות אישית'}</p>
       <div className="home-links">
         <Link to="/shop" className="home-link-card">
           <ShoppingCart className="home-link-icon" />
@@ -1005,9 +1071,8 @@ const HomePage = () => (
     </div>
 
     {/* רק סטטיסטיקות! */}
-    <StatsSection />
-
-    <AboutSectionHome />
+    <StatsSection texts={texts} />
+    <AboutSectionHome texts={texts} />
   </>
 );
 
@@ -1282,36 +1347,33 @@ const AboutPage = () => (
 );
 
 // Contact Section Component
-const ContactSection = () => (
+const ContactSection = ({ texts }) => (
   <section className="contact-section">
     <div className="contact-content">
-      <h2 className="contact-title">יצירת קשר</h2>
-      <p className="contact-subtitle">אשמח לענות על כל שאלה ולהיות איתך בקשר</p>
+      <h2 className="contact-title">{texts.contact_title || 'יצירת קשר'}</h2>
+      <p className="contact-subtitle">{texts.contact_subtitle || 'אשמח לענות על כל שאלה ולהיות איתך בקשר'}</p>
       <div className="contact-links">
         <a
-          href="https://wa.me/972546588503"
+          href={`https://wa.me/${texts.contact_whatsapp || '972546588503'}`}
           target="_blank"
           rel="noopener noreferrer"
           className="contact-link whatsapp"
         >
           <WhatsAppIcon className="contact-icon" />
-          <span>054-6588503</span>
+          <span>{texts.contact_phone || '054-6588503'}</span>
         </a>
-        <a
-          href="mailto:orshebach@gmail.com"
-          className="contact-link"
-        >
+        <a href={`mailto:${texts.contact_email || 'orshebach@gmail.com'}`} className="contact-link">
           <Mail className="contact-icon" />
-          <span>orshebach@gmail.com</span>
+          <span>{texts.contact_email || 'orshebach@gmail.com'}</span>
         </a>
         <a
-          href="https://instagram.com/yael_corsia"
+          href={`https://instagram.com/${texts.contact_instagram || 'yael_corsia'}`}
           target="_blank"
           rel="noopener noreferrer"
           className="contact-link"
         >
           <Instagram className="contact-icon" />
-          <span>yael_corsia</span>
+          <span>{texts.contact_instagram || 'yael_corsia'}</span>
         </a>
       </div>
     </div>
@@ -1319,10 +1381,10 @@ const ContactSection = () => (
 );
 
 // Footer Component
-const Footer = () => (
+const Footer = ({ texts }) => (
   <footer className="footer">
     <div className="footer-content">
-      <p>© 2025 האור שבך - יעל כורסיה | כל הזכויות שמורות</p>
+      <p>{texts.footer_text || '© 2025 האור שבך - יעל כורסיה | כל הזכויות שמורות'}</p>
     </div>
   </footer>
 );
@@ -1378,6 +1440,7 @@ const Layout = ({ children, state }) => {
     cart, isCartOpen, setIsCartOpen,
     showNotification, selectedProduct, setSelectedProduct,
     showBulkPopup, setShowBulkPopup,
+    texts, // 👈 הוספנו!
     getTotalItems, getTotalPrice, updateQuantity, handleCheckout, addToCart
   } = state;
 
@@ -1413,8 +1476,8 @@ const Layout = ({ children, state }) => {
 
       {children}
 
-      <ContactSection />
-      <Footer />
+      <ContactSection texts={texts} />
+      <Footer texts={texts} />
       <BackToTop />
       <Notification showNotification={showNotification} />
     </div>
@@ -1426,6 +1489,7 @@ const AppContent = () => {
   const state = useSharedState();
   const {
     products, bundles, pickupPoints, lessons, events,
+    texts, // 👈 הוספנו!
     addToCart, setSelectedProduct,
     expandedPickup, setExpandedPickup
   } = state;
@@ -1433,12 +1497,13 @@ const AppContent = () => {
   return (
     <Layout state={state}>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage texts={texts} />} />
         <Route path="/shop" element={
           <ShopPage
             products={products}
             bundles={bundles}
             pickupPoints={pickupPoints}
+            texts={texts}
             addToCart={addToCart}
             setSelectedProduct={setSelectedProduct}
             expandedPickup={expandedPickup}
