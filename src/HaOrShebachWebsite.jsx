@@ -4,7 +4,6 @@ import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, Map
 import './YaelCorsiaWebsite.css';
 import { useProducts, useTexts, useBundles, usePickupPoints } from './hooks/useGoogleSheets';
 
-
 // Custom Hook for Scroll Animation
 const useScrollAnimation = () => {
   const ref = useRef(null);
@@ -94,8 +93,7 @@ const StatsSection = ({ texts }) => {
   );
 };
 
-
-// Product Gallery Component (inside modal)
+// Product Gallery Component
 const ProductGalleryModal = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -160,7 +158,7 @@ const ProductGalleryModal = ({ images }) => {
   );
 };
 
-// Product Reviews Component (inside modal)
+// Product Reviews Component
 const ProductReviewsModal = ({ reviews }) => {
   if (!reviews || reviews.length === 0) return null;
 
@@ -222,174 +220,44 @@ const BulkOrderPopup = ({ isOpen, onClose }) => {
 
 // Shared data and state management
 const useSharedState = () => {
-  const useSharedState = () => {
-    // Fetch data from Google Sheets
-    const { products: sheetProducts, loading: productsLoading } = useProducts();
-    const { texts, loading: textsLoading } = useTexts();
-    const { bundles: sheetBundles, loading: bundlesLoading } = useBundles();
-    const { pickupPoints: sheetPickupPoints, loading: pickupLoading } = usePickupPoints();
+  const [cart, setCart] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [expandedPickup, setExpandedPickup] = useState(false);
+  const [showBulkPopup, setShowBulkPopup] = useState(false);
 
-    const [cart, setCart] = useState([]);
-    const [isCartOpen, setIsCartOpen] = useState(false);
-    const [showNotification, setShowNotification] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [expandedPickup, setExpandedPickup] = useState(false);
-    const [showBulkPopup, setShowBulkPopup] = useState(false);
+  // Fetch data from Google Sheets
+  const { products: sheetProducts, loading: productsLoading } = useProducts();
+  const { texts, loading: textsLoading } = useTexts();
+  const { bundles: sheetBundles, loading: bundlesLoading } = useBundles();
+  const { pickupPoints: sheetPickupPoints, loading: pickupLoading } = usePickupPoints();
 
-    // Fallback data in case Google Sheets fails
-    const fallbackProducts = [
-      {
-        id: 1,
-        name: 'קלפי מסע החיים',
-        shortDescription: 'קלפים מעוררי השראה שנכתבו מתוך 30 שנות טיפול והנחיה',
-        price: 180,
-        image: 'https://i.imgur.com/EvOv2HL.jpeg',
-        icon: Sparkles,
-        link: 'https://lp.vp4.me/17y3',
-      },
-      {
-        id: 2,
-        name: 'מחברת פשוט להודות',
-        shortDescription: 'מחברת מעוצבת לכתיבת תודות',
-        price: 35,
-        bulkPrice: 30,
-        bulkMinimum: 10,
-        image: 'https://i.imgur.com/ielPgE4.jpeg',
-        icon: Heart,
-        link: 'https://lp.vp4.me/qqkm',
-      }
-    ];
+  // Fallback data in case Google Sheets fails
+  const fallbackProducts = [
+    {
+      id: 1,
+      name: 'קלפי מסע החיים',
+      shortDescription: 'קלפים מעוררי השראה שנכתבו מתוך 30 שנות טיפול והנחיה',
+      price: 180,
+      image: 'https://i.imgur.com/EvOv2HL.jpeg',
+      icon: Sparkles,
+      link: 'https://lp.vp4.me/17y3',
+    },
+    {
+      id: 2,
+      name: 'מחברת פשוט להודות',
+      shortDescription: 'מחברת מעוצבת לכתיבת תודות',
+      price: 35,
+      bulkPrice: 30,
+      bulkMinimum: 10,
+      image: 'https://i.imgur.com/ielPgE4.jpeg',
+      icon: Heart,
+      link: 'https://lp.vp4.me/qqkm',
+    }
+  ];
 
-    const fallbackBundles = [
-      {
-        id: 'bundle1',
-        name: 'חבילת קלפים + מחברת',
-        description: 'קלפי מסע החיים + מחברת פשוט להודות',
-        items: ['קלפי מסע החיים', 'מחברת פשוט להודות'],
-        originalPrice: 215,
-        price: 200,
-        savings: 15,
-        image: '🎁'
-      }
-    ];
-
-    const fallbackPickupPoints = [
-      {
-        area: 'מרכז',
-        locations: [
-          { city: 'פתח תקוה', address: 'רח׳ דגל ראובן 27', contact: 'חגית גרינברג', phone: '058-6253893' }
-        ]
-      }
-    ];
-
-    // Use Google Sheets data if available, otherwise use fallback
-    const products = sheetProducts.length > 0 ? sheetProducts : fallbackProducts;
-    const bundles = sheetBundles.length > 0 ? sheetBundles : fallbackBundles;
-    const pickupPoints = sheetPickupPoints.length > 0 ? sheetPickupPoints : fallbackPickupPoints;
-
-    // Hardcoded lessons and events (rarely change)
-    const lessons = [
-      { id: 1, title: 'שיעור ראשון', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
-      { id: 2, title: 'שיעור שני', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
-    ];
-
-    const events = [
-      { id: 1, title: 'ערב העצמה לנשים', date: '2025-02-15', location: 'תל אביב', description: 'ערב מיוחד של חיבור והעצמה' },
-    ];
-
-    // Cart functions
-    const addToCart = (product, quantity = 1) => {
-      if (product.id === 2 && quantity > 50) {
-        setShowBulkPopup(true);
-        return;
-      }
-
-      const existingItem = cart.find(item => item.id === product.id);
-      if (existingItem) {
-        const newQuantity = existingItem.quantity + quantity;
-        if (product.id === 2 && newQuantity > 50) {
-          setShowBulkPopup(true);
-          return;
-        }
-        setCart(cart.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: newQuantity }
-            : item
-        ));
-      } else {
-        setCart([...cart, { ...product, quantity }]);
-      }
-      setShowNotification(true);
-      setTimeout(() => setShowNotification(false), 2000);
-    };
-
-    const removeFromCart = (productId) => {
-      setCart(cart.filter(item => item.id !== productId));
-    };
-
-    const updateQuantity = (productId, newQuantity) => {
-      const item = cart.find(i => i.id === productId);
-      if (item && item.id === 2 && newQuantity > 50) {
-        setShowBulkPopup(true);
-        return;
-      }
-
-      if (newQuantity === 0) {
-        removeFromCart(productId);
-      } else {
-        setCart(cart.map(item =>
-          item.id === productId
-            ? { ...item, quantity: newQuantity }
-            : item
-        ));
-      }
-    };
-
-    const getTotalPrice = () => {
-      return cart.reduce((sum, item) => {
-        let price = item.salePrice || item.price;
-        if (item.id === 2 && item.quantity >= 10) {
-          price = 30;
-        }
-        return sum + (price * item.quantity);
-      }, 0);
-    };
-
-    const getTotalItems = () => {
-      return cart.reduce((sum, item) => sum + item.quantity, 0);
-    };
-
-    const handleCheckout = () => {
-      const message = cart.map(item => {
-        let priceInfo = '';
-        if (item.id === 2 && item.quantity >= 10) {
-          priceInfo = ' (מחיר מיוחד: ₪30 ליחידה)';
-        }
-        return `${item.name} x${item.quantity}${priceInfo}`;
-      }).join('\n');
-      const total = getTotalPrice();
-      const whatsappMessage = encodeURIComponent(
-        `שלום יעל! אשמח להזמין:\n${message}\n\nסה"כ: ₪${total}`
-      );
-      window.open(`https://wa.me/${texts.contact_whatsapp || '972546588503'}?text=${whatsappMessage}`, '_blank');
-    };
-
-    return {
-      cart, setCart,
-      isCartOpen, setIsCartOpen,
-      showNotification, setShowNotification,
-      selectedProduct, setSelectedProduct,
-      expandedPickup, setExpandedPickup,
-      showBulkPopup, setShowBulkPopup,
-      products, bundles, pickupPoints, lessons, events,
-      texts, // 👈 New! Texts from Google Sheets
-      addToCart, removeFromCart, updateQuantity,
-      getTotalPrice, getTotalItems, handleCheckout
-    };
-  };
-
-
-  const bundles = [
+  const fallbackBundles = [
     {
       id: 'bundle1',
       name: 'חבילת קלפים + מחברת',
@@ -413,75 +281,33 @@ const useSharedState = () => {
     }
   ];
 
-  const pickupPoints = [
+  const fallbackPickupPoints = [
     {
-      area: 'מרכז', locations: [
+      area: 'מרכז',
+      locations: [
         { city: 'פתח תקוה', address: 'רח׳ דגל ראובן 27', contact: 'חגית גרינברג', phone: '058-6253893' },
-        { city: 'רמת גן', address: 'מבצע עין 9', contact: 'אורטל', phone: '054-6588503' },
-        { city: 'תל אביב', address: 'רח׳ נתן ילין מור', contact: 'יהודה', phone: '055-6631648' },
-        { city: 'ראשון לציון / בת ים', address: 'רח׳ שושנה דמרי', contact: 'הודיה', phone: '054-6588573' },
-        { city: 'רחובות', address: 'מלצר 1', contact: 'מיכל עוקשי', phone: '052-6661033' },
-        { city: 'רעננה', address: 'הפנינה 6 (ימי ב׳ ו-ד׳)', contact: 'מוריה', phone: '054-6979143' },
-        { city: 'נתניה', address: 'רח׳ שבח 3', contact: 'פרלה', phone: '053-5269028' },
-        { city: 'חדרה', address: '', contact: 'צליל שבת', phone: '054-5315136' },
-        { city: 'חריש', address: '', contact: 'הילה לנגה', phone: '050-3199460' },
-      ]
-    },
-    {
-      area: 'ירושלים והסביבה', locations: [
-        { city: 'ירושלים - קרית משה', address: '', contact: 'בריינה', phone: '054-7984328' },
-        { city: 'בית אל', address: '', contact: 'גיתית כורסיה', phone: '054-3370180' },
-        { city: 'נוף אילון', address: '', contact: 'משפחת כורסיה', phone: '054-5971840' },
-        { city: 'נריה', address: '', contact: 'אורטל', phone: '054-6588503' },
-        { city: 'בית שמש (מרכז ביג, מושב זכריה)', address: '', contact: 'דלית', phone: '054-4535140' },
-        { city: 'מודיעין', address: 'אולפנת אורות', contact: 'הרב אשר', phone: '052-8308305' },
-        { city: 'יד בנימין', address: '', contact: 'רינה זוזוט', phone: '050-9348825' },
-        { city: 'תפוח', address: '', contact: 'טל שחר', phone: '058-4771085' },
-        { city: 'יישוב הדעת', address: '', contact: 'תפארת', phone: '058-4770975' },
-      ]
-    },
-    {
-      area: 'דרום', locations: [
-        { city: 'אשקלון - שכונת אגמים', address: '', contact: 'אורטל', phone: '054-6588503' },
-        { city: 'אשקלון', address: 'מעלה הגת 6', contact: 'סיגלית כרמי', phone: '054-3001580' },
-        { city: 'באר שבע', address: 'נחל לבן 10, שכונת הפארק', contact: 'לינוי זולדן', phone: '053-2330623' },
-        { city: 'אופקים', address: '', contact: 'הדר קוסובסקי כהן', phone: '054-5214048' },
-        { city: 'ירוחם', address: '', contact: 'ענבל אלמקייס', phone: '058-5828745' },
-        { city: 'אילת', address: 'סתונית 9 גנים א', contact: 'פדות בקנרוט', phone: '050-2527121' },
-        { city: 'ניצן', address: 'רח׳ השקמה 12א', contact: 'סמדר', phone: '052-2654733' },
-      ]
-    },
-    {
-      area: 'צפון', locations: [
-        { city: 'טבריה', address: '', contact: 'ענבל', phone: '054-6748611' },
-        { city: 'צפת', address: '', contact: 'אתי מורדיאן', phone: '050-6851140' },
-        { city: 'כרמיאל', address: '', contact: 'מרים', phone: '054-6517260' },
-        { city: 'נהריה', address: '', contact: 'דניאל אזולאי', phone: '054-6116657' },
-        { city: 'עכו / קריות', address: 'שלום הגליל 22', contact: 'גלית אלקחיל', phone: '052-8401889' },
-        { city: 'חספין (גולן)', address: '', contact: 'מיה סבג', phone: '058-4599886' },
-        { city: 'שדמות דבורה', address: '', contact: 'רחלי מרום', phone: '050-7791000' },
-      ]
-    },
-    {
-      area: 'שומרון ובנימין', locations: [
-        { city: 'אלעד', address: 'אבטליון 26', contact: 'יעל עזר', phone: '052-7062852' },
-        { city: 'שומריה', address: '', contact: 'מוריה יאול', phone: '052-8119131' },
+        { city: 'רמת גן', address: 'מבצע עין 9', contact: 'אורטל', phone: '054-6588503' }
       ]
     }
   ];
 
+  // Use Google Sheets data if available, otherwise use fallback
+  const products = sheetProducts?.length > 0 ? sheetProducts : fallbackProducts;
+  const bundles = sheetBundles?.length > 0 ? sheetBundles : fallbackBundles;
+  const pickupPoints = sheetPickupPoints?.length > 0 ? sheetPickupPoints : fallbackPickupPoints;
+  const finalTexts = texts || {};
+
+  // Hardcoded lessons and events (rarely change)
   const lessons = [
     { id: 1, title: 'שיעור ראשון', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
     { id: 2, title: 'שיעור שני', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
-    { id: 3, title: 'שיעור שלישי', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
-    { id: 4, title: 'שיעור רביעי', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
   ];
 
   const events = [
     { id: 1, title: 'ערב העצמה לנשים', date: '2025-02-15', location: 'תל אביב', description: 'ערב מיוחד של חיבור והעצמה' },
-    { id: 2, title: 'סדנת קלפים', date: '2025-02-22', location: 'ירושלים', description: 'למדי להשתמש בקלפי מסע החיים' },
   ];
 
+  // Cart functions
   const addToCart = (product, quantity = 1) => {
     if (product.id === 2 && quantity > 50) {
       setShowBulkPopup(true);
@@ -555,7 +381,7 @@ const useSharedState = () => {
     const whatsappMessage = encodeURIComponent(
       `שלום יעל! אשמח להזמין:\n${message}\n\nסה"כ: ₪${total}`
     );
-    window.open(`https://wa.me/972546588503?text=${whatsappMessage}`, '_blank');
+    window.open(`https://wa.me/${finalTexts.contact_whatsapp || '972546588503'}?text=${whatsappMessage}`, '_blank');
   };
 
   return {
@@ -566,11 +392,11 @@ const useSharedState = () => {
     expandedPickup, setExpandedPickup,
     showBulkPopup, setShowBulkPopup,
     products, bundles, pickupPoints, lessons, events,
+    texts: finalTexts,
     addToCart, removeFromCart, updateQuantity,
     getTotalPrice, getTotalItems, handleCheckout
   };
 };
-
 
 // Header Component
 const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
@@ -625,7 +451,7 @@ const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
   );
 };
 
-// Product Modal Component - WITH GALLERY AND REVIEWS
+// Product Modal Component
 const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowBulkPopup }) => {
   const [quantity, setQuantity] = useState(1);
 
@@ -787,10 +613,7 @@ const ProductModal = ({ selectedProduct, setSelectedProduct, addToCart, setShowB
                 </div>
               )}
 
-              {/* GALLERY FOR THIS PRODUCT */}
               {selectedProduct.gallery && <ProductGalleryModal images={selectedProduct.gallery} />}
-
-              {/* REVIEWS FOR THIS PRODUCT */}
               {selectedProduct.reviews && <ProductReviewsModal reviews={selectedProduct.reviews} />}
             </div>
           </div>
@@ -890,7 +713,6 @@ const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotal
     </>
   );
 };
-
 // Hero Section Component
 const HeroSection = ({ texts }) => (
   <section className="hero">
@@ -906,7 +728,7 @@ const HeroSection = ({ texts }) => (
   </section>
 );
 
-// About Section Component (for HomePage)
+// About Section Component
 const AboutSectionHome = ({ texts }) => (
   <section className="about-section-home">
     <div className="about-container">
@@ -916,16 +738,15 @@ const AboutSectionHome = ({ texts }) => (
       <div className="about-card">
         <h2 className="about-title">{texts.about_title || 'קצת עליי'}</h2>
         <div className="about-content">
-          <p>{texts.about_intro || 'נעים מאוד! שמי יעל כורסיה - מטפלת אישית וזוגית...'}</p>
-          <p>{texts.about_p1 || 'אני מייסדת מועדון הנשים "מסע החיים"...'}</p>
-          <p>{texts.about_p2 || 'לאורך השנים ליוויתי נשים רבות...'}</p>
+          <p><strong>נעים מאוד! שמי יעל כורסיה</strong> - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.</p>
+          <p>אני מייסדת מועדון הנשים <strong>"מסע החיים"</strong> - מרחב של התבוננות, השראה וצמיחה אישית.</p>
         </div>
       </div>
     </div>
   </section>
 );
 
-// Product Card Component  
+// Product Card Component
 const ProductCard = ({ product, setSelectedProduct }) => {
   const IconComponent = product.icon;
   return (
@@ -1044,7 +865,7 @@ const PickupPointsSection = ({ pickupPoints, expandedPickup, setExpandedPickup }
   </div>
 );
 
-// Home Page Component - CLEAN VERSION WITH STATS ONLY
+// Home Page Component
 const HomePage = ({ texts }) => (
   <>
     <HeroSection texts={texts} />
@@ -1070,14 +891,12 @@ const HomePage = ({ texts }) => (
       </div>
     </div>
 
-    {/* רק סטטיסטיקות! */}
     <StatsSection texts={texts} />
     <AboutSectionHome texts={texts} />
   </>
 );
 
-
-// Shop Page Component - ENHANCED
+// Shop Page Component
 const ShopPage = ({ products, bundles, pickupPoints, addToCart, setSelectedProduct, expandedPickup, setExpandedPickup }) => (
   <div className="page-content">
     <section className="products-section">
@@ -1336,10 +1155,7 @@ const AboutPage = () => (
         <div className="about-content">
           <p><strong>נעים מאוד! שמי יעל כורסיה</strong> - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.</p>
           <p>אני מייסדת מועדון הנשים <strong>"מסע החיים"</strong> - מרחב של התבוננות, השראה וצמיחה אישית, שבו אנו נפגשות מדי שבוע למסע מרגש של חיבור פנימי והתחדשות.</p>
-          <p>לאורך השנים ליוויתי נשים רבות בתהליכי מודעות, שינוי וצמיחה - ומתוך הדרך הזו נולד גם הרצון להעניק לילדים כלים רגשיים שיסייעו להם להכיר את עצמם, להתמודד עם פחדים וקשיים ולגלות את הכוחות שבתוכם.</p>
-          <p>הספר <strong>"בּוּבִּי וַאֲנִי"</strong> הוא הספר הראשון בסדרת ספרים חדשה, שמטרתה לעזור לילדים לפתח שפה רגשית, ביטחון עצמי ויכולת ביטוי בריאה - בדרך עדינה, מקרבת ומלאת לב.</p>
-          <p>בנוסף זכיתי להוציא לאור את <strong>מחברת "פשוט להודות"</strong> - מחברת מעוצבת לכתיבת תודות, שנמכרה באלפי עותקים בארץ ובעולם, ואת <strong>ערכת הקלפים "מודעות, תפילה והעצמה"</strong> - ערכה ייחודית ומרגשת המשלבת השראה, תפילה וכלים לעבודה פנימית.</p>
-          <p className="about-highlight">אני מאמינה שככל שנעניק לילדים (ולנו עצמנו) שפה רגשית, חיבור לעצמם ואמונה בטוב - נוכל ליצור עולם חומל, יצירתי ושמח יותר.</p>
+          <p>לאורך השנים ליוויתי נשים רבות בתהליכי מודעות, שינוי וצמיחה.</p>
         </div>
       </div>
     </section>
@@ -1440,7 +1256,7 @@ const Layout = ({ children, state }) => {
     cart, isCartOpen, setIsCartOpen,
     showNotification, selectedProduct, setSelectedProduct,
     showBulkPopup, setShowBulkPopup,
-    texts, // 👈 הוספנו!
+    texts,
     getTotalItems, getTotalPrice, updateQuantity, handleCheckout, addToCart
   } = state;
 
@@ -1484,12 +1300,12 @@ const Layout = ({ children, state }) => {
   );
 };
 
-// App Content Component (inside Router)
+// App Content Component
 const AppContent = () => {
   const state = useSharedState();
   const {
     products, bundles, pickupPoints, lessons, events,
-    texts, // 👈 הוספנו!
+    texts,
     addToCart, setSelectedProduct,
     expandedPickup, setExpandedPickup
   } = state;
@@ -1503,7 +1319,6 @@ const AppContent = () => {
             products={products}
             bundles={bundles}
             pickupPoints={pickupPoints}
-            texts={texts}
             addToCart={addToCart}
             setSelectedProduct={setSelectedProduct}
             expandedPickup={expandedPickup}
