@@ -6,7 +6,7 @@
 /* Balerina Font */
 @font-face {
   font-family: 'HKBalerina';
-  src: url('./assets/HKBalerina-Regular.otf') format('opentype');
+  src: url('./fonts/HKBalerina-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -3222,15 +3222,14 @@ textarea:focus {
 
 .stat-number {
   font-size: 3rem;
-  font-weight: 800;
+  font-weight: 400; /* 👈 שניתי ל-400 במקום 800 */
   color: #DAA5B4;
   margin-bottom: 0.5rem;
-  font-family: 'HKBalerina', serif;
+  font-family: 'HKBalerina', Georgia, serif; /* 👈 הוספתי בלרינה! */
   background: linear-gradient(135deg, #DAA5B4 0%, #E8B4C4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 2px 4px rgba(218, 165, 180, 0.1);
 }
 
 .stat-label {
