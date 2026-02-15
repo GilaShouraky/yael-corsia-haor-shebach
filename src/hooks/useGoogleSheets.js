@@ -2,10 +2,11 @@
 // Custom hooks to fetch data from Google Sheets
 
 import { useState, useEffect } from 'react';
+import { Sparkles, Heart, BookOpen } from 'lucide-react';
 
 // Configuration
 const SHEET_ID = '11UmnFDavMPDEhdxU6YezkgMPVC1pdaFeRyqmwtbyFTU'; // 👈 שימי את ה-ID שלך כאן!
-const API_KEY = 'AIzaSyBMmzaPQwoUmlwr4DweTsQo4XaCKNEt7PE'; // Public API key - safe to expose
+const API_KEY = 'AIzaSyD8k_6ppvnFEVDN_o9DCe7AAfeK1p2H2Rw'; // Public API key - safe to expose
 
 // Sheet names (tabs)
 const SHEETS = {
@@ -248,14 +249,14 @@ export const usePickupPoints = () => {
   return { pickupPoints, loading, error };
 };
 
+
 // Helper function to map product names to icons
 const getIconForProduct = (productName) => {
-  // Will be imported from Lucide in the component
-  if (productName?.includes('קלפ')) return 'Sparkles';
-  if (productName?.includes('מחברת')) return 'Heart';
-  if (productName?.includes('בובי')) return 'BookOpen';
-  if (productName?.includes('מנוי')) return 'Sparkles';
-  return 'Sparkles';
+  if (productName?.includes('קלפ')) return Sparkles;
+  if (productName?.includes('מחברת')) return Heart;
+  if (productName?.includes('בובי')) return BookOpen;
+  if (productName?.includes('מנוי')) return Sparkles;
+  return Sparkles;
 };
 
 // Hook to fetch lessons

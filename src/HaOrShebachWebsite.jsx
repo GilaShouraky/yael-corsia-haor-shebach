@@ -55,36 +55,81 @@ const WhatsAppIcon = ({ className }) => (
 
 // Stats Section Component
 const StatsSection = ({ texts }) => {
+  const [ref, isVisible] = useScrollAnimation();
+  const [counts, setCounts] = useState({
+    years: 0,
+    women: 0,
+    notebooks: 0,
+    workshops: 0
+  });
+
   const stats = [
-    {
-      number: texts.stats_years_num || '30+',
-      label: texts.stats_years_label || 'שנות ניסיון',
-      icon: Calendar
+    { 
+      key: 'years',
+      number: texts.stats_years_num || '30+', 
+      target: 30,
+      label: texts.stats_years_label || 'שנות ניסיון', 
+      icon: Calendar,
+      suffix: '+'
     },
-    {
-      number: texts.stats_women_num || '5000+',
-      label: texts.stats_women_label || 'נשים ליוויתי',
-      icon: Users
+    { 
+      key: 'women',
+      number: texts.stats_women_num || '5000+', 
+      target: 5000,
+      label: texts.stats_women_label || 'נשים ליוויתי', 
+      icon: Users,
+      suffix: '+'
     },
-    {
-      number: texts.stats_notebooks_num || '10,000+',
-      label: texts.stats_notebooks_label || 'מחברות נמכרו',
-      icon: Heart
+    { 
+      key: 'notebooks',
+      number: texts.stats_notebooks_num || '10,000+', 
+      target: 10000,
+      label: texts.stats_notebooks_label || 'מחברות נמכרו', 
+      icon: Heart,
+      suffix: '+'
     },
-    {
-      number: texts.stats_workshops_num || '100+',
-      label: texts.stats_workshops_label || 'סדנאות ומפגשים',
-      icon: Sparkles
+    { 
+      key: 'workshops',
+      number: texts.stats_workshops_num || '100+', 
+      target: 100,
+      label: texts.stats_workshops_label || 'סדנאות ומפגשים', 
+      icon: Sparkles,
+      suffix: '+'
     }
   ];
 
+  useEffect(() => {
+    if (!isVisible) return;
+
+    stats.forEach(stat => {
+      let current = 0;
+      const increment = stat.target / 50;
+      const duration = 1500;
+      const stepTime = duration / 50;
+
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= stat.target) {
+          current = stat.target;
+          clearInterval(timer);
+        }
+        setCounts(prev => ({
+          ...prev,
+          [stat.key]: Math.floor(current)
+        }));
+      }, stepTime);
+    });
+  }, [isVisible]);
+
   return (
-    <section className="stats-section">
+    <section ref={ref} className="stats-section">
       <div className="stats-grid">
         {stats.map((stat, index) => (
           <div key={index} className="stat-card">
             <stat.icon className="stat-icon" size={40} />
-            <div className="stat-number">{stat.number}</div>
+            <div className="stat-number">
+              {isVisible ? counts[stat.key].toLocaleString() : '0'}{stat.suffix}
+            </div>
             <div className="stat-label">{stat.label}</div>
           </div>
         ))}
@@ -92,6 +137,8 @@ const StatsSection = ({ texts }) => {
     </section>
   );
 };
+
+
 
 // Product Gallery Component
 const ProductGalleryModal = ({ images }) => {
@@ -1145,25 +1192,30 @@ const EventsPage = ({ events }) => (
   </div>
 );
 
-const AboutPage = ({ texts = {} }) => (
-  <div className="page-content">
-    <section className="about-section">
-      <div className="about-image-wrapper">
-        <img
-          src="https://i.imgur.com/01HMEOs.jpeg"
-          alt="יעל כורסיה"
-          className="about-image"
-        />
-      </div>
-      <div className="about-card">
-        <h2 className="about-title">{texts?.about_title || 'קצת עליי'}</h2>
-        <div className="about-content">
-          <p>{texts?.about_intro || 'נעים מאוד! שמי יעל כורסיה - מטפלת אישית וזוגית.'}</p>
+const AboutPage = ({ texts = {} }) => {
+  console.log('🔍 texts:', texts); // 👈 הוסיפי!
+  console.log('📝 about_intro:', texts?.about_intro); // 👈 הוסיפי!
+  
+  return (
+    <div className="page-content">
+      <section className="about-section">
+        <div className="about-image-wrapper">
+          <img
+            src="https://i.imgur.com/01HMEOs.jpeg"
+            alt="יעל כורסיה"
+            className="about-image"
+          />
         </div>
-      </div>
-    </section>
-  </div>
-);
+        <div className="about-card">
+          <h2 className="about-title">{texts?.about_title || 'קצת עליי'}</h2>
+          <div className="about-content">
+            <p>{texts?.about_intro || 'נעים מאוד! שמי יעל כורסיה - מטפלת אישית וזוגית.'}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
 
 // Contact Section Component
 const ContactSection = ({ texts }) => (
