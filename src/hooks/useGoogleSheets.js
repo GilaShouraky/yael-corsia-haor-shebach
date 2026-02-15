@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 
 // Configuration
 const SHEET_ID = '11UmnFDavMPDEhdxU6YezkgMPVC1pdaFeRyqmwtbyFTU'; // 👈 שימי את ה-ID שלך כאן!
-const API_KEY = 'AIzaSyD8nxQVFQqMtEKJxw-gLpPFZyqK7xZxZxE'; // Public API key - safe to expose
+const API_KEY = 'AIzaSyBMmzaPQwoUmlwr4DweTsQo4XaCKNEt7PE'; // Public API key - safe to expose
 
 // Sheet names (tabs)
 const SHEETS = {
