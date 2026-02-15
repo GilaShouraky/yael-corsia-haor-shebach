@@ -3,7 +3,7 @@
    Website Styles - New Color Scheme
    =========================================== */
 
-/* Balerina Font */
+/* HKBalerina Font */
 @font-face {
   font-family: 'HKBalerina';
   src: url('./fonts/HKBalerina-Regular.otf') format('opentype');
@@ -129,7 +129,7 @@ body {
 }
 
 .logo-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 2rem;
   color: var(--primary-500);
@@ -277,7 +277,7 @@ body {
 }
 
 .hero-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-size: 9rem;
   font-weight: normal;
   color: #c45a6a;
@@ -292,7 +292,7 @@ body {
 }
 
 .hero-subtitle {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-size: 2.8rem;
   font-weight: normal;
   color: #c45a6a;
@@ -408,7 +408,7 @@ body {
 }
 
 .page-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 3rem;
   color: var(--primary-500);
@@ -436,7 +436,7 @@ body {
 
 /* Section Title */
 .section-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 3rem;
   text-align: center;
@@ -456,7 +456,7 @@ body {
 }
 
 .section-title-small {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 2.5rem;
   text-align: center;
@@ -555,7 +555,7 @@ body {
 }
 
 .product-name {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 1.5rem;
   color: var(--primary-600);
@@ -693,7 +693,7 @@ body {
 }
 
 .bundle-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 1.4rem;
   font-weight: normal;
@@ -816,7 +816,7 @@ body {
 }
 
 .purchase-card h3 {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 1.2rem;
   color: var(--primary-500);
@@ -876,7 +876,7 @@ body {
 }
 
 .region-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 1.2rem;
   color: var(--primary-500);
@@ -1052,7 +1052,7 @@ body {
 }
 
 .subscribe-success h2 {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   color: var(--primary-500);
   margin-bottom: 0.5rem;
@@ -1124,7 +1124,7 @@ body {
 }
 
 .lesson-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   padding: 1rem;
   text-align: center;
@@ -1175,7 +1175,7 @@ body {
 }
 
 .event-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 1.4rem;
   margin-bottom: 0.5rem;
@@ -1304,7 +1304,7 @@ body {
 }
 
 .contact-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 2rem;
   color: var(--primary-500);
@@ -1469,7 +1469,7 @@ body {
 }
 
 .modal-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 2rem;
   color: var(--primary-500);
@@ -1527,7 +1527,7 @@ body {
 }
 
 .modal-section h3 {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   color: var(--primary-500);
   font-size: 1.1rem;
@@ -1629,7 +1629,7 @@ body {
 }
 
 .cart-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 1.4rem;
   color: var(--primary-500);
@@ -1871,7 +1871,7 @@ body {
 }
 
 .bulk-popup-content h3 {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-size: 1.8rem;
   color: var(--primary-600);
   margin-bottom: 1rem;
@@ -2031,7 +2031,7 @@ body {
 }
 
 .about-section-home .about-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   font-size: 2.5rem;
   color: var(--primary-600);
@@ -3053,7 +3053,7 @@ textarea:focus {
   font-size: 1.8rem;
   font-weight: bold;
   color: var(--primary-600);
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
 }
 
 .product-original-price {
@@ -3066,7 +3066,7 @@ textarea:focus {
   font-size: 1.8rem;
   font-weight: bold;
   color: var(--secondary-600);
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
 }
 
 .details-button {
