@@ -439,7 +439,7 @@ const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
             className="join-whatsapp-button"
           >
             <WhatsAppIcon className="whatsapp-header-icon" />
-            <span className="join-text">להצטרפות לקבוצת העצמה לחצי כאן</span>
+            <span className="join-text">להצטרפות לקבוצת העצמה בחינם</span>
           </a>
           <button
             onClick={() => setIsCartOpen(!isCartOpen)}
