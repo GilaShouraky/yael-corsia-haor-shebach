@@ -5,10 +5,11 @@
 
 /* Balerina Font */
 @font-face {
-  font-family: 'Balerina';
-  src: url('./fonts/HKBalerina-Regular.otf') format('opentype');
+  font-family: 'HKBalerina';
+  src: url('./assets/HKBalerina-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 /* CSS Variables - Colors from Image (Flowers & Sunset) */
@@ -1249,7 +1250,7 @@ body {
 }
 
 .about-title {
-  font-family: 'HKBalerina', serif;
+  font-family: 'HKBalerina', 'Arial', sans-serif; /* 👈 fallback */
   font-weight: normal;
   color: var(--primary-500);
   margin-bottom: 2rem;
@@ -1267,7 +1268,7 @@ body {
   transform: translateX(-50%);
   width: 100px;
   height: 3px;
-  background: linear-gradient(90deg, transparent, #DAA5B4, transparent);
+  background: linear-gradient(90deg, transparent, var(--primary-500), transparent);
   border-radius: 2px;
 }
 
