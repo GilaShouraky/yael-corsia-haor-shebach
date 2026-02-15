@@ -233,7 +233,7 @@ const useSharedState = () => {
   const { bundles: sheetBundles, loading: bundlesLoading } = useBundles();
   const { pickupPoints: sheetPickupPoints, loading: pickupLoading } = usePickupPoints();
   const { lessons: sheetLessons, loading: lessonsLoading } = useLessons();
-const { events: sheetEvents, loading: eventsLoading } = useEvents();
+  const { events: sheetEvents, loading: eventsLoading } = useEvents();
 
   // Fallback data in case Google Sheets fails
   const fallbackProducts = [
@@ -301,18 +301,18 @@ const { events: sheetEvents, loading: eventsLoading } = useEvents();
 
   // Hardcoded lessons and events (rarely change)
   // Fallback lessons and events
-const fallbackLessons = [
-  { id: 1, title: 'שיעור ראשון', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
-  { id: 2, title: 'שיעור שני', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
-];
+  const fallbackLessons = [
+    { id: 1, title: 'שיעור ראשון', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
+    { id: 2, title: 'שיעור שני', thumbnail: '🎬', youtubeUrl: 'https://youtube.com/watch?v=XXXXX' },
+  ];
 
-const fallbackEvents = [
-  { id: 1, title: 'ערב העצמה לנשים', date: '2025-02-15', location: 'תל אביב', description: 'ערב מיוחד של חיבור והעצמה' },
-];
+  const fallbackEvents = [
+    { id: 1, title: 'ערב העצמה לנשים', date: '2025-02-15', location: 'תל אביב', description: 'ערב מיוחד של חיבור והעצמה' },
+  ];
 
-// Use Google Sheets data if available
-const lessons = sheetLessons?.length > 0 ? sheetLessons : fallbackLessons;
-const events = sheetEvents?.length > 0 ? sheetEvents : fallbackEvents;
+  // Use Google Sheets data if available
+  const lessons = sheetLessons?.length > 0 ? sheetLessons : fallbackLessons;
+  const events = sheetEvents?.length > 0 ? sheetEvents : fallbackEvents;
 
   // Cart functions
   const addToCart = (product, quantity = 1) => {
@@ -736,7 +736,7 @@ const HeroSection = ({ texts }) => (
 );
 
 // About Section Component
-const AboutSectionHome = ({ texts }) => (
+const AboutSectionHome = ({ texts = {} }) => (
   <section className="about-section-home">
     <div className="about-container">
       <div className="about-image-wrapper">
@@ -1145,7 +1145,7 @@ const EventsPage = ({ events }) => (
   </div>
 );
 
-const AboutPage = ({ texts }) => (
+const AboutPage = ({ texts = {} }) => (
   <div className="page-content">
     <section className="about-section">
       <div className="about-image-wrapper">
@@ -1156,9 +1156,9 @@ const AboutPage = ({ texts }) => (
         />
       </div>
       <div className="about-card">
-        <h2 className="about-title">{texts.about_title || 'קצת עליי'}</h2>
+        <h2 className="about-title">{texts?.about_title || 'קצת עליי'}</h2>
         <div className="about-content">
-          <p>{texts.about_intro || 'נעים מאוד! שמי יעל כורסיה - מטפלת אישית וזוגית, מנטורית ומנחת סדנאות מודעות עצמית יהודית מעל ל-30 שנה.'}</p>
+          <p>{texts?.about_intro || 'נעים מאוד! שמי יעל כורסיה - מטפלת אישית וזוגית.'}</p>
         </div>
       </div>
     </section>
