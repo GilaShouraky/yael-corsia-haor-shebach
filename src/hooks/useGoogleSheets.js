@@ -12,7 +12,9 @@ const SHEETS = {
   PRODUCTS: 'מוצרים',
   TEXTS: 'טקסטים',
   BUNDLES: 'חבילות',
-  PICKUP_POINTS: 'נקודות_איסוף'
+  PICKUP_POINTS: 'נקודות_איסוף',
+  LESSONS: 'שיעורים',      // ← הוסיפי!
+  EVENTS: 'אירועים'        // ← הוסיפי!
 };
 
 // Helper function to parse JSON safely
@@ -254,6 +256,81 @@ const getIconForProduct = (productName) => {
   if (productName?.includes('בובי')) return 'BookOpen';
   if (productName?.includes('מנוי')) return 'Sparkles';
   return 'Sparkles';
+};
+
+// Hook to fetch lessons
+export const useLessons = () => {
+  const [lessons, setLessons] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchLessons = async () => {
+      try {
+        setLoading(true);
+        const rows = await fetchSheet(SHEETS.LESSONS);
+        const lessonsData = rowsToObjects(rows);
+        
+        const transformedLessons = lessonsData.map(l => ({
+          id: parseInt(l.id),
+          title: l.כותרת,
+          thumbnail: '🎬',
+          youtubeUrl: l.קישור_יוטיוב
+        }));
+        
+        setLessons(transformedLessons);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching lessons:', err);
+        setError(err.message);
+        setLessons([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLessons();
+  }, []);
+
+  return { lessons, loading, error };
+};
+
+// Hook to fetch events
+export const useEvents = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const rows = await fetchSheet(SHEETS.EVENTS);
+        const eventsData = rowsToObjects(rows);
+        
+        const transformedEvents = eventsData.map(e => ({
+          id: parseInt(e.id),
+          title: e.שם_האירוע,
+          date: e.תאריך,
+          location: e.מיקום,
+          description: e.תיאור
+        }));
+        
+        setEvents(transformedEvents);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching events:', err);
+        setError(err.message);
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  return { events, loading, error };
 };
 
 // Export configuration for direct access if needed
