@@ -1242,21 +1242,23 @@ body {
   padding: 3rem;
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  max-width: 900px; /* 👈 הגדלתי מ-800 ל-900 */
+  max-width: 900px;
+  /* 👈 הגדלתי מ-800 ל-900 */
   width: 100%;
   margin: 0 auto;
 }
 
 .about-title {
-  font-family: 'Balerina', serif;
+  font-family: 'HKBalerina', serif;
   font-weight: normal;
   color: var(--primary-500);
   margin-bottom: 2rem;
   text-align: center;
-    font-size: 2.5rem;
+  font-size: 2.5rem;
   position: relative;
   padding-bottom: 1rem;
 }
+
 .about-title::after {
   content: '';
   position: absolute;
@@ -1268,6 +1270,7 @@ body {
   background: linear-gradient(90deg, transparent, #DAA5B4, transparent);
   border-radius: 2px;
 }
+
 .about-content {
   white-space: pre-line;
   line-height: 2;
@@ -2040,7 +2043,7 @@ body {
 
 .about-section-home .about-content p {
   color: var(--warm-gray-600);
-   margin-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
   line-height: 2;
   white-space: pre-line;
   /* 👈 גם כאן! */
@@ -3242,11 +3245,11 @@ textarea:focus {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
-  
+
   .stat-card {
     padding: 2rem 1rem;
   }
-  
+
   .stat-number {
     font-size: 2.5rem;
   }
