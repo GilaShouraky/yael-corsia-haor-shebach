@@ -352,61 +352,6 @@ body {
   color: var(--warm-gray-600);
   margin-bottom: 2.5rem;
 }
-.home-links {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 👈 4 עמודות קבועות */
-  gap: 1.5rem;
-  max-width: 800px; /* 👈 קטן יותר */
-  margin: 3rem auto;
-  padding: 0 2rem;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .home-links {
-    grid-template-columns: repeat(2, 1fr); /* 👈 2 בשורה במובייל */
-    gap: 1rem;
-  }
-}
-@media (max-width: 480px) {
-  .home-links {
-    grid-template-columns: repeat(2, 1fr); /* 👈 2 בשורה גם בנייד קטן */
-  }
-}
-
-.home-link-card {
-  background: white;
-  padding: 2rem 1.5rem; /* 👈 קטן יותר */
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  color: #DAA5B4;
-  border: 2px solid transparent;
-  cursor: pointer;
-}
-
-.home-link-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 50px rgba(218, 165, 180, 0.25);
-  border-color: #DAA5B4;
-}
-
-.home-link-icon {
-  width: 45px; /* 👈 קטן יותר */
-  height: 45px;
-  margin: 0 auto 1rem;
-  color: #DAA5B4;
-  transition: all 0.3s ease;
-}
-
-.home-link-card span {
-  display: block;
-  font-size: 1.1rem; /* 👈 קטן יותר */
-  font-weight: 600;
-  color: #333;
-}
 
 /* Page Content */
 .page-content {
@@ -1258,7 +1203,8 @@ body {
 }
 
 .about-title {
-  font-family: 'HKBalerina', 'Arial', sans-serif; /* 👈 fallback */
+  font-family: 'HKBalerina', 'Arial', sans-serif;
+  /* 👈 fallback */
   font-weight: normal;
   color: var(--primary-500);
   margin-bottom: 2rem;
@@ -1281,11 +1227,13 @@ body {
 }
 
 .about-content {
-  white-space: pre-line; /* 👈 שומר שורות ריקות */
+  white-space: pre-line;
+  /* 👈 שומר שורות ריקות */
   line-height: 2;
   font-size: 1.1rem;
   color: #444;
-  text-align: center; /* 👈 מרכוז! */
+  text-align: center;
+  /* 👈 מרכוז! */
   padding: 1rem 2rem;
   max-width: 900px;
   margin: 0 auto;
@@ -2057,7 +2005,8 @@ body {
   line-height: 2;
   margin-bottom: 1.5rem;
   white-space: pre-line;
-  text-align: center; /* 👈 מרכוז! */
+  text-align: center;
+  /* 👈 מרכוז! */
 }
 
 
@@ -2195,42 +2144,67 @@ body {
   box-shadow: 0 4px 15px rgba(196, 90, 106, 0.3);
 }
 
-/* Home Link Cards Animations */
+/* Home Links - Smaller & Compact */
+.home-links {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  max-width: 900px;
+  margin: 2.5rem auto;
+  padding: 0 2rem;
+}
+
 .home-link-card {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  overflow: hidden;
-}
-
-.home-link-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(196, 90, 106, 0.05) 0%, rgba(218, 160, 109, 0.05) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.home-link-card:hover::before {
-  opacity: 1;
+  background: white;
+  padding: 2rem 1rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  color: #DAA5B4;
+  border: 2px solid transparent;
+  cursor: pointer;
 }
 
 .home-link-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 15px 35px rgba(196, 90, 106, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 50px rgba(218, 165, 180, 0.25);
+  border-color: #DAA5B4;
 }
 
+.home-link-icon {
+  width: 35px;
+  height: 35px;
+  margin: 0 auto 0.7rem;
+  color: #DAA5B4;
+  transition: all 0.3s ease;
+}
 
 .home-link-card:hover .home-link-icon {
   transform: scale(1.15) rotate(5deg);
   color: #C88DA0;
 }
 
-.home-link-icon {
-  transition: all 0.3s ease;
+.home-link-card span {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .home-links {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-links {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* Bundle Card Animations */
@@ -3217,7 +3191,7 @@ textarea:focus {
   .stats-grid {
     gap: 2rem;
   }
-  
+
   .stat-number {
     font-size: 2rem;
   }
@@ -3228,53 +3202,4 @@ textarea:focus {
   .stats-grid {
     grid-template-columns: 1fr;
   }
-}
-
-/* Home Links - Enhanced */
-.home-links {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  max-width: 900px;
-  margin: 3rem auto;
-  padding: 0 2rem;
-}
-
-.home-link-card {
-  background: white;
-  padding: 2.5rem 2rem;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  color: #DAA5B4;
-  border: 2px solid transparent;
-  cursor: pointer;
-}
-
-.home-link-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 50px rgba(218, 165, 180, 0.25);
-  border-color: #DAA5B4;
-}
-
-.home-link-icon {
-  width: 50px;
-  height: 50px;
-  margin: 0 auto 1rem;
-  color: #DAA5B4;
-  transition: all 0.3s ease;
-}
-
-.home-link-card:hover .home-link-icon {
-  transform: scale(1.15) rotate(5deg);
-  color: #C88DA0;
-}
-
-.home-link-card span {
-  display: block;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #333;
 }

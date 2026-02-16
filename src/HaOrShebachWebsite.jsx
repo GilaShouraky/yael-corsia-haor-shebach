@@ -4,6 +4,20 @@ import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, Map
 import './YaelCorsiaWebsite.css';
 import { useProducts, useTexts, useBundles, usePickupPoints, useLessons, useEvents } from './hooks/useGoogleSheets';
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant' // 👈 גלילה מיידית ללא אנימציה
+    });
+  }, [pathname]);
+
+  return null;
+};
+
 // Custom Hook for Scroll Animation
 const useScrollAnimation = () => {
   const ref = useRef(null);
@@ -64,35 +78,35 @@ const StatsSection = ({ texts }) => {
   });
 
   const stats = [
-    { 
+    {
       key: 'years',
-      number: texts.stats_years_num || '30+', 
+      number: texts.stats_years_num || '30+',
       target: 30,
-      label: texts.stats_years_label || 'שנות ניסיון', 
+      label: texts.stats_years_label || 'שנות ניסיון',
       icon: Calendar,
       suffix: '+'
     },
-    { 
+    {
       key: 'women',
-      number: texts.stats_women_num || '5000+', 
+      number: texts.stats_women_num || '5000+',
       target: 5000,
-      label: texts.stats_women_label || 'נשים ליוויתי', 
+      label: texts.stats_women_label || 'נשים ליוויתי',
       icon: Users,
       suffix: '+'
     },
-    { 
+    {
       key: 'notebooks',
-      number: texts.stats_notebooks_num || '10,000+', 
+      number: texts.stats_notebooks_num || '10,000+',
       target: 10000,
-      label: texts.stats_notebooks_label || 'מחברות נמכרו', 
+      label: texts.stats_notebooks_label || 'מחברות נמכרו',
       icon: Heart,
       suffix: '+'
     },
-    { 
+    {
       key: 'workshops',
-      number: texts.stats_workshops_num || '100+', 
+      number: texts.stats_workshops_num || '100+',
       target: 100,
-      label: texts.stats_workshops_label || 'סדנאות ומפגשים', 
+      label: texts.stats_workshops_label || 'סדנאות ומפגשים',
       icon: Sparkles,
       suffix: '+'
     }
@@ -1192,30 +1206,25 @@ const EventsPage = ({ events }) => (
   </div>
 );
 
-const AboutPage = ({ texts = {} }) => {
-  console.log('🔍 texts:', texts); // 👈 הוסיפי!
-  console.log('📝 about_intro:', texts?.about_intro); // 👈 הוסיפי!
-  
-  return (
-    <div className="page-content">
-      <section className="about-section">
-        <div className="about-image-wrapper">
-          <img
-            src="https://i.imgur.com/01HMEOs.jpeg"
-            alt="יעל כורסיה"
-            className="about-image"
-          />
+const AboutPage = ({ texts = {} }) => (
+  <div className="page-content">
+    <section className="about-section">
+      <div className="about-image-wrapper">
+        <img
+          src="https://i.imgur.com/01HMEOs.jpeg"
+          alt="יעל כורסיה"
+          className="about-image"
+        />
+      </div>
+      <div className="about-card">
+        <h2 className="about-title">{texts?.about_title || 'קצת עליי'}</h2>
+        <div className="about-content">
+          <p>{texts?.about_intro || 'נעים מאוד! שמי יעל כורסיה - מטפלת אישית וזוגית.'}</p>
         </div>
-        <div className="about-card">
-          <h2 className="about-title">{texts?.about_title || 'קצת עליי'}</h2>
-          <div className="about-content">
-            <p>{texts?.about_intro || 'נעים מאוד! שמי יעל כורסיה - מטפלת אישית וזוגית.'}</p>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-};
+      </div>
+    </section>
+  </div>
+);
 
 // Contact Section Component
 const ContactSection = ({ texts }) => (
@@ -1378,12 +1387,13 @@ const AppContent = () => {
             setSelectedProduct={setSelectedProduct}
             expandedPickup={expandedPickup}
             setExpandedPickup={setExpandedPickup}
+            texts={texts}
           />
         } />
-        <Route path="/subscribe" element={<SubscribePage />} />
-        <Route path="/lessons" element={<LessonsPage lessons={lessons} />} />
-        <Route path="/events" element={<EventsPage events={events} />} />
-        <Route path="/about" element={<AboutPage />} />
+        <Route path="/subscribe" element={<SubscribePage texts={texts} />} />
+        <Route path="/lessons" element={<LessonsPage lessons={lessons} texts={texts} />} />
+        <Route path="/events" element={<EventsPage events={events} texts={texts} />} />
+        <Route path="/about" element={<AboutPage texts={texts} />} />
       </Routes>
     </Layout>
   );
@@ -1393,6 +1403,7 @@ const AppContent = () => {
 export default function HaOrShebachWebsite() {
   return (
     <BrowserRouter>
+      <ScrollToTop /> {/* 👈 הוסיפי את זה! */}
       <AppContent />
     </BrowserRouter>
   );
