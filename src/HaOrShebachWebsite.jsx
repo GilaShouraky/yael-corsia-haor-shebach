@@ -3,6 +3,10 @@ import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-do
 import { ShoppingCart, Heart, BookOpen, Sparkles, Mail, Phone, Instagram, X, MapPin, CreditCard, Truck, ChevronDown, ChevronUp, Send, Play, Calendar, Users, MessageCircle, Star, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
 import './YaelCorsiaWebsite.css';
 import { useProducts, useTexts, useBundles, usePickupPoints, useLessons, useEvents } from './hooks/useGoogleSheets';
+import CheckoutPage from './CheckoutPage_iCount';
+import './PaymentICount.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -280,7 +284,7 @@ const BulkOrderPopup = ({ isOpen, onClose }) => {
 };
 
 // Shared data and state management
-const useSharedState = () => {
+const useSharedState = (navigate) => { // 👈 קבל navigate כפרמטר!
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
@@ -438,18 +442,8 @@ const useSharedState = () => {
   };
 
   const handleCheckout = () => {
-    const message = cart.map(item => {
-      let priceInfo = '';
-      if (item.id === 2 && item.quantity >= 10) {
-        priceInfo = ' (מחיר מיוחד: ₪30 ליחידה)';
-      }
-      return `${item.name} x${item.quantity}${priceInfo}`;
-    }).join('\n');
-    const total = getTotalPrice();
-    const whatsappMessage = encodeURIComponent(
-      `שלום יעל! אשמח להזמין:\n${message}\n\nסה"כ: ₪${total}`
-    );
-    window.open(`https://wa.me/${finalTexts.contact_whatsapp || '972546588503'}?text=${whatsappMessage}`, '_blank');
+    setIsCartOpen(false); // 👈 סוגר את העגלה!
+    navigate('/checkout');
   };
 
   return {
@@ -772,8 +766,8 @@ const CartSidebar = ({ isCartOpen, setIsCartOpen, cart, updateQuantity, getTotal
               onClick={handleCheckout}
               className="checkout-button"
             >
-              <Phone className="button-icon" />
-              המשך להזמנה בוואטסאפ
+              <CreditCard className="button-icon" />
+              המשך לתשלום
             </button>
           </>
         )}
@@ -1366,12 +1360,21 @@ const Layout = ({ children, state }) => {
 
 // App Content Component
 const AppContent = () => {
-  const state = useSharedState();
+  const navigate = useNavigate();
+  const state = useSharedState(navigate);
   const {
+    // 👇 הוסיפי את כל אלה!
+    cart, setCart,
+    isCartOpen, setIsCartOpen,
+    showNotification, setShowNotification,
+    selectedProduct, setSelectedProduct,
+    expandedPickup, setExpandedPickup,
+    showBulkPopup, setShowBulkPopup,
     products, bundles, pickupPoints, lessons, events,
     texts,
-    addToCart, setSelectedProduct,
-    expandedPickup, setExpandedPickup
+    addToCart, removeFromCart, updateQuantity,
+    getTotalPrice, getTotalItems,
+    handleCheckout
   } = state;
 
   return (
@@ -1394,6 +1397,15 @@ const AppContent = () => {
         <Route path="/lessons" element={<LessonsPage lessons={lessons} texts={texts} />} />
         <Route path="/events" element={<EventsPage events={events} texts={texts} />} />
         <Route path="/about" element={<AboutPage texts={texts} />} />
+        <Route path="/checkout" element={
+          <CheckoutPage
+            cart={cart}
+            getTotalPrice={getTotalPrice}
+            setCart={setCart}
+                pickupPoints={pickupPoints} // 👈 הוסיפי!
+
+          />
+        } />
       </Routes>
     </Layout>
   );
