@@ -2,7 +2,7 @@
 // Custom hooks to fetch data from Google Sheets
 
 import { useState, useEffect } from 'react';
-import { Sparkles, Heart, BookOpen } from 'lucide-react';
+
 
 // Configuration
 const SHEET_ID = '11UmnFDavMPDEhdxU6YezkgMPVC1pdaFeRyqmwtbyFTU'; // 👈 שימי את ה-ID שלך כאן!
@@ -38,7 +38,7 @@ const parseBoolean = (str) => {
 // Fetch data from a specific sheet
 const fetchSheet = async (sheetName) => {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${sheetName}?key=${API_KEY}`;
-  
+
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -77,7 +77,7 @@ export const useProducts = () => {
         setLoading(true);
         const rows = await fetchSheet(SHEETS.PRODUCTS);
         const productsData = rowsToObjects(rows);
-        
+
         const transformedProducts = productsData
           .filter(p => parseBoolean(p.פעיל)) // Only active products
           .map((p, index) => ({
@@ -99,9 +99,8 @@ export const useProducts = () => {
             howToUse: p.איך_זה_עובד || '',
             reviews: parseJSON(p.המלצות),
             gallery: parseJSON(p.גלריה) || [],
-            icon: getIconForProduct(p.שם_המוצר)
           }));
-        
+
         setProducts(transformedProducts);
         setError(null);
       } catch (err) {
@@ -130,7 +129,7 @@ export const useTexts = () => {
       try {
         setLoading(true);
         const rows = await fetchSheet(SHEETS.TEXTS);
-        
+
         // Convert to key-value object
         const textsObj = {};
         rows.slice(1).forEach(row => {
@@ -138,7 +137,7 @@ export const useTexts = () => {
             textsObj[row[0]] = row[1];
           }
         });
-        
+
         setTexts(textsObj);
         setError(null);
       } catch (err) {
@@ -168,7 +167,7 @@ export const useBundles = () => {
         setLoading(true);
         const rows = await fetchSheet(SHEETS.BUNDLES);
         const bundlesData = rowsToObjects(rows);
-        
+
         const transformedBundles = bundlesData.map(b => ({
           id: b.id,
           name: b.שם,
@@ -180,7 +179,7 @@ export const useBundles = () => {
           recommended: parseBoolean(b.מומלץ),
           image: '🎁'
         }));
-        
+
         setBundles(transformedBundles);
         setError(null);
       } catch (err) {
@@ -210,7 +209,7 @@ export const usePickupPoints = () => {
         setLoading(true);
         const rows = await fetchSheet(SHEETS.PICKUP_POINTS);
         const pointsData = rowsToObjects(rows);
-        
+
         // Group by area
         const grouped = {};
         pointsData.forEach(p => {
@@ -225,13 +224,13 @@ export const usePickupPoints = () => {
             phone: p.טלפון
           });
         });
-        
+
         // Convert to array format
         const points = Object.keys(grouped).map(area => ({
           area,
           locations: grouped[area]
         }));
-        
+
         setPickupPoints(points);
         setError(null);
       } catch (err) {
@@ -250,15 +249,6 @@ export const usePickupPoints = () => {
 };
 
 
-// Helper function to map product names to icons
-const getIconForProduct = (productName) => {
-  if (productName?.includes('קלפ')) return Sparkles;
-  if (productName?.includes('מחברת')) return Heart;
-  if (productName?.includes('בובי')) return BookOpen;
-  if (productName?.includes('מנוי')) return Sparkles;
-  return Sparkles;
-};
-
 // Hook to fetch lessons
 export const useLessons = () => {
   const [lessons, setLessons] = useState([]);
@@ -271,14 +261,14 @@ export const useLessons = () => {
         setLoading(true);
         const rows = await fetchSheet(SHEETS.LESSONS);
         const lessonsData = rowsToObjects(rows);
-        
-        const transformedLessons = lessonsData.map(l => ({
-          id: parseInt(l.id),
-          title: l.כותרת,
-          thumbnail: '🎬',
-          youtubeUrl: l.קישור_יוטיוב
+
+        const transformedLessons = lessonsData.map((l, index) => ({
+          id: parseInt(l.id) || index + 1,
+          title: l.כותרת || l.שם || '',
+          youtubeUrl: l.קישור || l.url || '',
+          thumbnail: l.תמונה || null,
         }));
-        
+
         setLessons(transformedLessons);
         setError(null);
       } catch (err) {
@@ -308,7 +298,7 @@ export const useEvents = () => {
         setLoading(true);
         const rows = await fetchSheet(SHEETS.EVENTS);
         const eventsData = rowsToObjects(rows);
-        
+
         const transformedEvents = eventsData.map(e => ({
           id: parseInt(e.id),
           title: e.שם_האירוע,
@@ -316,7 +306,7 @@ export const useEvents = () => {
           location: e.מיקום,
           description: e.תיאור
         }));
-        
+
         setEvents(transformedEvents);
         setError(null);
       } catch (err) {

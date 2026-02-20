@@ -1,27 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CreditCard, Lock, ArrowRight, ShoppingBag, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { CreditCard, Lock, ArrowRight, ShoppingBag, X, CheckCircle, AlertCircle, Tag } from 'lucide-react';
 import './PaymentICount.css';
 import { processICountPayment, validateCardNumber, validateCVV, validateExpiry } from './ICountService';
+import { detectBundleDiscount, getBundleMessage } from './bundleDetection';
 
-const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
-  console.log('pickupPoints:', pickupPoints); // 👈 הוסיפי את זה!  const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1); // 1=details, 2=payment, 3=success
+const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints, updateQuantity, bundles, products }) => {
+  const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
 
-  // Customer Details
   const [customerData, setCustomerData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
-    idNumber: '', // ת.ז לחשבונית
+    idNumber: '',
   });
 
-  // Shipping Details
   const [shippingData, setShippingData] = useState({
-    deliveryMethod: 'delivery', // or 'pickup'
+    deliveryMethod: 'delivery',
     address: '',
     city: '',
     zipCode: '',
@@ -29,19 +28,17 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
     notes: ''
   });
 
-  // Payment Details
   const [paymentData, setPaymentData] = useState({
     cardNumber: '',
     cardHolder: '',
     expiryMonth: '',
     expiryYear: '',
     cvv: '',
-    installments: '1', // תשלומים
+    installments: '1',
   });
 
   const [validationErrors, setValidationErrors] = useState({});
 
-  // Format card number with spaces
   const formatCardNumber = (value) => {
     const numbers = value.replace(/\D/g, '');
     const groups = numbers.match(/.{1,4}/g);
@@ -66,7 +63,7 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
 
   const handlePaymentChange = (e) => {
     const { name, value } = e.target;
-
+    
     if (name === 'cardNumber') {
       const formatted = formatCardNumber(value);
       if (formatted.replace(/\s/g, '').length <= 16) {
@@ -140,7 +137,7 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
 
   const handleSubmitPayment = async (e) => {
     e.preventDefault();
-
+    
     if (!validateStep2()) {
       return;
     }
@@ -195,17 +192,17 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
       {/* Progress Steps */}
       <div className="checkout-progress">
         <div className={`progress-step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>
-          <div className="step-circle">1</div>
+          <div className="step-circle">{currentStep <= 1 ? '1' : ''}</div>
           <span>פרטים</span>
         </div>
         <div className="progress-line"></div>
         <div className={`progress-step ${currentStep >= 2 ? 'active' : ''} ${currentStep > 2 ? 'completed' : ''}`}>
-          <div className="step-circle">2</div>
+          <div className="step-circle">{currentStep <= 2 ? '2' : ''}</div>
           <span>תשלום</span>
         </div>
         <div className="progress-line"></div>
-        <div className={`progress-step ${currentStep >= 3 ? 'active' : ''}`}>
-          <div className="step-circle">3</div>
+        <div className={`progress-step ${currentStep >= 3 ? 'active' : ''} ${currentStep > 3 ? 'completed' : ''}`}>
+          <div className="step-circle">{currentStep <= 3 ? '3' : ''}</div>
           <span>אישור</span>
         </div>
       </div>
@@ -214,14 +211,12 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
       {currentStep === 1 && (
         <div className="checkout-step-container">
           <div className="checkout-grid">
-            {/* Left - Form */}
             <div className="checkout-main-section">
               <div className="section-header">
                 <h2>פרטים אישיים</h2>
                 <Lock size={20} />
               </div>
 
-              {/* Customer Details */}
               <div className="form-section">
                 <div className="form-row-2">
                   <div className="form-field">
@@ -295,7 +290,6 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
                 </div>
               </div>
 
-              {/* Delivery Method */}
               <div className="section-header">
                 <h2>אופן משלוח</h2>
               </div>
@@ -332,7 +326,6 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
                 </label>
               </div>
 
-              {/* Address or Pickup */}
               {shippingData.deliveryMethod === 'delivery' ? (
                 <div className="form-section">
                   <div className="form-field">
@@ -391,8 +384,8 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
                         pickupPoints.map((region, regionIndex) => (
                           <optgroup key={regionIndex} label={region.area}>
                             {region.locations && region.locations.map((location, locIndex) => (
-                              <option
-                                key={`${regionIndex}-${locIndex}`}
+                              <option 
+                                key={`${regionIndex}-${locIndex}`} 
                                 value={`${location.city} - ${location.location}`}
                               >
                                 {location.city} - {location.location}
@@ -404,8 +397,6 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
                         <>
                           <option value="petach-tikva">פתח תקווה - דגל ראובן 27</option>
                           <option value="ramat-gan">רמת גן - מבצע עין 9</option>
-                          <option value="jerusalem">ירושלים - הרב קוק 15</option>
-                          <option value="tel-aviv">תל אביב - דיזנגוף 200</option>
                         </>
                       )}
                     </select>
@@ -414,7 +405,6 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
                 </div>
               )}
 
-              {/* Notes */}
               <div className="form-section">
                 <div className="form-field">
                   <label>הערות להזמנה (אופציונלי)</label>
@@ -434,8 +424,7 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
               </button>
             </div>
 
-            {/* Right - Order Summary */}
-            <OrderSummary cart={cart} getTotalPrice={getTotalPrice} />
+            <OrderSummary cart={cart} getTotalPrice={getTotalPrice} updateQuantity={updateQuantity} bundles={bundles} />
           </div>
         </div>
       )}
@@ -444,7 +433,6 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
       {currentStep === 2 && (
         <div className="checkout-step-container">
           <div className="checkout-grid">
-            {/* Left - Payment Form */}
             <div className="checkout-main-section">
               <div className="section-header">
                 <h2>פרטי תשלום</h2>
@@ -468,8 +456,8 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
                     {paymentData.cardHolder || 'שם בעל הכרטיס'}
                   </div>
                   <div className="card-expiry-display">
-                    {paymentData.expiryMonth && paymentData.expiryYear
-                      ? `${paymentData.expiryMonth}/${paymentData.expiryYear}`
+                    {paymentData.expiryMonth && paymentData.expiryYear 
+                      ? `${paymentData.expiryMonth}/${paymentData.expiryYear}` 
                       : 'MM/YY'}
                   </div>
                 </div>
@@ -561,16 +549,16 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
                 </div>
 
                 <div className="payment-buttons">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentStep(1)}
+                  <button 
+                    type="button" 
+                    onClick={() => setCurrentStep(1)} 
                     className="back-btn"
                     disabled={isProcessing}
                   >
                     חזרה
                   </button>
-                  <button
-                    type="submit"
+                  <button 
+                    type="submit" 
                     className="pay-btn"
                     disabled={isProcessing}
                   >
@@ -596,8 +584,7 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
               </form>
             </div>
 
-            {/* Right - Order Summary */}
-            <OrderSummary cart={cart} getTotalPrice={getTotalPrice} />
+            <OrderSummary cart={cart} getTotalPrice={getTotalPrice} updateQuantity={updateQuantity} bundles={bundles} />
           </div>
         </div>
       )}
@@ -611,7 +598,7 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
             </div>
             <h1>התשלום בוצע בהצלחה!</h1>
             <p className="success-subtitle">תודה על הרכישה מהאור שבך</p>
-
+            
             <div className="success-details">
               <div className="detail-item">
                 <span>סכום ששולם:</span>
@@ -634,7 +621,7 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
                 חזרה לעמוד הבית
               </button>
               <button onClick={() => navigate('/shop')} className="shop-btn">
-                המשך קניות
+                חזרה לחנות
               </button>
             </div>
           </div>
@@ -644,22 +631,48 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints }) => {
   );
 };
 
-// Order Summary Component
-const OrderSummary = ({ cart, getTotalPrice }) => {
+const OrderSummary = ({ cart, getTotalPrice, updateQuantity, bundles }) => {
+  const { discount, matchedBundle } = (bundles && bundles.length > 0)
+    ? detectBundleDiscount(cart, bundles)
+    : { discount: 0, matchedBundle: null };
+  const bundleMsg = getBundleMessage(matchedBundle, discount);
+
+  const subtotal = cart.reduce((sum, item) => {
+    const isNotebook = item.id === 2;
+    const unitPrice = isNotebook && item.quantity >= 10 ? 30 : (item.salePrice || item.price);
+    return sum + unitPrice * item.quantity;
+  }, 0);
+
+  const finalTotal = Math.max(0, subtotal - discount).toFixed(2);
+
   return (
     <div className="order-summary-sidebar">
       <h3>סיכום הזמנה</h3>
-
+      
       <div className="summary-items">
         {cart.map((item) => {
           const isNotebook = item.id === 2;
           const unitPrice = isNotebook && item.quantity >= 10 ? 30 : (item.salePrice || item.price);
-
+          
           return (
             <div key={item.id} className="summary-item">
               <div className="item-info">
                 <h4>{item.name}</h4>
-                <p>כמות: {item.quantity}</p>
+                <div className="checkout-quantity-controls">
+                  <button 
+                    onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
+                    className="qty-btn"
+                  >
+                    -
+                  </button>
+                  <span className="qty-display">{item.quantity}</span>
+                  <button 
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    className="qty-btn"
+                  >
+                    +
+                  </button>
+                </div>
                 {isNotebook && item.quantity >= 10 && (
                   <span className="special-price">מחיר מיוחד!</span>
                 )}
@@ -674,9 +687,30 @@ const OrderSummary = ({ cart, getTotalPrice }) => {
 
       <div className="summary-divider"></div>
 
+      {bundleMsg && (
+        <div className="bundle-discount-banner">
+          <div className="bundle-discount-title">
+            <Tag size={16} />
+            <strong>{bundleMsg.title}</strong>
+          </div>
+          <p className="bundle-discount-msg">{bundleMsg.message}</p>
+          <div className="bundle-savings-row">
+            <span>הנחת מבצע:</span>
+            <span className="bundle-savings-amount">-₪{discount.toFixed(2)}</span>
+          </div>
+        </div>
+      )}
+
+      {discount > 0 && (
+        <div className="summary-row">
+          <span>סכום לפני הנחה:</span>
+          <span className="original-subtotal">₪{subtotal.toFixed(2)}</span>
+        </div>
+      )}
+
       <div className="summary-total">
         <span>סה"כ לתשלום</span>
-        <span className="total-amount">₪{getTotalPrice()}</span>
+        <span className="total-amount">₪{discount > 0 ? finalTotal : getTotalPrice()}</span>
       </div>
 
       <div className="payment-secure-badge">

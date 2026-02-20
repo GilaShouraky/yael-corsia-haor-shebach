@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap');
 /* ===========================================
    האור שבך - יעל כורסיה
    Website Styles - New Color Scheme
@@ -515,18 +516,16 @@ body {
 }
 
 .product-description {
-  color: var(--warm-gray-500);
-  margin-bottom: 1rem;
-  min-height: 3rem;
-  font-size: 0.875rem;
+  display: none;
 }
 
 .product-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .product-pricing {
@@ -536,22 +535,24 @@ body {
 }
 
 .product-price {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #6a8a9a;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  font-family: 'Heebo', sans-serif;
 }
 
 .product-original-price {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: normal;
   color: var(--warm-gray-400);
   text-decoration: line-through;
 }
 
 .product-sale-price {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #6a8a9a;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--secondary-600);
+  font-family: 'Heebo', sans-serif;
 }
 
 .details-button {
@@ -1639,15 +1640,17 @@ body {
 }
 
 .cart-item-name {
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--primary-600);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .cart-item-price {
+  font-family: 'Heebo', sans-serif;
   color: var(--secondary-600);
   font-weight: 600;
-  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
 }
 
 .cart-item-quantity {
@@ -1695,6 +1698,7 @@ body {
 }
 
 .cart-total {
+  font-family: 'Heebo', sans-serif;
   display: flex;
   justify-content: space-between;
   font-size: 1.1rem;
@@ -1802,70 +1806,6 @@ body {
   }
 }
 
-/* Bulk Order Popup */
-.bulk-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  z-index: 1001;
-  text-align: center;
-  max-width: 400px;
-  width: 90%;
-}
-
-.popup-close {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--warm-gray-400);
-}
-
-.bulk-popup-content h3 {
-  font-family: 'HKBalerina', serif;
-  font-size: 1.8rem;
-  color: var(--primary-600);
-  margin-bottom: 1rem;
-}
-
-.bulk-popup-content p {
-  color: var(--warm-gray-600);
-  margin-bottom: 1.5rem;
-  font-size: 1.1rem;
-}
-
-.whatsapp-bulk-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #6a8a70;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 25px;
-  border: none;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.whatsapp-bulk-button:hover {
-  transform: scale(1.05);
-  background: #5a7a60;
-  box-shadow: 0 4px 15px rgba(106, 138, 112, 0.4);
-}
-
-.whatsapp-icon {
-  width: 1.3rem;
-  height: 1.3rem;
-}
 
 /* Bulk Pricing Info in Modal */
 .bulk-pricing-info {
@@ -2304,9 +2244,7 @@ body {
   animation: scaleIn 0.3s ease-out;
 }
 
-.bulk-popup {
-  animation: scaleIn 0.3s ease-out;
-}
+
 
 /* Pickup Points Animation */
 .pickup-points {
@@ -3020,7 +2958,7 @@ textarea:focus {
 
 .product-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   gap: 1rem;
   padding-top: 1.5rem;
@@ -3036,23 +2974,23 @@ textarea:focus {
 }
 
 .product-price {
-  font-size: 1.8rem;
-  font-weight: bold;
+  font-size: 1.6rem;
+  font-weight: 700;
   color: var(--primary-600);
-  font-family: 'HKBalerina', serif;
+  font-family: 'Heebo', sans-serif;
 }
 
 .product-original-price {
-  font-size: 1.2rem;
+  font-size: 0.85rem;
   color: var(--warm-gray-400);
   text-decoration: line-through;
 }
 
 .product-sale-price {
-  font-size: 1.8rem;
-  font-weight: bold;
+  font-size: 1.6rem;
+  font-weight: 700;
   color: var(--secondary-600);
-  font-family: 'HKBalerina', serif;
+  font-family: 'Heebo', sans-serif;
 }
 
 .details-button {
@@ -3177,7 +3115,7 @@ textarea:focus {
   font-weight: 400;
   color: #DAA5B4;
   margin-bottom: 0.3rem;
-  font-family: 'HKBalerina', Georgia, serif;
+  font-family: 'Heebo', sans-serif;
 }
 
 .stat-label {
@@ -3202,4 +3140,144 @@ textarea:focus {
   .stats-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Bundle Discount Notice in Cart */
+
+
+.bundle-icon {
+  font-size: 2rem;
+}
+
+.bundle-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.bundle-info strong {
+  color: #155724;
+  font-size: 1rem;
+}
+
+.bundle-info span {
+  color: #155724;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+/* Bundle discount notice in cart - improved spacing and message */
+.bundle-discount-notice {
+  margin: 0.75rem 1rem 0;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #f0faf0, #e8f5e9);
+  border: 1.5px solid #81c784;
+  border-radius: 12px;
+  text-align: right;
+}
+
+.bundle-discount-notice .bundle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.bundle-discount-notice strong {
+  color: #2e7d32;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.bundle-discount-notice span {
+  color: #388e3c;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Bulk Order Popup */
+.bulk-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  z-index: 1100;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  animation: successPop 0.3s ease;
+}
+
+.popup-close {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #a69f94;
+  padding: 0.25rem;
+  border-radius: 50%;
+  transition: color 0.2s;
+}
+.popup-close:hover { color: #433e38; }
+
+.bulk-popup-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.bulk-popup-content h3 {
+  font-family: 'HKBalerina', serif;
+  font-size: 1.6rem;
+  color: #bf5a68;
+  font-weight: normal;
+  margin-bottom: 0.75rem;
+}
+
+.bulk-popup-content p {
+  color: #5c554c;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.whatsapp-bulk-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: #25D366;
+  color: white;
+  border: none;
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s, transform 0.2s;
+}
+.whatsapp-bulk-button:hover {
+  background: #1da851;
+  transform: translateY(-1px);
+}
+.whatsapp-icon {
+  width: 22px;
+  height: 22px;
+}
+
+/* Shop card overrides */
+.products-grid .product-name {
+  font-size: 1.3rem;
+  text-align: right;
+}
+.products-grid .product-info {
+  text-align: right;
+}
+.products-grid .product-footer {
+  justify-content: flex-end;
 }
