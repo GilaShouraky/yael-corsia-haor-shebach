@@ -1,3 +1,39 @@
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxM_6IkceJWXbVfiRTlqIneb7jpl2olWfaQ4blTfU6BmKXk2MvWEfkCa6Elaqk_xzNF/exec';
+
+const saveOrderToSheets = async (orderData) => {
+  try {
+    const { customer, shipping, items, totalAmount } = orderData;
+    const productNames = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+
+    const shippingDetails = shipping.deliveryMethod === 'delivery'
+      ? `משלוח עד הבית | כתובת: ${shipping.address}, ${shipping.city}, מיקוד: ${shipping.zipCode}`
+      : `איסוף עצמי | נקודת איסוף: ${shipping.pickupLocation}`;
+
+    const payload = {
+      sheet: 'רכישות',
+      date: new Date().toLocaleDateString('he-IL'),
+      products: productNames,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      email: customer.email,
+      phone: customer.phone,
+      idNumber: customer.idNumber,
+      shipping: shippingDetails,
+      totalAmount: '₪' + (totalAmount || ''),
+      notes: shipping.notes || '',
+    };
+
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    console.error('Error saving order:', err);
+  }
+};
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CreditCard, Lock, ArrowRight, ShoppingBag, X, CheckCircle, AlertCircle, Tag } from 'lucide-react';
@@ -160,6 +196,7 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints, updateQuanti
       const result = await processICountPayment(orderData);
 
       if (result.success) {
+        await saveOrderToSheets({ customer: customerData, shipping: shippingData, items: cart, totalAmount: getTotalPrice() });
         setCurrentStep(3);
         setCart([]);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -471,6 +508,8 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints, updateQuanti
                       value={paymentData.cardNumber}
                       onChange={handlePaymentChange}
                       className={validationErrors.cardNumber ? 'error' : ''}
+                      dir="ltr"
+                      style={{ textAlign: 'left' }}
                       placeholder="1234 5678 9012 3456"
                     />
                     {validationErrors.cardNumber && <span className="error-text">{validationErrors.cardNumber}</span>}

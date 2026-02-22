@@ -486,7 +486,7 @@ const Header = ({ getTotalItems, setIsCartOpen, isCartOpen }) => {
         </Link>
         <nav className="nav-links">
           <Link to="/shop" className={location.pathname === '/shop' ? 'active' : ''}>חנות</Link>
-          <Link to="/subscribe" className={location.pathname === '/subscribe' ? 'active' : ''}>מנויות</Link>
+          <Link to="/subscribe" className={location.pathname === '/subscribe' ? 'active' : ''}>הצטרפי אלינו</Link>
           <Link to="/lessons" className={location.pathname === '/lessons' ? 'active' : ''}>שיעורים</Link>
           <Link to="/events" className={location.pathname === '/events' ? 'active' : ''}>אירועים</Link>
           <Link to="/about" className={location.pathname === '/about' ? 'active' : ''}>אודות</Link>
@@ -669,7 +669,7 @@ const ProductCard = ({ product }) => {
   return (
     <div
       className="product-card"
-      onClick={() => navigate(`/product/${product.id}`)}
+      onClick={() => product.name?.includes('מנוי') ? navigate('/subscribe') : navigate(`/product/${product.id}`)}
       style={{ cursor: 'pointer' }}
     >
       <div className="product-image-container">
@@ -866,139 +866,14 @@ const ShopPage = ({ products, bundles, pickupPoints, addToCart, expandedPickup, 
   </div>
 );
 
-// Subscribe Page Component
-const SubscribePage = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    area: '',
-    whatsappGroup: false,
-    fullSubscription: false
-  });
-  const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
-    const selections = [];
-    if (formData.whatsappGroup) selections.push('קבוצת ווצאפ העצמה');
-    if (formData.fullSubscription) selections.push('מנוי שלם במסע החיים');
-
-    const message = `שלום יעל! אשמח להירשם
-שם: ${formData.firstName} ${formData.lastName}
-אזור מגורים: ${formData.area}
-אני רוצה להצטרף ל: ${selections.join(', ')}`;
-
-    const whatsappMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/972546588503?text=${whatsappMessage}`, '_blank');
-    setSubmitted(true);
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  return (
-    <div className="page-content">
-      <h1 className="page-title">הצטרפי אלינו</h1>
-
-      <div className="subscribe-container">
-        {submitted ? (
-          <div className="subscribe-success">
-            <Sparkles className="success-icon" />
-            <h2>תודה על ההרשמה!</h2>
-            <p>נחזור אלייך בהקדם</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="subscribe-form">
-            <div className="form-group">
-              <label htmlFor="firstName">שם פרטי</label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-                placeholder="הכניסי את שמך"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="lastName">שם משפחה</label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                required
-                placeholder="הכניסי את שם המשפחה"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="area">אזור מגורים</label>
-              <input
-                type="text"
-                id="area"
-                name="area"
-                value={formData.area}
-                onChange={handleChange}
-                required
-                placeholder="לדוגמה: תל אביב, ירושלים..."
-              />
-            </div>
-
-            <div className="form-group checkbox-group">
-              <label>אני רוצה להצטרף ל:</label>
-
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="whatsappGroup"
-                  name="whatsappGroup"
-                  checked={formData.whatsappGroup}
-                  onChange={handleChange}
-                />
-                <label htmlFor="whatsappGroup">קבוצת ווצאפ העצמה</label>
-              </div>
-
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="fullSubscription"
-                  name="fullSubscription"
-                  checked={formData.fullSubscription}
-                  onChange={handleChange}
-                />
-                <label htmlFor="fullSubscription">מנוי שלם במסע החיים</label>
-              </div>
-            </div>
-
-            <button type="submit" className="submit-button">
-              <Send className="button-icon" />
-              שליחה
-            </button>
-          </form>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// Helper: extract YouTube video ID from URL
 const getYouTubeId = (url) => {
   if (!url) return null;
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/);
+  const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
   return match ? match[1] : null;
 };
 
-// Lessons Page Component
 const LessonsPage = ({ lessons }) => (
   <div className="page-content">
     <h1 className="page-title">שיעורים</h1>
@@ -1022,11 +897,10 @@ const LessonsPage = ({ lessons }) => (
             className="lesson-card"
           >
             <div className="lesson-thumbnail">
-              {thumbSrc ? (
-                <img src={thumbSrc} alt={lesson.title} className="lesson-thumb-img" />
-              ) : (
-                <div className="lesson-thumb-placeholder" />
-              )}
+              <div 
+                className="lesson-thumb-bg"
+                style={thumbSrc ? { backgroundImage: `url(${thumbSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+              />
               <div className="play-overlay">
                 <div className="play-circle">
                   <Play size={32} className="play-icon-inner" />
@@ -1042,6 +916,190 @@ const LessonsPage = ({ lessons }) => (
 );
 
 // Events Page Component
+// Subscribe Page Component
+const SubscribePage = ({ texts, products, addToCart }) => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    firstName: '', lastName: '', phone: '', email: '',
+    area: '', whatsappGroup: false, fullSubscription: false,
+  });
+  const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupHasSubscription, setPopupHasSubscription] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const subscribeText = texts?.subscribe_text || '';
+  const whatsappLink = texts?.contact_whatsapp || '972546588503';
+  const subscriptionProduct = products?.find(p => p.name?.includes('מנוי'));
+
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxM_6IkceJWXbVfiRTlqIneb7jpl2olWfaQ4blTfU6BmKXk2MvWEfkCa6Elaqk_xzNF/exec';
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.firstName.trim()) newErrors.firstName = 'שדה חובה';
+    if (!formData.lastName.trim()) newErrors.lastName = 'שדה חובה';
+    if (!formData.phone.trim()) newErrors.phone = 'שדה חובה';
+    if (!formData.email.trim()) newErrors.email = 'שדה חובה';
+    if (!formData.area.trim()) newErrors.area = 'שדה חובה';
+    if (!formData.whatsappGroup && !formData.fullSubscription)
+      newErrors.selection = 'יש לבחור לפחות אפשרות אחת';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const saveToSheets = async (data) => {
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+    } catch (err) { console.error('Error saving:', err); }
+  };
+
+  const goToCheckout = () => {
+    if (subscriptionProduct) {
+      addToCart(subscriptionProduct, 1);
+      navigate('/checkout');
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+    setLoading(true);
+
+    await saveToSheets({
+      firstName: formData.firstName, lastName: formData.lastName,
+      phone: formData.phone, email: formData.email, area: formData.area,
+      whatsappGroup: formData.whatsappGroup, fullSubscription: formData.fullSubscription,
+      date: new Date().toLocaleDateString('he-IL'),
+    });
+    setLoading(false);
+
+    const onlyWhatsapp = formData.whatsappGroup && !formData.fullSubscription;
+    const both = formData.whatsappGroup && formData.fullSubscription;
+
+    if (onlyWhatsapp) {
+      setPopupHasSubscription(false);
+      setShowPopup(true);
+    } else if (both) {
+      setPopupHasSubscription(true);
+      setShowPopup(true);
+    } else {
+      goToCheckout();
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+  };
+
+  const resetForm = () => {
+    setFormData({ firstName: '', lastName: '', phone: '', email: '', area: '', whatsappGroup: false, fullSubscription: false });
+    setShowPopup(false);
+  };
+
+  return (
+    <div className="page-content">
+      <h1 className="page-title">הצטרפי אלינו</h1>
+      {subscribeText && <p className="subscribe-intro-text">{subscribeText}</p>}
+
+      {showPopup && (
+        <div className="subscribe-popup-overlay" onClick={() => setShowPopup(false)}>
+          <div className="subscribe-popup" onClick={e => e.stopPropagation()}>
+            <button className="popup-close" onClick={resetForm}>✕</button>
+
+            <div className="popup-action-plain">
+              <p>איזה כיף שבחרת להצטרף לקבוצת העצמה אישית! ההצטרפות היא חינמית, מחכה לך בפנים עם הרבה תוכן</p>
+              <a href={`https://wa.me/${whatsappLink}`} target="_blank" rel="noopener noreferrer"
+                className="popup-whatsapp-btn" onClick={resetForm}>
+                💬 לחצי כאן להצטרפות לקבוצה
+              </a>
+            </div>
+
+            {popupHasSubscription && (
+              <div className="popup-action popup-subscription">
+                <p>להמשך רכישת המנוי{subscriptionProduct?.salePrice || subscriptionProduct?.price ? ` — ₪${subscriptionProduct?.salePrice || subscriptionProduct?.price}` : ''}:</p>
+                <button className="popup-subscription-btn" onClick={() => { setShowPopup(false); goToCheckout(); }}>
+                  ✨ להמשך קניית המנוי לחצי כאן
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="subscribe-container">
+        <form onSubmit={handleSubmit} className="subscribe-form" noValidate>
+
+          <div className={`form-group ${errors.firstName ? 'has-error' : ''}`}>
+            <label htmlFor="firstName">שם פרטי <span className="required-star">*</span></label>
+            <input type="text" id="firstName" name="firstName" value={formData.firstName}
+              onChange={handleChange} placeholder="הכניסי את שמך" />
+            {errors.firstName && <span className="field-error">{errors.firstName}</span>}
+          </div>
+
+          <div className={`form-group ${errors.lastName ? 'has-error' : ''}`}>
+            <label htmlFor="lastName">שם משפחה <span className="required-star">*</span></label>
+            <input type="text" id="lastName" name="lastName" value={formData.lastName}
+              onChange={handleChange} placeholder="הכניסי את שם המשפחה" />
+            {errors.lastName && <span className="field-error">{errors.lastName}</span>}
+          </div>
+
+          <div className={`form-group ${errors.phone ? 'has-error' : ''}`}>
+            <label htmlFor="phone">מספר פלאפון <span className="required-star">*</span></label>
+            <input type="tel" id="phone" name="phone" value={formData.phone}
+              onChange={handleChange} placeholder="לדוגמה: 050-1234567" />
+            {errors.phone && <span className="field-error">{errors.phone}</span>}
+          </div>
+
+          <div className={`form-group ${errors.email ? 'has-error' : ''}`}>
+            <label htmlFor="email">כתובת מייל <span className="required-star">*</span></label>
+            <input type="email" id="email" name="email" value={formData.email}
+              onChange={handleChange} placeholder="your@email.com" />
+            {errors.email && <span className="field-error">{errors.email}</span>}
+          </div>
+
+          <div className={`form-group ${errors.area ? 'has-error' : ''}`}>
+            <label htmlFor="area">אזור מגורים <span className="required-star">*</span></label>
+            <input type="text" id="area" name="area" value={formData.area}
+              onChange={handleChange} placeholder="לדוגמה: תל אביב, ירושלים..." />
+            {errors.area && <span className="field-error">{errors.area}</span>}
+          </div>
+
+          <div className={`form-group checkbox-group ${errors.selection ? 'has-error' : ''}`}>
+            <label>אני רוצה להצטרף ל: <span className="required-star">*</span></label>
+            <div className="checkbox-item">
+              <input type="checkbox" id="whatsappGroup" name="whatsappGroup"
+                checked={formData.whatsappGroup} onChange={handleChange} />
+              <label htmlFor="whatsappGroup">קבוצת ווצאפ העצמה אישית</label>
+            </div>
+            <div className="checkbox-item">
+              <input type="checkbox" id="fullSubscription" name="fullSubscription"
+                checked={formData.fullSubscription} onChange={handleChange} />
+              <label htmlFor="fullSubscription">
+                מנוי למסע החיים עם יעל כורסיה
+                {(subscriptionProduct?.salePrice || subscriptionProduct?.price)
+                  ? ` — ₪${subscriptionProduct?.salePrice || subscriptionProduct?.price}`
+                  : ''}
+              </label>
+            </div>
+            {errors.selection && <span className="field-error">{errors.selection}</span>}
+          </div>
+
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? <span>אנא המתיני...</span> : <><Send className="button-icon" />לשלב הבא</>}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+
 const EventsPage = ({ events }) => (
   <div className="page-content">
     <h1 className="page-title">אירועים</h1>
@@ -1260,7 +1318,7 @@ const AppContent = () => {
             texts={texts}
           />
         } />
-        <Route path="/subscribe" element={<SubscribePage texts={texts} />} />
+        <Route path="/subscribe" element={<SubscribePage texts={texts} products={products} addToCart={addToCart} />} />
         <Route path="/lessons" element={<LessonsPage lessons={lessons} texts={texts} />} />
         <Route path="/events" element={<EventsPage events={events} texts={texts} />} />
         <Route path="/about" element={<AboutPage texts={texts} />} />

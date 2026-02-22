@@ -2,7 +2,7 @@
 // Custom hooks to fetch data from Google Sheets
 
 import { useState, useEffect } from 'react';
-
+import { Sparkles, Heart, BookOpen } from 'lucide-react';
 
 // Configuration
 const SHEET_ID = '11UmnFDavMPDEhdxU6YezkgMPVC1pdaFeRyqmwtbyFTU'; // 👈 שימי את ה-ID שלך כאן!
@@ -91,7 +91,7 @@ export const useProducts = () => {
             bulkPrice: parseFloat(p.מחיר_כמות) || null,
             bulkMinimum: parseInt(p.כמות_מינימום) || null,
             bulkMaxBeforePopup: 50,
-            image: p.תמונה_ראשית || '✨',
+            image: p.תמונה || p.תמונה_ראשית || '✨',
             link: p.קישור_למוצר || '',
             comingSoon: parseBoolean(p.בקרוב),
             whatsInside: parseJSON(p.מה_בערכה),
@@ -99,6 +99,7 @@ export const useProducts = () => {
             howToUse: p.איך_זה_עובד || '',
             reviews: parseJSON(p.המלצות),
             gallery: parseJSON(p.גלריה) || [],
+            icon: getIconForProduct(p.שם_המוצר)
           }));
 
         setProducts(transformedProducts);
@@ -249,6 +250,15 @@ export const usePickupPoints = () => {
 };
 
 
+// Helper function to map product names to icons
+const getIconForProduct = (productName) => {
+  if (productName?.includes('קלפ')) return Sparkles;
+  if (productName?.includes('מחברת')) return Heart;
+  if (productName?.includes('בובי')) return BookOpen;
+  if (productName?.includes('מנוי')) return Sparkles;
+  return Sparkles;
+};
+
 // Hook to fetch lessons
 export const useLessons = () => {
   const [lessons, setLessons] = useState([]);
@@ -262,17 +272,19 @@ export const useLessons = () => {
         const rows = await fetchSheet(SHEETS.LESSONS);
         const lessonsData = rowsToObjects(rows);
 
-        const transformedLessons = lessonsData.map((l, index) => ({
+        const transformedLessons = lessonsData.map((l, index) => {
+          console.log('Lesson data:', l);
+          return {
           id: parseInt(l.id) || index + 1,
           title: l.כותרת || l.שם || '',
-          youtubeUrl: l.קישור || l.url || '',
+          youtubeUrl: l.קישור_יוטיוב || l.קישור || l.url || '',
           thumbnail: l.תמונה || null,
-        }));
+        }});
 
         setLessons(transformedLessons);
         setError(null);
       } catch (err) {
-        console.error('Error fetching lessons:', err);
+        console.error('Error loading lessons:', err);
         setError(err.message);
         setLessons([]);
       } finally {

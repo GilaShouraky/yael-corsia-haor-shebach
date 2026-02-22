@@ -452,3 +452,26 @@
 .product-original-link:hover {
   color: #4a7f98;
 }
+
+/* Coming Soon notice on product page */
+.coming-soon-notice {
+  background: linear-gradient(135deg, #fef5f6, #fdf0e8);
+  border: 2px solid #DAA5B4;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  text-align: center;
+}
+
+.coming-soon-badge-large {
+  display: inline-block;
+  font-family: 'HKBalerina', serif;
+  font-size: 1.8rem;
+  color: #bf5a68;
+  margin-bottom: 0.5rem;
+}
+
+.coming-soon-notice p {
+  color: #7a7267;
+  font-size: 1rem;
+  margin: 0.5rem 0 0;
+}

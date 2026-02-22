@@ -328,6 +328,8 @@
   letter-spacing: 0.2rem;
   font-family: 'Courier New', monospace;
   margin-bottom: 1.5rem;
+  direction: ltr;
+  text-align: left;
   font-weight: 600;
 }
 

@@ -168,34 +168,43 @@ const ProductPage = ({ products, bundles, addToCart }) => {
             </div>
           )}
 
-          {/* כמות */}
-          <div className="product-quantity-section">
-            <label>כמות:</label>
-            <div className="quantity-controls-large">
-              <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>−</button>
-              <input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                min="1"
-              />
-              <button onClick={() => setQuantity(quantity + 1)}>+</button>
+          {/* כמות והוספה לסל - רק אם לא בקרוב */}
+          {product.comingSoon ? (
+            <div className="coming-soon-notice">
+              <span className="coming-soon-badge-large">⏳ בקרוב!</span>
+              <p>המוצר עדיין לא זמין לרכישה. בקרוב יהיה אפשר להזמין!</p>
             </div>
-            <div className="total-price-display">
-              <span>סה"כ:</span>
-              <strong>₪{totalPrice}</strong>
-            </div>
-          </div>
+          ) : (
+            <>
+              <div className="product-quantity-section">
+                <label>כמות:</label>
+                <div className="quantity-controls-large">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>−</button>
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                    min="1"
+                  />
+                  <button onClick={() => setQuantity(quantity + 1)}>+</button>
+                </div>
+                <div className="total-price-display">
+                  <span>סה"כ:</span>
+                  <strong>₪{totalPrice}</strong>
+                </div>
+              </div>
 
-          <button onClick={handleAddToCart} className="add-to-cart-large">
-            <ShoppingCart size={20} />
-            הוסף לסל — ₪{totalPrice}
-          </button>
+              <button onClick={handleAddToCart} className="add-to-cart-large">
+                <ShoppingCart size={20} />
+                הוסף לסל — ₪{totalPrice}
+              </button>
 
-          {showSuccess && (
-            <div className="add-success-message">
-              ✓ המוצר נוסף לסל בהצלחה!
-            </div>
+              {showSuccess && (
+                <div className="add-success-message">
+                  ✓ המוצר נוסף לסל בהצלחה!
+                </div>
+              )}
+            </>
           )}
 
           {/* קישור למוצר המקורי */}

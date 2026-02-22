@@ -92,7 +92,7 @@ export const getCardType = (cardNumber) => {
  */
 export const processICountPayment = async (orderData) => {
   try {
-    console.log('Processing iCount payment...', orderData);
+    // Payment processing
 
     // TODO: Replace with actual iCount API call when you have credentials
     
@@ -277,8 +277,7 @@ export const refundICountPayment = async (transactionId, amount = null) => {
 const simulatePayment = (orderData) => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // Simulate 90% success rate
-      const success = Math.random() > 0.1;
+      const success = true;
 
       if (success) {
         resolve({
