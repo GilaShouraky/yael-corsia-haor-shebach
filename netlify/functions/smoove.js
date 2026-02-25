@@ -56,7 +56,8 @@ exports.handler = async (event) => {
           lists_Linked: [SMOOVE_LIST_ID],
         }),
       });
-      console.log('Created:', createRes.status);
+      const createText = await createRes.text();
+      console.log('Created:', createRes.status, createText);
     }
 
     return { statusCode: 200, body: JSON.stringify({ success: true }) };
