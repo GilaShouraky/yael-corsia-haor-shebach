@@ -6,7 +6,7 @@ exports.handler = async (event) => {
   try {
     const data = JSON.parse(event.body);
 
-    const response = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
+    const response = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true&listId=' + 1117962, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
