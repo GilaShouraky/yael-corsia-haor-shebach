@@ -21,6 +21,7 @@ exports.handler = async (event) => {
         email: data.email,
         cellPhone: data.cellPhone,
         campaignSource: 'website-purchase',
+        externalId: 'website-purchase',
       }),
     });
     const resText = await res.text();
