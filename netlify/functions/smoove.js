@@ -12,55 +12,38 @@ exports.handler = async (event) => {
       'Authorization': 'Bearer ' + SMOOVE_API_KEY,
     };
 
-    // Step 1: Search by email
-    const searchRes = await fetch('https://rest.smoove.io/v1/Contacts?email=' + encodeURIComponent(data.email), {
-      method: 'GET',
+    // Step 1: Create contact (without list)
+    const createRes = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
+      method: 'POST',
       headers,
+      body: JSON.stringify({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        cellPhone: data.cellPhone,
+      }),
     });
-    const searchData = JSON.parse(await searchRes.text());
-    const contacts = Array.isArray(searchData) ? searchData : [searchData];
-    const match = contacts.find(c => c.email?.toLowerCase() === data.email.toLowerCase());
-    console.log('Match:', match?.id, 'lists:', match?.lists_Linked);
+    const createText = await createRes.text();
+    console.log('Create:', createRes.status, createText.substring(0, 200));
 
-    let contactId = match?.id;
+    let contactId;
+    try { contactId = JSON.parse(createText).id; } catch(e) {}
+    console.log('Contact ID:', contactId);
 
-    if (contactId) {
-      // Use lists from search result (more reliable than GET)
-      const currentLists = match.lists_Linked || [];
-      const newLists = [...new Set([...currentLists, SMOOVE_LIST_ID])];
-      console.log('Sending lists:', newLists);
-
-      const putRes = await fetch('https://rest.smoove.io/v1/Contacts/' + contactId, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({
-          id: contactId,
-          email: data.email,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          cellPhone: data.cellPhone,
-          lists_Linked: newLists,
-        }),
-      });
-      const putData = JSON.parse(await putRes.text());
-      console.log('PUT result lists:', putData.lists_Linked);
-    } else {
-      const createRes = await fetch('https://rest.smoove.io/v1/Contacts', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          cellPhone: data.cellPhone,
-          lists_Linked: [SMOOVE_LIST_ID],
-        }),
-      });
-      const createText = await createRes.text();
-      console.log('Created:', createRes.status, createText);
+    if (!contactId) {
+      return { statusCode: 500, body: 'No contact ID: ' + createText };
     }
 
-    return { statusCode: 200, body: JSON.stringify({ success: true }) };
+    // Step 2: Add to list via dedicated endpoint
+    const addRes = await fetch(`https://rest.smoove.io/v1/Lists/${SMOOVE_LIST_ID}/Contacts`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify([contactId]),
+    });
+    const addText = await addRes.text();
+    console.log('Add to list:', addRes.status, addText);
+
+    return { statusCode: 200, body: JSON.stringify({ success: true, contactId }) };
   } catch (err) {
     console.error('Error:', err);
     return { statusCode: 500, body: err.message };
