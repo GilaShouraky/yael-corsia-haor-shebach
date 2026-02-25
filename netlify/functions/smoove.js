@@ -12,52 +12,54 @@ exports.handler = async (event) => {
       'Authorization': 'Bearer ' + SMOOVE_API_KEY,
     };
 
-    // Step 1: Create or update contact
-    const contactRes = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
-      method: 'POST',
+    // Step 1: Search for existing contact by email
+    const searchRes = await fetch('https://rest.smoove.io/v1/Contacts?email=' + encodeURIComponent(data.email), {
+      method: 'GET',
       headers,
-      body: JSON.stringify({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        cellPhone: data.cellPhone,
-      }),
     });
+    const searchText = await searchRes.text();
+    console.log('Search:', searchRes.status, searchText);
 
-    const contactText = await contactRes.text();
-    console.log('Contact raw:', contactRes.status, contactText);
-
-    let contactId;
+    let contactId = null;
     try {
-      const contactData = JSON.parse(contactText);
-      contactId = contactData.id;
-    } catch (e) {
-      console.error('Could not parse contact response:', contactText);
-      return { statusCode: 500, body: 'Could not parse contact: ' + contactText };
+      const searchData = JSON.parse(searchText);
+      contactId = Array.isArray(searchData) ? searchData[0]?.id : searchData?.id;
+    } catch(e) {}
+
+    if (contactId) {
+      // Contact exists - add to list via PUT
+      const putRes = await fetch('https://rest.smoove.io/v1/Contacts/' + contactId, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({
+          id: contactId,
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          cellPhone: data.cellPhone,
+          lists_Linked: [SMOOVE_LIST_ID],
+        }),
+      });
+      const putText = await putRes.text();
+      console.log('PUT existing:', putRes.status, putText);
+    } else {
+      // New contact - create with list
+      const createRes = await fetch('https://rest.smoove.io/v1/Contacts', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          cellPhone: data.cellPhone,
+          lists_Linked: [SMOOVE_LIST_ID],
+        }),
+      });
+      const createText = await createRes.text();
+      console.log('Create new:', createRes.status, createText);
     }
 
-    if (!contactId) {
-      return { statusCode: 500, body: 'No contact ID' };
-    }
-
-    // Step 2: PATCH to add list
-    const patchRes = await fetch('https://rest.smoove.io/v1/Contacts/' + contactId, {
-      method: 'PATCH',
-      headers,
-      body: JSON.stringify({ lists_Linked: [SMOOVE_LIST_ID] }),
-    });
-    const patchText = await patchRes.text();
-    console.log('PATCH:', patchRes.status, patchText);
-
-    // Step 3: PUT to list endpoint
-    const listRes = await fetch('https://rest.smoove.io/v1/Lists/' + SMOOVE_LIST_ID + '/Contacts/' + contactId, {
-      method: 'PUT',
-      headers,
-    });
-    const listText = await listRes.text();
-    console.log('List PUT:', listRes.status, listText);
-
-    return { statusCode: 200, body: JSON.stringify({ success: true, contactId }) };
+    return { statusCode: 200, body: JSON.stringify({ success: true }) };
   } catch (err) {
     console.error('Error:', err);
     return { statusCode: 500, body: err.message };
