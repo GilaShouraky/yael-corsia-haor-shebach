@@ -21,47 +21,27 @@ exports.handler = async (event) => {
         lastName: data.lastName,
         email: data.email,
         cellPhone: data.cellPhone,
-        lists_Linked: [SMOOVE_LIST_ID],
       }),
     });
 
     const contactData = await contactRes.json();
-    console.log('Contact upsert:', contactRes.status, JSON.stringify(contactData));
+    console.log('Contact upsert:', contactRes.status, contactData.id);
 
     const contactId = contactData.id;
     if (!contactId) {
       return { statusCode: 500, body: 'No contact ID returned' };
     }
 
-    // Step 2: Update contact to include the new list (merge with existing lists)
-    const existingLists = contactData.lists_Linked || [];
-    if (!existingLists.includes(SMOOVE_LIST_ID)) {
-      const updatedLists = [...existingLists, SMOOVE_LIST_ID];
-      const updateRes = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          email: data.email,
-          lists_Linked: updatedLists,
-        }),
-      });
-      const updateText = await updateRes.text();
-      console.log('Update lists:', updateRes.status, updateText);
-    }
-
-    // Step 3: Also try AsyncContacts with listId to force add to list
-    const asyncRes = await fetch('https://rest.smoove.io/v1/AsyncContacts?listId=' + SMOOVE_LIST_ID + '&updateIfExists=true', {
-      method: 'POST',
+    // Step 2: PUT to update the specific contact with new list
+    const putRes = await fetch('https://rest.smoove.io/v1/Contacts/' + contactId, {
+      method: 'PUT',
       headers,
       body: JSON.stringify({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        cellPhone: data.cellPhone,
+        lists_Linked: [...(contactData.lists_Linked || []), SMOOVE_LIST_ID],
       }),
     });
-    const asyncText = await asyncRes.text();
-    console.log('AsyncContacts:', asyncRes.status, asyncText);
+    const putText = await putRes.text();
+    console.log('PUT contact:', putRes.status, putText);
 
     return {
       statusCode: 200,
