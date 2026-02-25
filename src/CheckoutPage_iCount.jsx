@@ -1,4 +1,31 @@
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxM_6IkceJWXbVfiRTlqIneb7jpl2olWfaQ4blTfU6BmKXk2MvWEfkCa6Elaqk_xzNF/exec';
+const SMOOVE_API_KEY = '50f2b9e9-534f-49d5-8dc4-2b05ec90039c';
+const SMOOVE_LIST_ID = 1117962;
+
+const addToSmoove = async (customer, products) => {
+  try {
+    const response = await fetch('/.netlify/functions/smoove', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        email: customer.email,
+        cellPhone: customer.phone,
+        products,
+      }),
+    });
+    if (response.ok) {
+      console.log('✅ Smoove: איש קשר נוסף בהצלחה', customer.email);
+    } else {
+      console.error('❌ Smoove error:', response.status, await response.text());
+    }
+  } catch (err) {
+    console.error('❌ Smoove error:', err);
+  }
+};
+
+
 
 const saveOrderToSheets = async (orderData) => {
   try {
@@ -197,6 +224,7 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints, updateQuanti
 
       if (result.success) {
         await saveOrderToSheets({ customer: customerData, shipping: shippingData, items: cart, totalAmount: getTotalPrice() });
+        await addToSmoove(customerData, cart.map(item => `${item.name} (x${item.quantity})`).join(', '));
         setCurrentStep(3);
         setCart([]);
         window.scrollTo({ top: 0, behavior: 'smooth' });
