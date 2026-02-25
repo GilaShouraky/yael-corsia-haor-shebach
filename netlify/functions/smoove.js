@@ -49,6 +49,20 @@ exports.handler = async (event) => {
       console.log('Update lists:', updateRes.status, updateText);
     }
 
+    // Step 3: Also try AsyncContacts with listId to force add to list
+    const asyncRes = await fetch('https://rest.smoove.io/v1/AsyncContacts?listId=' + SMOOVE_LIST_ID + '&updateIfExists=true', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        cellPhone: data.cellPhone,
+      }),
+    });
+    const asyncText = await asyncRes.text();
+    console.log('AsyncContacts:', asyncRes.status, asyncText);
+
     return {
       statusCode: 200,
       body: JSON.stringify({ success: true, contactId }),
