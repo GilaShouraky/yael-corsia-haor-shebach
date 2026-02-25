@@ -12,7 +12,7 @@ exports.handler = async (event) => {
       'Authorization': 'Bearer ' + SMOOVE_API_KEY,
     };
 
-    // Step 1: Create contact (without list)
+    // Create contact
     const createRes = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
       method: 'POST',
       headers,
@@ -23,27 +23,31 @@ exports.handler = async (event) => {
         cellPhone: data.cellPhone,
       }),
     });
-    const createText = await createRes.text();
-    console.log('Create:', createRes.status, createText.substring(0, 200));
-
-    let contactId;
-    try { contactId = JSON.parse(createText).id; } catch(e) {}
+    const contactId = JSON.parse(await createRes.text()).id;
     console.log('Contact ID:', contactId);
 
-    if (!contactId) {
-      return { statusCode: 500, body: 'No contact ID: ' + createText };
+    // Try all methods on Lists endpoint
+    for (const method of ['POST', 'PUT', 'PATCH']) {
+      const res = await fetch(`https://rest.smoove.io/v1/Lists/${SMOOVE_LIST_ID}/Contacts`, {
+        method,
+        headers,
+        body: JSON.stringify([contactId]),
+      });
+      const text = await res.text();
+      console.log(`${method} Lists/Contacts:`, res.status, text.substring(0, 100));
     }
 
-    // Step 2: Add to list via dedicated endpoint
-    const addRes = await fetch(`https://rest.smoove.io/v1/Lists/${SMOOVE_LIST_ID}/Contacts`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify([contactId]),
-    });
-    const addText = await addRes.text();
-    console.log('Add to list:', addRes.status, addText);
+    // Also try with contact ID in URL
+    for (const method of ['POST', 'PUT', 'PATCH']) {
+      const res = await fetch(`https://rest.smoove.io/v1/Lists/${SMOOVE_LIST_ID}/Contacts/${contactId}`, {
+        method,
+        headers,
+      });
+      const text = await res.text();
+      console.log(`${method} Lists/Contacts/id:`, res.status, text.substring(0, 100));
+    }
 
-    return { statusCode: 200, body: JSON.stringify({ success: true, contactId }) };
+    return { statusCode: 200, body: JSON.stringify({ success: true }) };
   } catch (err) {
     console.error('Error:', err);
     return { statusCode: 500, body: err.message };
