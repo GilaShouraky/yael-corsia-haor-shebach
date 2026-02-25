@@ -12,8 +12,8 @@ exports.handler = async (event) => {
       'Authorization': 'Bearer ' + SMOOVE_API_KEY,
     };
 
-    // Step 1: Create or update contact
-    const contactRes = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
+    // Use AsyncContacts to add contact directly to a specific list
+    const res = await fetch('https://rest.smoove.io/v1/AsyncContacts?listId=' + SMOOVE_LIST_ID + '&updateIfExists=true', {
       method: 'POST',
       headers,
       body: JSON.stringify({
@@ -21,37 +21,15 @@ exports.handler = async (event) => {
         lastName: data.lastName,
         email: data.email,
         cellPhone: data.cellPhone,
-        lists_Linked: [SMOOVE_LIST_ID],
       }),
     });
 
-    const contactData = await contactRes.json();
-    console.log('Contact upsert:', contactRes.status, JSON.stringify(contactData));
-
-    const contactId = contactData.id;
-    if (!contactId) {
-      return { statusCode: 500, body: 'No contact ID returned' };
-    }
-
-    // Step 2: Update contact to include the new list (merge with existing lists)
-    const existingLists = contactData.lists_Linked || [];
-    if (!existingLists.includes(SMOOVE_LIST_ID)) {
-      const updatedLists = [...existingLists, SMOOVE_LIST_ID];
-      const updateRes = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          email: data.email,
-          lists_Linked: updatedLists,
-        }),
-      });
-      const updateText = await updateRes.text();
-      console.log('Update lists:', updateRes.status, updateText);
-    }
+    const text = await res.text();
+    console.log('AsyncContacts response:', res.status, text);
 
     return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true, contactId }),
+      statusCode: res.ok ? 200 : res.status,
+      body: text,
     };
   } catch (err) {
     console.error('Smoove error:', err);
