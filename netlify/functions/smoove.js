@@ -12,7 +12,7 @@ exports.handler = async (event) => {
       'Authorization': 'Bearer ' + SMOOVE_API_KEY,
     };
 
-    // Step 1: Create contact (without list)
+    // Step 1: Create or update contact
     const contactRes = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
       method: 'POST',
       headers,
@@ -23,28 +23,39 @@ exports.handler = async (event) => {
         cellPhone: data.cellPhone,
       }),
     });
-    const contactData = await contactRes.json();
-    const contactId = contactData.id;
-    console.log('Contact ID:', contactId);
 
-    // Step 2: Add contact to list via PATCH
-    const patchRes = await fetch(`https://rest.smoove.io/v1/Contacts/${contactId}`, {
+    const contactText = await contactRes.text();
+    console.log('Contact raw:', contactRes.status, contactText);
+
+    let contactId;
+    try {
+      const contactData = JSON.parse(contactText);
+      contactId = contactData.id;
+    } catch (e) {
+      console.error('Could not parse contact response:', contactText);
+      return { statusCode: 500, body: 'Could not parse contact: ' + contactText };
+    }
+
+    if (!contactId) {
+      return { statusCode: 500, body: 'No contact ID' };
+    }
+
+    // Step 2: PATCH to add list
+    const patchRes = await fetch('https://rest.smoove.io/v1/Contacts/' + contactId, {
       method: 'PATCH',
       headers,
-      body: JSON.stringify({
-        lists_Linked: [SMOOVE_LIST_ID],
-      }),
+      body: JSON.stringify({ lists_Linked: [SMOOVE_LIST_ID] }),
     });
     const patchText = await patchRes.text();
-    console.log('PATCH result:', patchRes.status, patchText);
+    console.log('PATCH:', patchRes.status, patchText);
 
-    // Step 3: Also try dedicated list endpoint
-    const listRes = await fetch(`https://rest.smoove.io/v1/Lists/${SMOOVE_LIST_ID}/Contacts/${contactId}`, {
+    // Step 3: PUT to list endpoint
+    const listRes = await fetch('https://rest.smoove.io/v1/Lists/' + SMOOVE_LIST_ID + '/Contacts/' + contactId, {
       method: 'PUT',
       headers,
     });
     const listText = await listRes.text();
-    console.log('List endpoint:', listRes.status, listText);
+    console.log('List PUT:', listRes.status, listText);
 
     return { statusCode: 200, body: JSON.stringify({ success: true, contactId }) };
   } catch (err) {
