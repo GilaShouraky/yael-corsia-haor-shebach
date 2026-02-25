@@ -12,22 +12,33 @@ exports.handler = async (event) => {
       'Authorization': 'Bearer ' + SMOOVE_API_KEY,
     };
 
-    // Step 1: Search for existing contact by email
+    // Step 1: Search by email and filter results
     const searchRes = await fetch('https://rest.smoove.io/v1/Contacts?email=' + encodeURIComponent(data.email), {
       method: 'GET',
       headers,
     });
     const searchText = await searchRes.text();
-    console.log('Search:', searchRes.status, searchText);
+    const searchData = JSON.parse(searchText);
 
-    let contactId = null;
-    try {
-      const searchData = JSON.parse(searchText);
-      contactId = Array.isArray(searchData) ? searchData[0]?.id : searchData?.id;
-    } catch(e) {}
+    // Find exact match by email
+    const contacts = Array.isArray(searchData) ? searchData : [searchData];
+    const match = contacts.find(c => c.email?.toLowerCase() === data.email.toLowerCase());
+    console.log('Match found:', match?.id, match?.email);
+
+    let contactId = match?.id;
 
     if (contactId) {
-      // Contact exists - add to list via PUT
+      // Step 2: GET current lists for this contact
+      const getRes = await fetch('https://rest.smoove.io/v1/Contacts/' + contactId, {
+        method: 'GET',
+        headers,
+      });
+      const getContact = await getRes.json();
+      const currentLists = getContact.lists_Linked || [];
+      console.log('Current lists:', currentLists);
+
+      // Step 3: PUT with merged lists
+      const newLists = [...new Set([...currentLists, SMOOVE_LIST_ID])];
       const putRes = await fetch('https://rest.smoove.io/v1/Contacts/' + contactId, {
         method: 'PUT',
         headers,
@@ -37,13 +48,13 @@ exports.handler = async (event) => {
           firstName: data.firstName,
           lastName: data.lastName,
           cellPhone: data.cellPhone,
-          lists_Linked: [SMOOVE_LIST_ID],
+          lists_Linked: newLists,
         }),
       });
       const putText = await putRes.text();
-      console.log('PUT existing:', putRes.status, putText);
+      console.log('PUT result:', putRes.status, putText);
     } else {
-      // New contact - create with list
+      // New contact
       const createRes = await fetch('https://rest.smoove.io/v1/Contacts', {
         method: 'POST',
         headers,
@@ -56,7 +67,7 @@ exports.handler = async (event) => {
         }),
       });
       const createText = await createRes.text();
-      console.log('Create new:', createRes.status, createText);
+      console.log('Created:', createRes.status, createText);
     }
 
     return { statusCode: 200, body: JSON.stringify({ success: true }) };
