@@ -12,7 +12,7 @@ exports.handler = async (event) => {
       'Authorization': 'Bearer ' + SMOOVE_API_KEY,
     };
 
-    // Step 1: Create or update contact
+    // Step 1: Create contact (without list)
     const contactRes = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
       method: 'POST',
       headers,
@@ -23,32 +23,32 @@ exports.handler = async (event) => {
         cellPhone: data.cellPhone,
       }),
     });
-
     const contactData = await contactRes.json();
-    console.log('Contact upsert:', contactRes.status, contactData.id);
-
     const contactId = contactData.id;
-    if (!contactId) {
-      return { statusCode: 500, body: 'No contact ID returned' };
-    }
+    console.log('Contact ID:', contactId);
 
-    // Step 2: PUT to update the specific contact with new list
-    const putRes = await fetch('https://rest.smoove.io/v1/Contacts/' + contactId, {
-      method: 'PUT',
+    // Step 2: Add contact to list via PATCH
+    const patchRes = await fetch(`https://rest.smoove.io/v1/Contacts/${contactId}`, {
+      method: 'PATCH',
       headers,
       body: JSON.stringify({
-        lists_Linked: [...(contactData.lists_Linked || []), SMOOVE_LIST_ID],
+        lists_Linked: [SMOOVE_LIST_ID],
       }),
     });
-    const putText = await putRes.text();
-    console.log('PUT contact:', putRes.status, putText);
+    const patchText = await patchRes.text();
+    console.log('PATCH result:', patchRes.status, patchText);
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true, contactId }),
-    };
+    // Step 3: Also try dedicated list endpoint
+    const listRes = await fetch(`https://rest.smoove.io/v1/Lists/${SMOOVE_LIST_ID}/Contacts/${contactId}`, {
+      method: 'PUT',
+      headers,
+    });
+    const listText = await listRes.text();
+    console.log('List endpoint:', listRes.status, listText);
+
+    return { statusCode: 200, body: JSON.stringify({ success: true, contactId }) };
   } catch (err) {
-    console.error('Smoove error:', err);
+    console.error('Error:', err);
     return { statusCode: 500, body: err.message };
   }
 };
