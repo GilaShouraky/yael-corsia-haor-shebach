@@ -5,7 +5,7 @@ exports.handler = async (event) => {
 
   try {
     const data = JSON.parse(event.body);
-    const SMOOVE_API_KEY = '50f2b9e9-534f-49d5-8dc4-2b05ec90039c';
+    const SMOOVE_API_KEY = '2b930959-167d-45ec-989d-29b63173fc50';
     const SMOOVE_LIST_ID = 1117962;
     const headers = {
       'Content-Type': 'application/json',
