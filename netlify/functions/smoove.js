@@ -21,6 +21,7 @@ exports.handler = async (event) => {
         lastName: data.lastName,
         email: data.email,
         cellPhone: data.cellPhone,
+        lists_Linked: [SMOOVE_LIST_ID],
       }),
     });
 
@@ -32,19 +33,25 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: 'No contact ID returned' };
     }
 
-    // Step 2: Add contact to list
-    const listRes = await fetch('https://rest.smoove.io/v1/Lists/' + SMOOVE_LIST_ID + '/Contacts', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify([contactId]),
-    });
-
-    const listText = await listRes.text();
-    console.log('Add to list:', listRes.status, listText);
+    // Step 2: Update contact to include the new list (merge with existing lists)
+    const existingLists = contactData.lists_Linked || [];
+    if (!existingLists.includes(SMOOVE_LIST_ID)) {
+      const updatedLists = [...existingLists, SMOOVE_LIST_ID];
+      const updateRes = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          email: data.email,
+          lists_Linked: updatedLists,
+        }),
+      });
+      const updateText = await updateRes.text();
+      console.log('Update lists:', updateRes.status, updateText);
+    }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ contact: contactId, list: listRes.status }),
+      body: JSON.stringify({ success: true, contactId }),
     };
   } catch (err) {
     console.error('Smoove error:', err);
