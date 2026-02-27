@@ -3,9 +3,9 @@
 
 // iCount API Configuration
 const ICOUNT_CONFIG = {
-  apiKey: import.meta.env.VITE_ICOUNT_API_KEY || 'YOUR_API_KEY_HERE',
-  companyId: import.meta.env.VITE_ICOUNT_COMPANY_ID || 'YOUR_COMPANY_ID',
-  userId: import.meta.env.VITE_ICOUNT_USER_ID || 'YOUR_USER_ID',
+  cid: import.meta.env.VITE_ICOUNT_CID,
+  user: import.meta.env.VITE_ICOUNT_USER,
+  pass: import.meta.env.VITE_ICOUNT_PASS,
   apiEndpoint: 'https://api.icount.co.il/api/v3.php',
 };
 
@@ -92,85 +92,49 @@ export const getCardType = (cardNumber) => {
  */
 export const processICountPayment = async (orderData) => {
   try {
-    // Payment processing
-
-    // TODO: Replace with actual iCount API call when you have credentials
-    
-    // For now, simulate payment
-    const simulatedResult = await simulatePayment(orderData);
-    return simulatedResult;
-
-    /* 
-    // UNCOMMENT AND UPDATE when you have iCount API credentials:
-    
-    // Step 1: Create document (invoice) in iCount
-    const documentResponse = await fetch(ICOUNT_CONFIG.apiEndpoint, {
+    // Step 1: Charge credit card via iCount
+    const chargeResponse = await fetch(ICOUNT_CONFIG.apiEndpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        cid: ICOUNT_CONFIG.companyId,
-        user: ICOUNT_CONFIG.userId,
-        pass: ICOUNT_CONFIG.apiKey,
-        action: 'create_doc',
-        type: 'invoice', // or 'receipt'
-        client_name: `${orderData.customer.firstName} ${orderData.customer.lastName}`,
+        cid: ICOUNT_CONFIG.cid,
+        user: ICOUNT_CONFIG.user,
+        pass: ICOUNT_CONFIG.pass,
+        action: 'charge_card',
+        cc_number: orderData.payment.cardNumber,
+        cc_holder_name: orderData.payment.cardHolder,
+        cc_exp_month: orderData.payment.expiryMonth,
+        cc_exp_year: '20' + orderData.payment.expiryYear,
+        cvv: orderData.payment.cvv,
+        sum: orderData.totalAmount,
+        description: orderData.items.map(i => i.name).join(', '),
+        client_name: orderData.customer.firstName + ' ' + orderData.customer.lastName,
         client_email: orderData.customer.email,
         client_phone: orderData.customer.phone,
         client_id: orderData.customer.idNumber,
-        items: orderData.items.map(item => ({
-          description: item.name,
-          quantity: item.quantity,
-          price: item.salePrice || item.price,
-        })),
-        send_email: 1, // Send invoice by email
-        send_sms: 1,   // Send SMS notification
+        create_doc: 1,
+        doc_type: 'receipt',
+        send_client_email: 1,
       }),
     });
 
-    const documentData = await documentResponse.json();
+    const chargeData = await chargeResponse.json();
+    console.log('iCount response:', chargeData);
 
-    if (documentData.status === 'error') {
-      throw new Error(documentData.message || 'Failed to create document');
-    }
-
-    // Step 2: Process credit card payment
-    const paymentResponse = await fetch(ICOUNT_CONFIG.apiEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        cid: ICOUNT_CONFIG.companyId,
-        user: ICOUNT_CONFIG.userId,
-        pass: ICOUNT_CONFIG.apiKey,
-        action: 'charge_card',
-        doc_id: documentData.doc_id,
-        card_number: orderData.payment.cardNumber,
-        card_holder: orderData.payment.cardHolder,
-        card_expiry_month: orderData.payment.expiryMonth,
-        card_expiry_year: orderData.payment.expiryYear,
-        card_cvv: orderData.payment.cvv,
-        installments: orderData.payment.installments,
-        amount: orderData.totalAmount,
-      }),
-    });
-
-    const paymentData = await paymentResponse.json();
-
-    if (paymentData.status === 'error') {
-      throw new Error(paymentData.message || 'Payment failed');
+    if (chargeData.status !== true && chargeData.status !== 'true') {
+      return {
+        success: false,
+        error: chargeData.msg || chargeData.error || 'התשלום נכשל',
+      };
     }
 
     return {
       success: true,
-      transactionId: paymentData.transaction_id,
-      documentId: documentData.doc_id,
-      documentUrl: documentData.doc_url,
+      transactionId: chargeData.transaction_id || chargeData.doc_id,
+      documentId: chargeData.doc_id,
+      documentUrl: chargeData.doc_url,
       message: 'התשלום בוצע בהצלחה',
     };
-    */
 
   } catch (error) {
     console.error('iCount payment error:', error);
