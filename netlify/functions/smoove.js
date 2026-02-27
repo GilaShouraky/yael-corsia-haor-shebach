@@ -26,7 +26,7 @@ exports.handler = async (event) => {
     });
     const resText = await res.text();
     const resData = JSON.parse(resText);
-    console.log('Contact:', resData.id, 'campaignSource:', resData.campaignSource);
+    console.log('Contact:', resData.id, 'externalId:', resData.externalId, 'campaignSource:', resData.campaignSource);
 
     return { statusCode: 200, body: JSON.stringify({ success: true }) };
   } catch (err) {
