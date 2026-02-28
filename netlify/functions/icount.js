@@ -7,9 +7,9 @@ exports.handler = async (event) => {
     const orderData = JSON.parse(event.body);
 
     const payload = {
-      cid: process.env.VITE_ICOUNT_CID,
-      user: process.env.VITE_ICOUNT_USER,
-      pass: process.env.VITE_ICOUNT_PASS,
+      cid: process.env.ICOUNT_CID,
+      user: process.env.ICOUNT_USER,
+      pass: process.env.ICOUNT_PASS,
       action: 'charge_card',
       cc_number: orderData.payment.cardNumber,
       cc_holder_name: orderData.payment.cardHolder,
