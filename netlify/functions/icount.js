@@ -29,7 +29,7 @@ exports.handler = async (event) => {
     const sid = loginData.sid;
 
     // Step 2: Charge credit card
-    const chargeRes = await fetch(`${BASE}/cc/charge`, {
+    const chargeRes = await fetch(`${BASE}/cc/bill`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: toForm({
