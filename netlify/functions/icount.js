@@ -10,7 +10,7 @@ exports.handler = async (event) => {
       cid: process.env.ICOUNT_CID,
       user: process.env.ICOUNT_USER,
       pass: process.env.ICOUNT_PASS,
-      action: 'charge_card',
+      path: 'charge_card',
       cc_number: orderData.payment.cardNumber,
       cc_holder_name: orderData.payment.cardHolder,
       cc_exp_month: orderData.payment.expiryMonth,
