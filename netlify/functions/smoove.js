@@ -50,8 +50,12 @@ exports.handler = async (event) => {
           campaignSource: 'website-purchase',
         }),
       });
-      const createData = JSON.parse(await createRes.text());
-      console.log('Created:', createRes.status, 'externalId:', createData.externalId);
+      const createText = await createRes.text();
+      console.log('Create:', createRes.status, createText.substring(0, 100));
+      if (createRes.status !== 409) {
+        const createData = JSON.parse(createText);
+        console.log('Created externalId:', createData.externalId);
+      }
     }
 
     return { statusCode: 200, body: JSON.stringify({ success: true }) };
