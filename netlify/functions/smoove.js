@@ -12,15 +12,16 @@ exports.handler = async (event) => {
     };
 
     // Search for contact by email first
-    const searchRes = await fetch('https://rest.smoove.io/v1/Contacts?email=' + encodeURIComponent(data.email), {
-      headers,
-    });
-    const searchData = JSON.parse(await searchRes.text());
+    const searchRes = await fetch('https://rest.smoove.io/v1/Contacts?email=' + encodeURIComponent(data.email), { headers });
+    const searchText = await searchRes.text();
+    const searchData = JSON.parse(searchText);
     const contacts = Array.isArray(searchData) ? searchData : [searchData];
+    console.log('Search count:', contacts.length, 'email:', data.email);
+    console.log('Emails in results:', contacts.slice(0,3).map(c => c.email).join(', '));
     const match = contacts.find(c => c.email?.toLowerCase() === data.email.toLowerCase());
+    console.log('Match:', match?.id, match?.email);
 
     if (match?.id) {
-      // Contact exists - PUT with externalId
       const putRes = await fetch('https://rest.smoove.io/v1/Contacts/' + match.id, {
         method: 'PUT',
         headers,
@@ -35,9 +36,8 @@ exports.handler = async (event) => {
         }),
       });
       const putData = JSON.parse(await putRes.text());
-      console.log('PUT existing:', putRes.status, 'externalId:', putData.externalId);
+      console.log('PUT:', putRes.status, 'externalId:', putData.externalId);
     } else {
-      // New contact
       const createRes = await fetch('https://rest.smoove.io/v1/Contacts', {
         method: 'POST',
         headers,
@@ -51,11 +51,7 @@ exports.handler = async (event) => {
         }),
       });
       const createText = await createRes.text();
-      console.log('Create:', createRes.status, createText.substring(0, 100));
-      if (createRes.status !== 409) {
-        const createData = JSON.parse(createText);
-        console.log('Created externalId:', createData.externalId);
-      }
+      console.log('Create:', createRes.status, createText.substring(0, 150));
     }
 
     return { statusCode: 200, body: JSON.stringify({ success: true }) };
