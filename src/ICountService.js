@@ -92,14 +92,13 @@ export const getCardType = (cardNumber) => {
  */
 export const processICountPayment = async (orderData) => {
   try {
-    const response = await fetch('/.netlify/functions/icount', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData),
-    });
-    const result = await response.json();
-    console.log('iCount result:', result);
-    return result;
+    // סליקה זמנית - הדמיה עד חיבור משולם
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    return {
+      success: true,
+      transactionId: 'SIM-' + Date.now(),
+      message: 'התשלום בוצע בהצלחה',
+    };
 
     /* 
     // UNCOMMENT AND UPDATE when you have iCount API credentials:
