@@ -11,47 +11,60 @@ exports.handler = async (event) => {
       'Authorization': 'Bearer ' + SMOOVE_API_KEY,
     };
 
-    // Search for contact by email first
-    const searchRes = await fetch('https://rest.smoove.io/v1/Contacts?email=' + encodeURIComponent(data.email), { headers });
-    const searchText = await searchRes.text();
-    const searchData = JSON.parse(searchText);
-    const contacts = Array.isArray(searchData) ? searchData : [searchData];
-    console.log('Search count:', contacts.length, 'email:', data.email);
-    console.log('Emails in results:', contacts.slice(0,3).map(c => c.email).join(', '));
-    const match = contacts.find(c => c.email?.toLowerCase() === data.email.toLowerCase());
-    console.log('Match:', match?.id, match?.email);
+    // Try to create first
+    const createRes = await fetch('https://rest.smoove.io/v1/Contacts', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        cellPhone: data.cellPhone,
+        externalId: 'website-purchase',
+        campaignSource: 'website-purchase',
+      }),
+    });
 
-    if (match?.id) {
-      const putRes = await fetch('https://rest.smoove.io/v1/Contacts/' + match.id, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({
-          id: match.id,
-          email: data.email,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          cellPhone: data.cellPhone,
-          externalId: 'website-purchase',
-          campaignSource: 'website-purchase',
-        }),
-      });
-      const putData = JSON.parse(await putRes.text());
-      console.log('PUT:', putRes.status, 'externalId:', putData.externalId);
-    } else {
-      const createRes = await fetch('https://rest.smoove.io/v1/Contacts', {
+    const createText = await createRes.text();
+    console.log('Create:', createRes.status, createText.substring(0, 150));
+
+    if (createRes.status === 409) {
+      // Search by email using search endpoint
+      const searchRes = await fetch('https://rest.smoove.io/v1/Contacts/search', {
         method: 'POST',
         headers,
-        body: JSON.stringify({
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          cellPhone: data.cellPhone,
-          externalId: 'website-purchase',
-          campaignSource: 'website-purchase',
-        }),
+        body: JSON.stringify({ email: data.email }),
       });
-      const createText = await createRes.text();
-      console.log('Create:', createRes.status, createText.substring(0, 150));
+      const searchText = await searchRes.text();
+      console.log('Search:', searchRes.status, searchText.substring(0, 200));
+
+      let contactId = null;
+      try {
+        const searchData = JSON.parse(searchText);
+        const contacts = Array.isArray(searchData) ? searchData : [searchData];
+        const match = contacts.find(c => c.email?.toLowerCase() === data.email.toLowerCase());
+        contactId = match?.id;
+      } catch(e) {}
+
+      if (contactId) {
+        const putRes = await fetch('https://rest.smoove.io/v1/Contacts/' + contactId, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify({
+            id: contactId,
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            cellPhone: data.cellPhone,
+            externalId: 'website-purchase',
+            campaignSource: 'website-purchase',
+          }),
+        });
+        const putData = JSON.parse(await putRes.text());
+        console.log('PUT:', putRes.status, 'externalId:', putData.externalId);
+      } else {
+        console.log('Contact not found by search, skipping PUT');
+      }
     }
 
     return { statusCode: 200, body: JSON.stringify({ success: true }) };
