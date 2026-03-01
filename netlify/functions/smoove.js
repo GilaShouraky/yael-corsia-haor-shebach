@@ -30,7 +30,7 @@ exports.handler = async (event) => {
 
     if (createRes.status === 409) {
       // Search by email using search endpoint
-      const searchRes = await fetch('https://rest.smoove.io/v1/Contacts/search', {
+      const searchRes = await fetch('https://rest.smoove.io/v1/Contacts?filter=email:', {
         method: 'POST',
         headers,
         body: JSON.stringify({ email: data.email }),
