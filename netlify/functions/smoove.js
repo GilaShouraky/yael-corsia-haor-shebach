@@ -11,49 +11,47 @@ exports.handler = async (event) => {
       'Authorization': 'Bearer ' + SMOOVE_API_KEY,
     };
 
-    // Try to create contact
-    const res = await fetch('https://rest.smoove.io/v1/Contacts', {
-      method: 'POST',
+    // Search for contact by email first
+    const searchRes = await fetch('https://rest.smoove.io/v1/Contacts?email=' + encodeURIComponent(data.email), {
       headers,
-      body: JSON.stringify({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        cellPhone: data.cellPhone,
-        externalId: 'website-purchase',
-        campaignSource: 'website-purchase',
-      }),
     });
+    const searchData = JSON.parse(await searchRes.text());
+    const contacts = Array.isArray(searchData) ? searchData : [searchData];
+    const match = contacts.find(c => c.email?.toLowerCase() === data.email.toLowerCase());
 
-    const text = await res.text();
-    console.log('Smoove:', res.status, text.substring(0, 200));
-
-    // If contact exists (409), try to find and update via GET then PUT
-    if (res.status === 409) {
-      const searchRes = await fetch('https://rest.smoove.io/v1/Contacts?email=' + encodeURIComponent(data.email), {
+    if (match?.id) {
+      // Contact exists - PUT with externalId
+      const putRes = await fetch('https://rest.smoove.io/v1/Contacts/' + match.id, {
+        method: 'PUT',
         headers,
+        body: JSON.stringify({
+          id: match.id,
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          cellPhone: data.cellPhone,
+          externalId: 'website-purchase',
+          campaignSource: 'website-purchase',
+        }),
       });
-      const searchData = JSON.parse(await searchRes.text());
-      const contacts = Array.isArray(searchData) ? searchData : [searchData];
-      const match = contacts.find(c => c.email?.toLowerCase() === data.email.toLowerCase());
-
-      if (match?.id) {
-        const putRes = await fetch('https://rest.smoove.io/v1/Contacts/' + match.id, {
-          method: 'PUT',
-          headers,
-          body: JSON.stringify({
-            id: match.id,
-            email: data.email,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            cellPhone: data.cellPhone,
-            externalId: 'website-purchase',
-            campaignSource: 'website-purchase',
-          }),
-        });
-        const putText = await putRes.text();
-        console.log('PUT existing:', putRes.status, putText.substring(0, 200));
-      }
+      const putData = JSON.parse(await putRes.text());
+      console.log('PUT existing:', putRes.status, 'externalId:', putData.externalId);
+    } else {
+      // New contact
+      const createRes = await fetch('https://rest.smoove.io/v1/Contacts', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          cellPhone: data.cellPhone,
+          externalId: 'website-purchase',
+          campaignSource: 'website-purchase',
+        }),
+      });
+      const createData = JSON.parse(await createRes.text());
+      console.log('Created:', createRes.status, 'externalId:', createData.externalId);
     }
 
     return { statusCode: 200, body: JSON.stringify({ success: true }) };
