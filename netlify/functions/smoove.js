@@ -29,21 +29,27 @@ exports.handler = async (event) => {
     console.log('Create:', createRes.status, createText.substring(0, 150));
 
     if (createRes.status === 409) {
-      // Search by email using search endpoint
-      const searchRes = await fetch('https://rest.smoove.io/v1/Contacts?filter=email:', {
+      // Contact exists - update using updateIfExists
+      const updateRes = await fetch('https://rest.smoove.io/v1/Contacts?updateIfExists=true', {
         method: 'POST',
         headers,
-        body: JSON.stringify({ email: data.email }),
+        body: JSON.stringify({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          cellPhone: data.cellPhone,
+          externalId: 'website-purchase',
+          campaignSource: 'website-purchase',
+        }),
       });
-      const searchText = await searchRes.text();
-      console.log('Search:', searchRes.status, searchText.substring(0, 200));
+      const updateText = await updateRes.text();
+      console.log('Update:', updateRes.status, updateText.substring(0, 200));
 
       let contactId = null;
       try {
-        const searchData = JSON.parse(searchText);
-        const contacts = Array.isArray(searchData) ? searchData : [searchData];
-        const match = contacts.find(c => c.email?.toLowerCase() === data.email.toLowerCase());
-        contactId = match?.id;
+        const updateData = JSON.parse(updateText);
+        contactId = updateData.id;
+        console.log('Updated contact:', contactId, 'externalId:', updateData.externalId);
       } catch(e) {}
 
       if (contactId) {
@@ -62,8 +68,6 @@ exports.handler = async (event) => {
         });
         const putData = JSON.parse(await putRes.text());
         console.log('PUT:', putRes.status, 'externalId:', putData.externalId);
-      } else {
-        console.log('Contact not found by search, skipping PUT');
       }
     }
 
