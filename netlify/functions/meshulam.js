@@ -9,7 +9,7 @@ exports.handler = async (event) => {
 
     const USER_ID = '4ec1d595ae764243';
     const PAGE_CODE = 'c34d1f4a546f';
-    const API_URL = 'https://api.grow.link/api/light/server/1.0/CreatePaymentLink';
+    const API_URL = 'https://sandboxapi.grow.link/api/light/server/1.0/CreatePaymentLink';
 
     const productNames = items.map(i => i.name).join(', ');
 
