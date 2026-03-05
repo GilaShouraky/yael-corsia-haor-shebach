@@ -65,7 +65,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CreditCard, Lock, ArrowRight, ShoppingBag, X, CheckCircle, AlertCircle, Tag } from 'lucide-react';
 import './PaymentICount.css';
-import { processICountPayment, validateCardNumber, validateCVV, validateExpiry } from './ICountService';
+import { validateCardNumber, validateCVV, validateExpiry } from './ICountService';
 import { detectBundleDiscount, getBundleMessage } from './bundleDetection';
 
 const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints, updateQuantity, bundles, products }) => {
@@ -220,16 +220,22 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints, updateQuanti
         }
       };
 
-      const result = await processICountPayment(orderData);
+      // Save order to sheets and Smoove
+      await saveOrderToSheets({ customer: customerData, shipping: shippingData, items: cart, totalAmount: getTotalPrice() });
+      await addToSmoove(customerData, cart.map(item => `${item.name} (x${item.quantity})`).join(', '));
 
-      if (result.success) {
-        await saveOrderToSheets({ customer: customerData, shipping: shippingData, items: cart, totalAmount: getTotalPrice() });
-        await addToSmoove(customerData, cart.map(item => `${item.name} (x${item.quantity})`).join(', '));
-        setCurrentStep(3);
-        setCart([]);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Redirect to Meshulam payment
+      const meshulamRes = await fetch('/.netlify/functions/meshulam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      });
+      const meshulamData = await meshulamRes.json();
+
+      if (meshulamData.success && meshulamData.url) {
+        window.location.href = meshulamData.url;
       } else {
-        setError(result.error || 'התשלום נכשל. אנא נסה שנית.');
+        setError(meshulamData.error || 'שגיאה ביצירת קישור תשלום');
       }
     } catch (err) {
       console.error('Payment error:', err);
@@ -646,7 +652,7 @@ const CheckoutPage = ({ cart, getTotalPrice, setCart, pickupPoints, updateQuanti
 
                 <div className="secure-notice">
                   <Lock size={16} />
-                  <span>תשלום מאובטח ומוצפן ע"י iCount</span>
+                  <span>תשלום מאובטח ומוצפן ע"י Meshulam</span>
                 </div>
               </form>
             </div>
